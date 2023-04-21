@@ -13,6 +13,8 @@ const Layout = ({ children }: Props) => {
 
     return (
         <main className="h-full flex flex-col justify-between">
+            { !user && children }
+
             { user && isMobile && (
                 <div>
                     <MobileHeader/>

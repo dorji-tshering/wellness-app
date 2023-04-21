@@ -1,12 +1,11 @@
-import { auth } from "../firebaseClient";
-import { signOut, updateProfile } from "firebase/auth";
+import { updateProfile } from "firebase/auth";
 import { useAuthValue } from "../utils/authContext";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 
 const Home = () => {
     const [settingName, setSettingName] = useState(false);
     const [displayName, setDisplayName] = useState<string>('');
-    const [modalOn, setModalOn] = useState(true);
+    const [modalOn, setModalOn] = useState(false);
     const submitButtonRef = useRef<HTMLButtonElement>(null);
     const spaceRef = useRef(0);
     const user = useAuthValue();
@@ -17,14 +16,6 @@ const Home = () => {
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    const logOut = async() => {
-        try {
-            await signOut(auth);
-        }catch(err: any) {
-            console.log(err.code)
-        }
-    }
 
     const updateDisplayName = async(event: FormEvent) => {
         event.preventDefault();
@@ -99,7 +90,7 @@ const Home = () => {
                 </div>
             ) }
 
-            <button onClick={logOut}>Logout</button>
+            
         </>
     )
 }

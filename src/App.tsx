@@ -1,6 +1,6 @@
 import Login from "./pages/Login";
 import Home from "./pages/Home";
-import { NavLink, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { auth } from './firebaseClient';
 import { onAuthStateChanged } from "firebase/auth";
 import { AuthContextProvider } from "./utils/authContext";
