@@ -1,9 +1,11 @@
 import React from 'react'
 
 const Fitness = () => {
-  return (
-    <div>Fitness</div>
-  )
+    return (
+        <div>
+            
+        </div>
+    )
 }
 
 export default Fitness

@@ -10,3 +10,11 @@ body {
     background-color: #F2F2F2;
     color: #222222;
 }
+
+.menuTranslate {
+    transform: translateX(-120%);
+}
+
+.menuTranslate.show {
+    transform: translateX(0);
+}
