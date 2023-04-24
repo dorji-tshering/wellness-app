@@ -33,7 +33,7 @@ const MobileMenu = ({showMenu, setShowMenu}: Props) => {
 
     return (
         <div 
-            className={classNames('h-full fixed w-full menuTranslate', 
+            className={classNames('h-full fixed w-full menuTranslate z-10', 
             showMenu && 'show')}
             onClick={() => setShowMenu(false)}
             ref={menuRef}

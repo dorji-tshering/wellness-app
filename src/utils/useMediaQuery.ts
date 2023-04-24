@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 
 /**
- * Check if the device-width <= 767px
+ * Check if the device-width < 768px
  */
 export default function IsMobile() {
     const [isMobile, setIsMobile] = useState(false);
   
     useEffect(() => {
-        const mediaWatcher = window.matchMedia("(max-width: 767px)")
+        const mediaWatcher = window.matchMedia("(max-width: 768px)")
         setIsMobile(mediaWatcher.matches);
 
         function updateIsNarrowScreen(e: MediaQueryListEvent) {

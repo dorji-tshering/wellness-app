@@ -9,7 +9,6 @@ import { auth } from "../firebaseClient";
 
 const DesktopSidebar = () => {
     const user = useAuthValue();
-    console.log(user)
 
     const logOut = async() => {
         try {

@@ -10,7 +10,8 @@ module.exports = {
                 mainBg: '#F2F2F2',
                 darkText: '#222222',
                 lightText: '#454545',
-                mainBorder: '#dadce0'
+                mainBorder: '#dadce0',
+                themeHover: '#1A73E8',
             }
         },
     },

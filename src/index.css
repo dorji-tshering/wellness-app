@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Hind:wght@400;500;600;700&display=swap');
+
 html, body, #root {
     height: 100%;
 }
@@ -9,6 +11,8 @@ html, body, #root {
 body {
     background-color: #F2F2F2;
     color: #222222;
+    font-family: 'Hind', sans-serif;
+    font-size: 15px;
 }
 
 .menuTranslate {
@@ -17,4 +21,9 @@ body {
 
 .menuTranslate.show {
     transform: translateX(0);
+}
+
+.input-style {
+    @apply border border-mainBorder outline-none rounded-[4px] px-3 py-2
+    focus:border-gray-700
 }
