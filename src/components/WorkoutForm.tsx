@@ -1,5 +1,9 @@
 import { FormEvent, useState, SetStateAction, ChangeEvent } from 'react';
 import isNumeric from '../utils/isNumeric';
+import { addDoc, collection } from 'firebase/firestore';
+import { database } from '../firebaseClient';
+import { useAuthValue } from '../utils/authContext';
+import { useNotification } from '../utils/notificationContext';
 
 interface FormData {
     date: string;
@@ -9,9 +13,9 @@ interface FormData {
 }
 
 interface InputErrors {
-    timeSpent: string;
-    caloriesBurned: string;
-    distanceCovered: string;
+    timeInputError: string;
+    caloriesInputError: string;
+    distanceInputError: string;
 }
 
 type Props = {
@@ -22,9 +26,9 @@ type Props = {
 const WorkoutForm = ({ setShowForm }: Props) => {
     const [formError, setFormError] = useState('');
     const [inputError, setInputError] = useState<InputErrors>({
-        timeSpent: '',
-        caloriesBurned: '',
-        distanceCovered: '',
+        timeInputError: '',
+        caloriesInputError: '',
+        distanceInputError: '',
     }); 
     const [formData, setFormData] = useState<FormData>({
         date: '',
@@ -32,20 +36,33 @@ const WorkoutForm = ({ setShowForm }: Props) => {
         caloriesBurned: '',
         distanceCovered: '',
     }); 
+    const user = useAuthValue();
+    const [submitting, setSubmitting] = useState(false);
+    const setNotification = useNotification()?.setNotification;
 
     const addWorkoutRecord = async(event: FormEvent) => {
         event.preventDefault();
-        const { timeSpent, caloriesBurned, distanceCovered } = inputError;
+        const { timeInputError, caloriesInputError, distanceInputError } = inputError;
 
         if(!formData.caloriesBurned && !formData.distanceCovered) {
-            setFormError('Either calories burned or distance covered field is required');
+            setFormError('Either calories or distance field is required');
             return;
         }
 
-        if(!timeSpent && !caloriesBurned && !distanceCovered && (formData.caloriesBurned || formData.distanceCovered)) {
-            console.log('valid form')
+        if(!timeInputError && !caloriesInputError && !distanceInputError) {
+            setSubmitting(true);
+            await addDoc(collection(database, 'workout'), {
+                date: formData.date,
+                timeSpent: parseFloat(formData.timeSpent),
+                caloriesBurned: parseFloat(formData.caloriesBurned as string),
+                distanceCovered: parseFloat(formData.distanceCovered as string),
+                userId: user?.uid
+            });
+            setSubmitting(false);
+            setNotification && setNotification('Record added successfully.');
+            setShowForm(false);
         } else {
-
+            return;
         }
 
         
@@ -65,21 +82,21 @@ const WorkoutForm = ({ setShowForm }: Props) => {
                 case 'timeSpent': {
                     setInputError({
                         ...inputError,
-                        [name]: 'Time spent must either be in decimal or number',
+                        timeInputError: 'Time spent must either be in decimal or number',
                     });
                     break;
                 }
                 case 'caloriesBurned': {
                     setInputError({
                         ...inputError,
-                        [name]: 'Calories must either be in decimal or number',
+                        caloriesInputError: 'Calories must either be in decimal or number',
                     });
                     break;
                 }
                 case 'distanceCovered': {
                     setInputError({
                         ...inputError,
-                        [name]: 'Distance must either be in decimal or number',
+                        distanceInputError: 'Distance must either be in decimal or number',
                     });
                     console.log('distance')
                     break;
@@ -88,10 +105,22 @@ const WorkoutForm = ({ setShowForm }: Props) => {
                     break;
             }
         }else {
-            setInputError({
-                ...inputError,
-                [name]: '',
-            });
+            if(name === 'timeSpent') {
+                setInputError({
+                    ...inputError,
+                    timeInputError: ''
+                });
+            }else if(name === 'caloriesBurned') {
+                setInputError({
+                    ...inputError,
+                    caloriesInputError: ''
+                });
+            }else if(name === 'distanceCovered') {
+                setInputError({
+                    ...inputError,
+                    distanceInputError: ''
+                });
+            }
         }
 
         // remove form error when one of the formdata is entered
@@ -133,7 +162,7 @@ const WorkoutForm = ({ setShowForm }: Props) => {
                                 onChange={handleInputChange}
                                 className='input-style block' />
                         </label>
-                        { inputError.timeSpent && <p className='text-xs max-w-[200px] text-red-600 mt-1'>{inputError.timeSpent}</p> }
+                        { inputError.timeInputError && <p className='text-xs max-w-[200px] text-red-600 mt-1'>{inputError.timeInputError}</p> }
                     </div>
                 </div>
                 <div className='sm:flex sm:justify-between'>
@@ -148,7 +177,7 @@ const WorkoutForm = ({ setShowForm }: Props) => {
                                 onChange={handleInputChange}
                                 className='input-style block' />
                         </label>
-                        { inputError.caloriesBurned && <p className='text-xs max-w-[200px] text-red-600 mt-1'>{inputError.caloriesBurned}</p> }
+                        { inputError.caloriesInputError && <p className='text-xs max-w-[200px] text-red-600 mt-1'>{inputError.caloriesInputError}</p> }
                     </div>
                     <div className='mb-5'>
                         <label>
@@ -161,14 +190,16 @@ const WorkoutForm = ({ setShowForm }: Props) => {
                                 onChange={handleInputChange}
                                 className='input-style block' />
                         </label>
-                        { inputError.distanceCovered && <p className='text-xs max-w-[200px] text-red-600 mt-1'>{inputError.distanceCovered}</p> }
+                        { inputError.distanceInputError && <p className='text-xs max-w-[200px] text-red-600 mt-1'>{inputError.distanceInputError}</p> }
                     </div>
                 </div>
 
                 <div className='flex justify-center'>
                     <button 
                         type='submit'
-                        className='bg-theme hover:bg-themeHover py-2 px-4 w-[80px] text-white rounded-md'>Add</button>
+                        className='bg-theme hover:bg-themeHover py-2 px-4 w-[80px] text-white rounded-md'>
+                            { submitting ? 'Adding...' : 'Add'}
+                        </button>
                     <button 
                         type='button'
                         className='py-2 px-4 rounded-md ml-5 hover:bg-gray-100 w-[80px] border-mainBorder border'
