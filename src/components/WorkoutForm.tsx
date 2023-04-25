@@ -1,9 +1,10 @@
 import { FormEvent, useState, SetStateAction, ChangeEvent } from 'react';
 import isNumeric from '../utils/isNumeric';
-import { addDoc, collection } from 'firebase/firestore';
+import { DocumentData, addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { database } from '../firebaseClient';
 import { useAuthValue } from '../utils/authContext';
 import { useNotification } from '../utils/notificationContext';
+import { isEqualObject } from '../utils/compareObjects';
 
 interface FormData {
     date: string;
@@ -20,24 +21,38 @@ interface InputErrors {
 
 type Props = {
     setShowForm: React.Dispatch<SetStateAction<boolean>>
+    setEditMode: React.Dispatch<SetStateAction<boolean>>
+    setRecordId: React.Dispatch<SetStateAction<string>>
+    setEditableRecord: React.Dispatch<SetStateAction<DocumentData | null>>
+    editing: boolean
+    recordId?: string
+    editableRecord: DocumentData | null
 }
 
 // component
-const WorkoutForm = ({ setShowForm }: Props) => {
+const WorkoutForm = ({ setShowForm, setEditMode, setRecordId, editing, recordId, editableRecord, setEditableRecord }: Props) => {
     const [formError, setFormError] = useState('');
+    const [submitting, setSubmitting] = useState(false);
     const [inputError, setInputError] = useState<InputErrors>({
         timeInputError: '',
         caloriesInputError: '',
         distanceInputError: '',
     }); 
-    const [formData, setFormData] = useState<FormData>({
-        date: '',
-        timeSpent: '',
-        caloriesBurned: '',
-        distanceCovered: '',
-    }); 
+    const [formData, setFormData] = useState<FormData>(
+        editing && editableRecord ? {
+            date: editableRecord.data().date,
+            timeSpent: editableRecord.data().timeSpent.toString(),
+            caloriesBurned: editableRecord.data().caloriesBurned.toString(),
+            distanceCovered: editableRecord.data().distanceCovered.toString(),
+        } : {
+            date: '',
+            timeSpent: '',
+            caloriesBurned: '',
+            distanceCovered: '',
+        }
+    ); 
+
     const user = useAuthValue();
-    const [submitting, setSubmitting] = useState(false);
     const setNotification = useNotification()?.setNotification;
 
     const addWorkoutRecord = async(event: FormEvent) => {
@@ -70,11 +85,50 @@ const WorkoutForm = ({ setShowForm }: Props) => {
         //...
     }
 
+    const editRecord = async(event: FormEvent) => {
+        event.preventDefault();
+
+        const { timeInputError, caloriesInputError, distanceInputError } = inputError;
+
+        if(!formData.caloriesBurned && !formData.distanceCovered) {
+            setFormError('Either calories or distance field is required');
+            return;
+        }
+
+        if(!timeInputError && !caloriesInputError && !distanceInputError && recordId) {
+            if(isEqualObject(formData, {
+                date: editableRecord?.data().date,
+                timeSpent: editableRecord?.data().timeSpent.toString(),
+                caloriesBurned: editableRecord?.data().caloriesBurned.toString(),
+                distanceCovered: editableRecord?.data().distanceCovered.toString(),
+            }) && setNotification) {
+                setNotification('No field value has been changed, please change any of the value to update.');
+                return;
+            }
+
+            setSubmitting(true);
+            await updateDoc(doc(database, 'workout', recordId), {
+                date: formData.date,
+                timeSpent: parseFloat(formData.timeSpent),
+                caloriesBurned: parseFloat(formData.caloriesBurned as string),
+                distanceCovered: parseFloat(formData.distanceCovered as string),
+            });
+            setSubmitting(false);
+            setNotification && setNotification('Record updated successfully.');
+            setRecordId('');
+            setEditMode(false);
+            setEditableRecord(null);
+            setShowForm(false);
+        } else {
+            return;
+        }
+    }
+
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
         setFormData({
             ...formData,
-            [name]: value,
+            [name]: value.trim(), // no spacing allowed for form values
         })
 
         if(value && !isNumeric(value) && (name !== 'date')) {
@@ -128,12 +182,19 @@ const WorkoutForm = ({ setShowForm }: Props) => {
         }
     }
 
+    const closeForm = () => {
+        editing && setEditMode(false);
+        recordId && setRecordId('');
+        editableRecord && setEditableRecord(null);
+        setShowForm(false);
+    }
+
     return (
         <div className='fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center
              p-5 bg-black/30 z-20'
-             onClick={() => setShowForm(false)}>
+             onClick={closeForm}>
             <form 
-                onSubmit={addWorkoutRecord}
+                onSubmit={editing ? editRecord : addWorkoutRecord}
                 onClick={(e) => e.stopPropagation()}
                 className='bg-white max-h-full overflow-y-auto shadow-md rounded-md px-4 py-8 sm:p-8 flex flex-col'>
                 <h2 className='text-center font-bold mb-5'>Add Wordout Record</h2>
@@ -144,6 +205,7 @@ const WorkoutForm = ({ setShowForm }: Props) => {
                         <input 
                             type="date"
                             required
+                            value={formData.date}
                             name='date'
                             max={new Date().toISOString().split("T")[0]}
                             onChange={handleInputChange}
@@ -197,12 +259,12 @@ const WorkoutForm = ({ setShowForm }: Props) => {
                     <button 
                         type='submit'
                         className='bg-theme hover:bg-themeHover py-2 px-4 w-[80px] text-white rounded-md'>
-                            { submitting ? 'Adding...' : 'Add'}
+                            { editing ? ( submitting ? '. . .' : 'Update') : (submitting ? '. . .' : 'Add')}
                         </button>
                     <button 
                         type='button'
                         className='py-2 px-4 rounded-md ml-5 hover:bg-gray-100 w-[80px] border-mainBorder border'
-                        onClick={() => setShowForm(false)}>Cancel</button>
+                        onClick={closeForm}>Cancel</button>
                 </div>
             </form>
         </div>

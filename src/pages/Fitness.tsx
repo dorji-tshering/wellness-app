@@ -3,15 +3,27 @@ import DesktopPageHeader from "../components/DesktopPageHeader";
 import MobilePageHeader from "../components/MobilePageHeader";
 import IsMobile from "../utils/useMediaQuery";
 import WorkoutForm from "../components/WorkoutForm";
-import WorkoutTable from "../components/WorkoutTable";
+import WorkoutStatAndTable from "../components/WorkoutStatAndTable";
+import { DocumentData } from "firebase/firestore";
 
 const Fitness = () => {
     const isMobile = IsMobile();
     const [showWorkoutForm, setShowWorkoutForm] = useState(false);
+    const [editMode, setEditMode] = useState(false);
+    const [recordId, setRecordId] = useState('');
+    const [editableRecord, setEditableRecord] = useState<DocumentData | null>(null);
 
     return (
         <div>
-            { showWorkoutForm && <WorkoutForm setShowForm={setShowWorkoutForm}/> }
+            { showWorkoutForm && 
+                <WorkoutForm 
+                    setShowForm={setShowWorkoutForm} 
+                    setEditMode={setEditMode}
+                    setRecordId={setRecordId}
+                    editing={editMode ? true : false} 
+                    recordId={recordId}
+                    editableRecord={editableRecord}
+                    setEditableRecord={setEditableRecord}/> }
 
             { !isMobile && (
                 <DesktopPageHeader>
@@ -36,7 +48,11 @@ const Fitness = () => {
             ) }
 
             <div>
-                <WorkoutTable/>
+                <WorkoutStatAndTable 
+                    setEditMode={setEditMode} 
+                    setShowWorkoutForm={setShowWorkoutForm} 
+                    setRecordId={setRecordId}
+                    setEditableRecord={setEditableRecord}/>
             </div>
         </div>
     )
