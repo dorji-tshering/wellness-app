@@ -11,6 +11,7 @@ import Fitness from "./pages/Fitness";
 import Nutrition from "./pages/Nutrition";
 import Wellness from "./pages/Wellness";
 import Layout from "./components/Layout";
+import Loader from './components/Loader';
 
 function App() {
     const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -37,7 +38,7 @@ function App() {
     }, []);
 
     if(loadingUser) {
-        return <></>
+        return <Loader/>
     }
 
     return (

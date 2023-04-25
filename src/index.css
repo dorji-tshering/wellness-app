@@ -25,5 +25,51 @@ body {
 
 .input-style {
     @apply border border-mainBorder outline-none rounded-[4px] px-3 py-2
-    focus:border-gray-700
+    focus:border-gray-500 focus:ring-2 focus:ring-gray-200
+}
+
+.workout-table-head {
+    @apply border-r border-r-mainBorder px-3 py-2 font-medium
+}
+
+.workout-table-cell {
+    @apply flex justify-between sm:block px-3 py-2 border-r border-r-mainBorder
+    border-b border-b-mainBorder sm:border-b-0
+}
+
+/* loader styles */
+.spinner {
+    width: 45px;
+    height: 45px;
+    display: grid;
+    border: 4.5px solid #0000;
+    border-radius: 50%;
+    border-color: #dbdcef #0000;
+    animation: spinner-e04l1k 1s infinite linear;
+}
+
+.spinner::before,
+.spinner::after {
+    content: "";
+    grid-area: 1/1;
+    margin: 2.2px;
+    border: inherit;
+    border-radius: 50%;
+}
+
+.spinner::before {
+    border-color: #0681FA #0000;
+    animation: inherit;
+    animation-duration: 0.5s;
+    animation-direction: reverse;
+}
+
+.spinner::after {
+    margin: 8.9px;
+}
+
+@keyframes spinner-e04l1k {
+    100% {
+    transform: rotate(1turn);
+    }
 }

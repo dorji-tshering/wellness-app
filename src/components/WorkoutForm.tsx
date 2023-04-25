@@ -98,7 +98,6 @@ const WorkoutForm = ({ setShowForm }: Props) => {
                         ...inputError,
                         distanceInputError: 'Distance must either be in decimal or number',
                     });
-                    console.log('distance')
                     break;
                 }
                 default: 
@@ -123,7 +122,7 @@ const WorkoutForm = ({ setShowForm }: Props) => {
             }
         }
 
-        // remove form error when one of the formdata is entered
+        // remove form error when either of the field is entered
         if(formData.caloriesBurned || formData.distanceCovered) {
             setFormError('');
         }

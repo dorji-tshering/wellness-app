@@ -12,6 +12,9 @@ module.exports = {
                 lightText: '#454545',
                 mainBorder: '#dadce0',
                 themeHover: '#1A73E8',
+            },
+            screens: {
+                xs: '360px'
             }
         },
     },

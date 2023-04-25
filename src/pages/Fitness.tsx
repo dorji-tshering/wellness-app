@@ -3,6 +3,7 @@ import DesktopPageHeader from "../components/DesktopPageHeader";
 import MobilePageHeader from "../components/MobilePageHeader";
 import IsMobile from "../utils/useMediaQuery";
 import WorkoutForm from "../components/WorkoutForm";
+import WorkoutTable from "../components/WorkoutTable";
 
 const Fitness = () => {
     const isMobile = IsMobile();
@@ -35,7 +36,7 @@ const Fitness = () => {
             ) }
 
             <div>
-                
+                <WorkoutTable/>
             </div>
         </div>
     )
