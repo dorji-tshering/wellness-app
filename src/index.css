@@ -30,6 +30,7 @@ body {
 
 .workout-table-head {
     @apply border-r border-r-mainBorder px-3 py-2 font-medium
+    flex items-center
 }
 
 .workout-table-cell {

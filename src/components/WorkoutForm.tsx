@@ -68,9 +68,9 @@ const WorkoutForm = ({ setShowForm, setEditMode, setRecordId, editing, recordId,
             setSubmitting(true);
             await addDoc(collection(database, 'workout'), {
                 date: formData.date,
-                timeSpent: parseFloat(formData.timeSpent),
-                caloriesBurned: parseFloat(formData.caloriesBurned as string),
-                distanceCovered: parseFloat(formData.distanceCovered as string),
+                timeSpent: isNaN(parseFloat(formData.timeSpent)) ? 0 : parseFloat(formData.timeSpent),
+                caloriesBurned: isNaN(parseFloat(formData.caloriesBurned as string)) ? 0 : parseFloat(formData.caloriesBurned as string),
+                distanceCovered: isNaN(parseFloat(formData.distanceCovered as string)) ? 0 : parseFloat(formData.distanceCovered as string),
                 userId: user?.uid
             });
             setSubmitting(false);
@@ -109,9 +109,9 @@ const WorkoutForm = ({ setShowForm, setEditMode, setRecordId, editing, recordId,
             setSubmitting(true);
             await updateDoc(doc(database, 'workout', recordId), {
                 date: formData.date,
-                timeSpent: parseFloat(formData.timeSpent),
-                caloriesBurned: parseFloat(formData.caloriesBurned as string),
-                distanceCovered: parseFloat(formData.distanceCovered as string),
+                timeSpent: isNaN(parseFloat(formData.timeSpent)) ? 0 : parseFloat(formData.timeSpent),
+                caloriesBurned: isNaN(parseFloat(formData.caloriesBurned as string)) ? 0 : parseFloat(formData.caloriesBurned as string),
+                distanceCovered: isNaN(parseFloat(formData.distanceCovered as string)) ? 0 : parseFloat(formData.distanceCovered as string),
             });
             setSubmitting(false);
             setNotification && setNotification('Record updated successfully.');
@@ -197,7 +197,7 @@ const WorkoutForm = ({ setShowForm, setEditMode, setRecordId, editing, recordId,
                 onSubmit={editing ? editRecord : addWorkoutRecord}
                 onClick={(e) => e.stopPropagation()}
                 className='bg-white max-h-full overflow-y-auto shadow-md rounded-md px-4 py-8 sm:p-8 flex flex-col'>
-                <h2 className='text-center font-bold mb-5'>Add Wordout Record</h2>
+                <h2 className='text-center font-bold mb-5'>{ editing ? 'Update workout record' : 'Add workout record' }</h2>
                 { formError && <p className='text-xs text-red-600 mb-3 text-center'>{formError}</p> }
                 <div className='sm:flex sm:justify-between'>
                     <label className='sm:mr-5 mb-5 block'>
@@ -258,12 +258,12 @@ const WorkoutForm = ({ setShowForm, setEditMode, setRecordId, editing, recordId,
                 <div className='flex justify-center'>
                     <button 
                         type='submit'
-                        className='bg-theme hover:bg-themeHover py-2 px-4 w-[80px] text-white rounded-md'>
+                        className='bg-theme hover:bg-themeHover py-2 px-4 w-[80px] text-white rounded-md text-sm font-medium'>
                             { editing ? ( submitting ? '. . .' : 'Update') : (submitting ? '. . .' : 'Add')}
                         </button>
                     <button 
                         type='button'
-                        className='py-2 px-4 rounded-md ml-5 hover:bg-gray-100 w-[80px] border-mainBorder border'
+                        className='py-2 px-4 rounded-md ml-5 hover:bg-gray-100 w-[80px] border-mainBorder border text-sm font-medium'
                         onClick={closeForm}>Cancel</button>
                 </div>
             </form>
