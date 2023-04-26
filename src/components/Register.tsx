@@ -82,7 +82,7 @@ const Register = ({setOnSignin}: Props) => {
                 <button 
                     ref={submitButtonRef}
                     type='submit'
-                    className='bg-theme text-white rounded-full px-4 py-1 w-full md:w-[80%] mb-3'>
+                    className='bg-theme text-white text-sm rounded-full px-4 py-2 w-full md:w-[80%] mb-3 hover:bg-themeHover'>
                     { registering ? 'Registering...' : 'Register' }
                 </button>
                 <button 

@@ -19,7 +19,7 @@ const DesktopSidebar = () => {
     }
     
     return (
-        <div className="bg-white w-[200px] border-r border-r-mainBorder shadow-md py-7 flex flex-col">
+        <div className="bg-white min-w-[200px] max-w-[200px] border-r border-r-mainBorder shadow-md py-7 flex flex-col">
             <div className="flex items-center px-5 border-b border-mainBorder pb-5">
                 <NavLink to='/'>
                     <MdHealthAndSafety className="text-theme" size={40}/>
