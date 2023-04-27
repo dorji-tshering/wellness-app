@@ -7,12 +7,14 @@ import AddToMealPlanModal from "./AddToMealPlanModal";
 
 const DisplayRecipe = () => {
     const [viewRecipeWithID, setViewRecipeWithID] = useState('');
+    const [recipeIdToAdd, setRecipeIdToAdd] = useState('');
     
     return (
         <>
-            {
-                viewRecipeWithID && <RecipeModal recipeId={viewRecipeWithID} setViewRecipeWithID={setViewRecipeWithID}/>
-            }
+            { viewRecipeWithID && <RecipeModal recipeId={viewRecipeWithID} setViewRecipeWithID={setViewRecipeWithID}/> }
+
+            { recipeIdToAdd && <AddToMealPlanModal recipeId={recipeIdToAdd} setRecipeIdToAdd={setRecipeIdToAdd}/> }
+
             <h2 className="my-5">A list of recipes to keep you healthy.</h2>
             <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 gap-x-5 gap-y-10 lg:gap-y-16">
                 { Recipes.map((recipe, idx) => (
@@ -29,7 +31,8 @@ const DisplayRecipe = () => {
                             </div>
                             <p className="grow font-bold text-[18px] py-2 group-hover:bg-gray-100 w-full">{recipe.name}</p>
                         </button>
-                        <button className="py-3 block relative group border-t border-t-mainBorder hover:bg-theme/5 hover:text-theme">
+                        <button className="py-3 block relative group border-t border-t-mainBorder hover:bg-theme/5 hover:text-theme"
+                            aria-label='Add to meal plan' onClick={() => setRecipeIdToAdd(recipe.id)}>
                             <AiOutlinePlus className="mx-auto" size={20}/>
                             <span className="absolute hidden  group-hover:block w-fit mx-auto left-0 right-0 -top-2 -translate-y-full px-2 py-1
                                 bg-gray-700 rounded-lg text-center text-white text-sm after:content-[''] 
@@ -43,4 +46,4 @@ const DisplayRecipe = () => {
     )
 }
 
-export default DisplayRecipe
+export default DisplayRecipe;

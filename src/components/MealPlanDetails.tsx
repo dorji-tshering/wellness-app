@@ -14,8 +14,6 @@ const MealPlanDetails = ({ mealPlanDetails, viewMealPlanDetails }: Props) => {
     const [viewRecipeWithID, setViewRecipeWithID] = useState('');
     const mealDays = ['dayOne', 'dayTwo', 'dayThree', 'dayFour', 'dayFive', 'daySix', 'daySeven'] as const;
     const mealDaysMapping = ['Day One', 'Day Two', 'Day Three', 'Day Four', 'Day Five', 'Day Six', 'Day Seven'] as const;
-    
-    console.log(!!mealPlanDetails.data()['dayOne'].breakfast)
 
     return (
         <>
