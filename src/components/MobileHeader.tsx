@@ -10,7 +10,7 @@ type Props = {
 const MobileHeader = ({setShowMenu}: Props) => {
     return (
         <div className='bg-blue-50 flex justify-between items-center h-[60px] px-3 fixed top-0 right-0 left-0
-        shadow-sm'>
+        shadow-sm z-10'>
             <div>
                 <Link to='/'><MdHealthAndSafety className='text-theme' size={40}/></Link>
             </div>

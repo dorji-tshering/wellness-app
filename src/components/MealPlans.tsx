@@ -86,7 +86,7 @@ const MealPlans = ({ setShowMealPlans }: Props) => {
                             mealPlans.length > 0 ? (
                                 <div className="flex justify-center flex-wrap mt-8">
                                     { mealPlans.map((mealPlan, idx) => (
-                                        <div className="border mx-5 rounded-md min-w-[200px] mb-10 overflow-hidden"
+                                        <div className="border mx-5 rounded-md min-w-full xs:min-w-[250px] mb-10 overflow-hidden"
                                             key={idx}>
                                             <div onClick={() => viewMealPlanDetails(mealPlan)}
                                                 className="py-4 cursor-pointer">
