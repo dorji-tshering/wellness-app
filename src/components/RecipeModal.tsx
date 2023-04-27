@@ -24,13 +24,13 @@ const RecipeModal = ({ recipeId, setViewRecipeWithID }: Props) => {
         <div className='fixed top-0 right-0 left-0 bottom-0 bg-black/30 z-30 flex justify-center items-center px-4 py-5'
             onClick={() => setViewRecipeWithID('')}>
             <div className='h-full overflow-auto'>
-                <div className='bg-white rounded-md shadow-md px-6 py-10 xs:max-w-[380px] sm:max-w-[450px] md:max-w-[700px]
+                <div className='bg-white rounded-md shadow-md px-6 pb-10 pt-5 xs:max-w-[380px] sm:max-w-[450px] md:max-w-[700px]
                     min-h-full'
                     onClick={(e) => e.stopPropagation()}>
-                    <header className='flex justify-between mb-5'>
-                        <h1 className='font-bold text-lg sm:text-xl'>{ recipe?.name }</h1>
+                    <header className='flex justify-between py-3 md:py-5 bg-white/90 sticky -top-[2px]'>
+                        <h1 className='font-bold text-[17px] xs:text-lg sm:text-xl overflow-x-auto mr-3'>{ recipe?.name }</h1>
                         <button className='text-[10px] font-bold py-1 px-3 border border-mainBorder rounded-md shadow-sm bg-gray-50
-                        text-gray-500 hover:text-inherit hover:shadow-md' 
+                        text-gray-500 hover:text-inherit hover:shadow-md h-fit' 
                             onClick={() => setViewRecipeWithID('')}>CLOSE</button>
                     </header>
                     <section>

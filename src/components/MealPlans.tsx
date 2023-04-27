@@ -1,9 +1,24 @@
-import React from 'react'
+import MealPlanForm from "./MealPlanForm";
+import { SetStateAction } from 'react';
 
-const MealPlans = () => {
+
+type Props = {
+    addMealPlan: boolean
+    setAddMealPlan: React.Dispatch<SetStateAction<boolean>>
+    setShowMealPlans: React.Dispatch<SetStateAction<boolean>>
+}
+
+const MealPlans = ({ addMealPlan, setAddMealPlan, setShowMealPlans }: Props) => {
+
+
     return (
-        <div>MealPlans</div>
+        <>
+            { addMealPlan && <MealPlanForm setAddMealPlan={setAddMealPlan}/> }
+            <div>
+                <button onClick={() => setShowMealPlans(false)}>back</button>
+            </div>
+        </>
     )
 }
 
-export default MealPlans
+export default MealPlans;

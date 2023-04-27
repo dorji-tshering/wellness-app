@@ -90,13 +90,14 @@ const WorkoutStatAndTable= ({ setEditMode, setShowWorkoutForm, setRecordId, setE
                 <div className="fixed top-0 right-0 bottom-0 left-0 flex justify-center items-center p-4
                 bg-black/30 z-30"
                     onClick={() => setConfirmDelete(false)}>
-                    <div className="bg-white rounded-md shadow-md p-5 flex flex-col justify-center items-center"
+                    <div className="bg-white rounded-md shadow-md py-5 px-8 flex flex-col justify-center items-center"
                         onClick={(e) => e.stopPropagation()}>
-                        <p className="font-medium mb-5">Confirm Delete?</p>
+                        <p className="font-medium">Confirm Delete?</p>
+                        <p className="mb-5 text-sm text-gray-500">You can't undo the action</p>
                         <div className="flex justify-center">
-                            <button className="w-[70px] text-white mr-2 bg-red-600 rounded-[4px] py-1 text-sm font-medium" 
+                            <button className="w-[70px] text-white mr-2 bg-red-600 rounded-[4px] py-2 text-sm font-medium" 
                                 onClick={deleteRecord}>{ deleting ? '. . .' : 'Delete' }</button>
-                            <button className="w-[70px] text-white ml-2 bg-gray-500 rounded-[4px] py-1 text-sm font-medium"
+                            <button className="w-[70px] text-white ml-2 bg-gray-500 rounded-[4px] py-2 text-sm font-medium"
                                 onClick={() => setConfirmDelete(false)}>Cancel</button>
                         </div>
                     </div>
