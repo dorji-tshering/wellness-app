@@ -4,6 +4,7 @@ import IsMobile from "../utils/useMediaQuery";
 import DisplayRecipe from "../components/DisplayRecipe";
 import MealPlans from "../components/MealPlans";
 import { useState } from "react";
+import MealPlanForm from "../components/MealPlanForm";
 
 const Nutrition = () => {
     const isMobile = IsMobile();
@@ -11,7 +12,7 @@ const Nutrition = () => {
     const [addMealPlan, setAddMealPlan] = useState(false);
 
     return (
-        <div>
+        <>
 
             { !isMobile && (
                 <DesktopPageHeader>
@@ -39,17 +40,17 @@ const Nutrition = () => {
                 </MobilePageHeader>
             ) }
 
+            { addMealPlan && <MealPlanForm setAddMealPlan={setAddMealPlan}/> }
+
             <div>
                 {
                     showMealPlans ? (
                         <MealPlans 
-                            addMealPlan={addMealPlan} 
-                            setAddMealPlan={setAddMealPlan}
                             setShowMealPlans={setShowMealPlans}/>
                     ) : <DisplayRecipe/>
                 }
             </div>
-        </div>
+        </>
     )
 }
 

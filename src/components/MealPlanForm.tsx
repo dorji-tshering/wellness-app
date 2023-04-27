@@ -72,7 +72,7 @@ const MealPlanForm = ({ setAddMealPlan }: Props) => {
     return (
         <div className="fixed top-0 right-0 left-0 bottom-0 flex items-center justify-center bg-black/30 z-30 py-5"
             onClick={() => setAddMealPlan(false)}>
-            <div className="max-h-full overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="max-h-full overflow-y-auto rounded-md" onClick={(e) => e.stopPropagation()}>
                 <form onSubmit={createMealPlan}
                     className="bg-white flex flex-col items-center rounded-md shadow-md px-8 py-4">
                     <h2 className="font-bold">Create Meal Plan</h2>
