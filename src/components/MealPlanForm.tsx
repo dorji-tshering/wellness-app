@@ -1,6 +1,6 @@
-import { addDoc, collection } from "firebase/firestore";
-import { FormEvent, useRef, useState, SetStateAction } from 'react';
-import { database } from "../firebaseClient";
+import { addDoc, collection, getCountFromServer } from "firebase/firestore";
+import { FormEvent, useRef, useState, SetStateAction, useEffect } from 'react';
+import { database } from '../firebaseClient';
 import { useAuthValue } from "../utils/authContext";
 import { useNotification } from "../utils/notificationContext";
 
@@ -11,8 +11,15 @@ type Props = {
 const MealPlanForm = ({ setAddMealPlan }: Props) => {
     const mealPlanNameRef = useRef<HTMLInputElement | null>(null);
     const [creatingPlan, setCreatingPlan] = useState(false);
+    const [mealplanCount, setMealplanCount] = useState(0);
     const user = useAuthValue();
     const setNotification = useNotification()?.setNotification;
+
+    useEffect(() => {
+        getCountFromServer(collection(database, 'mealplans')).then((countObject) => {
+            setMealplanCount(countObject.data().count);
+        });
+    }, []);
 
     const createMealPlan = async(event: FormEvent) => {
         event.preventDefault();
@@ -24,6 +31,7 @@ const MealPlanForm = ({ setAddMealPlan }: Props) => {
                 await addDoc(collection(database, 'mealplans'), {
                     name: mealPlanNameRef.current.value,
                     userId: user.uid,
+                    active: mealplanCount > 0 ? false : true,
                     dayOne: {
                         breakfast: '',
                         lunch: '',

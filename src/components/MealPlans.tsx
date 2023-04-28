@@ -1,12 +1,13 @@
-import { DocumentData, collection, deleteDoc, doc, onSnapshot, query, where } from "firebase/firestore";
-import { SetStateAction, useEffect, useState } from 'react';
-import { MdOutlineArrowBack } from 'react-icons/md';
-import { database } from "../firebaseClient";
+import { DocumentData, collection, deleteDoc, doc, onSnapshot, query, updateDoc, where } from "firebase/firestore";
+import { SetStateAction, useEffect, useRef, useState } from 'react';
+import { MdOutlineArrowBack, MdRadioButtonUnchecked, MdCheckCircle } from 'react-icons/md';
+import { database } from '../firebaseClient';
 import { useAuthValue } from "../utils/authContext";
 import MealPlanDetails from "./MealPlanDetails";
 import Loader from "./Loader";
 import { RiDeleteBin6Line, RiEyeLine } from 'react-icons/ri';
 import { useNotification } from "../utils/notificationContext";
+import classNames from "classnames";
 
 type Props = {
     setShowMealPlans: React.Dispatch<SetStateAction<boolean>>
@@ -18,6 +19,7 @@ const MealPlans = ({ setShowMealPlans }: Props) => {
     const [mealPlanWithID, deleteMealPlanWithID] = useState('');
     const [deleting, setDeleting] = useState(false);
     const [mealPlanDetails, viewMealPlanDetails] = useState<DocumentData | null>(null);
+    const activeMealplanRef = useRef<string | null>(null);
     const user = useAuthValue();
     const setNotification = useNotification()?.setNotification;
 
@@ -31,6 +33,23 @@ const MealPlans = ({ setShowMealPlans }: Props) => {
         return () => unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
+
+    const toggleActiveMealplan = async(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, isActiveMealPlan=false, mealplanID: string) => {
+        event.stopPropagation();
+        if(isActiveMealPlan) return;
+
+        await updateDoc(doc(database, 'mealplans', activeMealplanRef.current as string), {
+            active: false,
+        });
+        await updateDoc(doc(database, 'mealplans', mealplanID), {
+            active: true,
+        });
+    }
+
+    // store current active mealplan in a ref
+    const currentActiveMealplan = (mealPlanID: string) => {
+        activeMealplanRef.current = mealPlanID;
+    }
 
     const deleteMealPlan = async() => {
         setDeleting(true);
@@ -86,11 +105,28 @@ const MealPlans = ({ setShowMealPlans }: Props) => {
                             mealPlans.length > 0 ? (
                                 <div className="flex justify-center flex-wrap mt-8">
                                     { mealPlans.map((mealPlan, idx) => (
-                                        <div className="border mx-5 rounded-md min-w-full xs:min-w-[250px] mb-10 overflow-hidden"
+                                        <div className={classNames('border mx-5 rounded-md min-w-full xs:min-w-[250px] mb-10',
+                                            mealPlan.data().active && 'border-theme')}
                                             key={idx}>
+                                            { mealPlan.data().active && currentActiveMealplan(mealPlan.id) }
                                             <div onClick={() => viewMealPlanDetails(mealPlan)}
-                                                className="py-4 cursor-pointer">
-                                                <p className="text-center font-medium">{mealPlan.data().name}</p>
+                                                className={classNames('py-4 cursor-pointer relative hover:bg-gray-100 rounded-tr-md rounded-tl-md',
+                                                mealPlan.data().active && 'text-theme')}>
+                                                <p className="text-center font-medium">{ mealPlan.data().name }</p>
+                                                <button className={ classNames('absolute top-2 right-2 group rounded-full',
+                                                    mealPlan.data().active ? 'text-theme cursor-default' : 
+                                                    `text-gray-500 hover:ring-[3px] hover:ring-gray-300 transition-all duration-500`) }
+                                                    onClick={ mealPlan.data().active ? (e) => toggleActiveMealplan(e, true, mealPlan.id) : 
+                                                    (e) => toggleActiveMealplan(e, false, mealPlan.id)}>
+                                                    { mealPlan.data().active ? <MdCheckCircle size={20}/> : <MdRadioButtonUnchecked size={20}/> }
+                                                    <span className="absolute hidden whitespace-nowrap  group-hover:block w-[90px] left-1/2 -top-2 
+                                                        -translate-y-full px-2 py-1 -ml-[45px]
+                                                        bg-gray-700 rounded-lg text-center text-white text-sm after:content-[''] 
+                                                        after:absolute after:left-1/2 after:top-[100%] after:-translate-x-1/2 after:border-8 
+                                                        after:border-x-transparent after:border-b-transparent after:border-t-gray-700">
+                                                            { mealPlan.data().active ? 'Active plan' : 'Set active' }
+                                                    </span>
+                                                </button>
                                             </div>
                                             <div className="flex justify-stretch border-t border-t-mainBorder">
                                                 <button className="grow relative group flex justify-center py-2 text-gray-500 border-r
@@ -98,18 +134,18 @@ const MealPlans = ({ setShowMealPlans }: Props) => {
                                                     onClick={() => viewMealPlanDetails(mealPlan)}>
                                                     <RiEyeLine size={18}/>
                                                     <span className="absolute hidden  group-hover:block w-fit mx-auto left-0 right-0 -top-2 -translate-y-full px-2 py-1
-                                                    bg-gray-700 rounded-lg text-center text-white text-sm after:content-[''] 
-                                                    after:absolute after:left-1/2 after:top-[100%] after:-translate-x-1/2 after:border-8 
-                                                    after:border-x-transparent after:border-b-transparent after:border-t-gray-700">View</span>
+                                                        bg-gray-700 rounded-lg text-center text-white text-sm after:content-[''] 
+                                                        after:absolute after:left-1/2 after:top-[100%] after:-translate-x-1/2 after:border-8 
+                                                        after:border-x-transparent after:border-b-transparent after:border-t-gray-700">View</span>
                                                 </button>
                                                 <button className="grow relative group flex justify-center py-2 text-gray-500
-                                                    hover:bg-red-100 hover:text-red-600"
+                                                    hover:bg-red-100 hover:text-red-600 rounded-br-md"
                                                     onClick={() => deleteMealPlanWithID(mealPlan.id)}>
                                                     <RiDeleteBin6Line/>
                                                     <span className="absolute hidden  group-hover:block w-fit mx-auto left-0 right-0 -top-2 -translate-y-full px-2 py-1
-                                                    bg-gray-700 rounded-lg text-center text-white text-sm after:content-[''] 
-                                                    after:absolute after:left-1/2 after:top-[100%] after:-translate-x-1/2 after:border-8 
-                                                    after:border-x-transparent after:border-b-transparent after:border-t-gray-700">Delete</span>
+                                                        bg-gray-700 rounded-lg text-center text-white text-sm after:content-[''] 
+                                                        after:absolute after:left-1/2 after:top-[100%] after:-translate-x-1/2 after:border-8 
+                                                        after:border-x-transparent after:border-b-transparent after:border-t-gray-700">Delete</span>
                                                 </button>
                                             </div>
                                         </div>
