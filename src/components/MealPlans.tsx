@@ -38,9 +38,11 @@ const MealPlans = ({ setShowMealPlans }: Props) => {
         event.stopPropagation();
         if(isActiveMealPlan) return;
 
-        await updateDoc(doc(database, 'mealplans', activeMealplanRef.current as string), {
-            active: false,
-        });
+        if(activeMealplanRef.current) {
+            await updateDoc(doc(database, 'mealplans', activeMealplanRef.current as string), {
+                active: false,
+            }); 
+        }
         await updateDoc(doc(database, 'mealplans', mealplanID), {
             active: true,
         });

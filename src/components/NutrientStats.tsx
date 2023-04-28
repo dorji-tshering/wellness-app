@@ -38,6 +38,10 @@ const NutrientStats = () => {
                     }
                 });
 
+                if(recipeIds.length === 0) {
+                    setLoadingData(false);
+                    return;
+                }
                 // get total nutrient intakes
                 recipeIds.forEach((recipeId) => {
                     const nutrients: Nutrients | undefined = Recipes.find((recipe) => recipe.id === recipeId)?.nutrients;
@@ -61,9 +65,7 @@ const NutrientStats = () => {
             }
         });
 
-        if(loadingData) {
-            setLoadingData(false);
-        }
+        
         return () => unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -84,8 +86,9 @@ const NutrientStats = () => {
                     <h1 className='mb-1 leading-5'>Your weekly nutrient intake based on your active meal plan.</h1>
                     <p className='mb-3 text-xs text-gray-600 font-medium'>Active plan: <span className='text-theme font-bold'>{activeMealplan}</span></p>
                     <div className='flex flex-wrap'>
-                        { Object.keys(nutrientStats).sort().map((nutrient) => (
-                            <div className='border border-black flex px-3 py-1 mb-5 mr-3 sm:mr-6 rounded-md'>
+                        { Object.keys(nutrientStats).sort().map((nutrient, idx) => (
+                            <div className='border border-black flex px-3 py-1 mb-5 mr-3 sm:mr-6 rounded-md'
+                                key={idx}>
                                 <p className='mr-2 text-sm'>{ nutrient.charAt(0).toUpperCase() + nutrient.slice(1) + ':' }</p> 
                                 <span className='font-bold text-gray-700'>{ nutrientStats[nutrient] }</span>
                             </div>
