@@ -16,9 +16,9 @@ type Props = {
 const MealPlans = ({ setShowMealPlans }: Props) => {
     const [mealPlans, setMealPlans] = useState<Array<DocumentData>>([]);
     const [loadingData, setLoadingData] = useState(true);
-    const [mealPlanWithID, deleteMealPlanWithID] = useState('');
+    const [mealplanIdToDelete, setMealplanIdToDelete] = useState('');
     const [deleting, setDeleting] = useState(false);
-    const [mealPlanDetails, viewMealPlanDetails] = useState<DocumentData | null>(null);
+    const [mealplanIdToView, setMealplanIdToView] = useState<string | null>(null);
     const activeMealplanRef = useRef<string | null>(null);
     const user = useAuthValue();
     const setNotification = useNotification()?.setNotification;
@@ -53,10 +53,10 @@ const MealPlans = ({ setShowMealPlans }: Props) => {
 
     const deleteMealPlan = async() => {
         setDeleting(true);
-        await deleteDoc(doc(database, 'mealplans', mealPlanWithID));
+        await deleteDoc(doc(database, 'mealplans', mealplanIdToDelete));
         setNotification && setNotification('Meal plan deleted successfully.');
         setDeleting(false);
-        deleteMealPlanWithID('');
+        setMealplanIdToDelete('');
     }
 
     if(loadingData) {
@@ -69,10 +69,10 @@ const MealPlans = ({ setShowMealPlans }: Props) => {
 
     return (
         <>
-            { mealPlanWithID && (
+            { mealplanIdToDelete && (
                 <div className="fixed top-0 right-0 bottom-0 left-0 flex justify-center items-center p-4
                 bg-black/30 z-30"
-                    onClick={() => deleteMealPlanWithID('')}>
+                    onClick={() => setMealplanIdToDelete('')}>
                     <div className="bg-white rounded-md shadow-md py-5 px-8 flex flex-col justify-center items-center"
                         onClick={(e) => e.stopPropagation()}>
                         <p className="font-medium">Confirm Delete?</p>
@@ -81,15 +81,15 @@ const MealPlans = ({ setShowMealPlans }: Props) => {
                             <button className="w-[70px] text-white mr-2 bg-red-600 rounded-[4px] py-2 text-sm font-medium" 
                                 onClick={deleteMealPlan}>{ deleting ? '. . .' : 'Delete' }</button>
                             <button className="w-[70px] text-white ml-2 bg-gray-500 rounded-[4px] py-2 text-sm font-medium"
-                                onClick={() => deleteMealPlanWithID('')}>Cancel</button>
+                                onClick={() => setMealplanIdToDelete('')}>Cancel</button>
                         </div>
                     </div>
                 </div>
             ) }
             
-            { mealPlanDetails ? 
+            { mealplanIdToView ? 
                 (
-                    <MealPlanDetails mealPlanDetails={mealPlanDetails} viewMealPlanDetails={viewMealPlanDetails}/>
+                    <MealPlanDetails mealPlanID={mealplanIdToView} setMealplanIdToView={setMealplanIdToView}/>
                 ) 
                 : (
                     <div>
@@ -109,7 +109,7 @@ const MealPlans = ({ setShowMealPlans }: Props) => {
                                             mealPlan.data().active && 'border-theme')}
                                             key={idx}>
                                             { mealPlan.data().active && currentActiveMealplan(mealPlan.id) }
-                                            <div onClick={() => viewMealPlanDetails(mealPlan)}
+                                            <div onClick={() => setMealplanIdToView(mealPlan.id)}
                                                 className={classNames('py-4 cursor-pointer relative hover:bg-gray-100 rounded-tr-md rounded-tl-md',
                                                 mealPlan.data().active && 'text-theme')}>
                                                 <p className="text-center font-medium">{ mealPlan.data().name }</p>
@@ -119,7 +119,7 @@ const MealPlans = ({ setShowMealPlans }: Props) => {
                                                     onClick={ mealPlan.data().active ? (e) => toggleActiveMealplan(e, true, mealPlan.id) : 
                                                     (e) => toggleActiveMealplan(e, false, mealPlan.id)}>
                                                     { mealPlan.data().active ? <MdCheckCircle size={20}/> : <MdRadioButtonUnchecked size={20}/> }
-                                                    <span className="absolute hidden whitespace-nowrap  group-hover:block w-[90px] left-1/2 -top-2 
+                                                    <span className="absolute hidden whitespace-nowrap  md:group-hover:block w-[90px] left-1/2 -top-2 
                                                         -translate-y-full px-2 py-1 -ml-[45px]
                                                         bg-gray-700 rounded-lg text-center text-white text-sm after:content-[''] 
                                                         after:absolute after:left-1/2 after:top-[100%] after:-translate-x-1/2 after:border-8 
@@ -131,7 +131,7 @@ const MealPlans = ({ setShowMealPlans }: Props) => {
                                             <div className="flex justify-stretch border-t border-t-mainBorder">
                                                 <button className="grow relative group flex justify-center py-2 text-gray-500 border-r
                                                     hover:bg-theme/10 hover:text-theme"
-                                                    onClick={() => viewMealPlanDetails(mealPlan)}>
+                                                    onClick={() => setMealplanIdToView(mealPlan.id)}>
                                                     <RiEyeLine size={18}/>
                                                     <span className="absolute hidden  group-hover:block w-fit mx-auto left-0 right-0 -top-2 -translate-y-full px-2 py-1
                                                         bg-gray-700 rounded-lg text-center text-white text-sm after:content-[''] 
@@ -140,7 +140,7 @@ const MealPlans = ({ setShowMealPlans }: Props) => {
                                                 </button>
                                                 <button className="grow relative group flex justify-center py-2 text-gray-500
                                                     hover:bg-red-100 hover:text-red-600 rounded-br-md"
-                                                    onClick={() => deleteMealPlanWithID(mealPlan.id)}>
+                                                    onClick={() => setMealplanIdToDelete(mealPlan.id)}>
                                                     <RiDeleteBin6Line/>
                                                     <span className="absolute hidden  group-hover:block w-fit mx-auto left-0 right-0 -top-2 -translate-y-full px-2 py-1
                                                         bg-gray-700 rounded-lg text-center text-white text-sm after:content-[''] 
