@@ -21,10 +21,9 @@ const Recipes = [
             tossing well to ensure all of the lettuce is coated with the dressing.`,
         ],
         nutrients: {
-            calories: 23,
             protein: 10,
-            carbohydrate: 20,
             fat: 40,
+            calories: 23,
         }
     },
     {
@@ -45,8 +44,7 @@ const Recipes = [
             `Serve immediately or store in the refrigerator for up to 4 days.`,
         ],
         nutrients: {
-            calories: 96,
-            protein: 130,
+            sugar: 130,
             carbohydrate: 30,
             fat: 44,
         }
@@ -106,10 +104,10 @@ const Recipes = [
             `Serve immediately or store in the refrigerator for up to 3 days.`,
         ],
         nutrients: {
+            fat: 20,
             calories: 432,
             protein: 167, 
             carbohydrate: 233,
-            fat: 20,
         }
     },
     {
@@ -128,7 +126,7 @@ const Recipes = [
             `Serve immediately or store in the refrigerator for up to 5 days.`,
         ],
         nutrients: {
-            calories: 0,
+            sugar: 0,
             protein: 0,
             carbohydrate: 20,
             fat: 0,
@@ -156,7 +154,7 @@ const Recipes = [
         ],
         nutrients: {
             calories: 100,
-            protein: 5,
+            energy: 5,
             carbohydrate: 9,
             fat: 2,
         }

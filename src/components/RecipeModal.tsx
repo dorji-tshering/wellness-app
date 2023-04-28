@@ -13,7 +13,7 @@ type Recipe = {
     ingredients: string[];
     directions: string[];
     nutrients: {
-        [index: string]: number
+        [index: string]: number | undefined
     };
 }
 
