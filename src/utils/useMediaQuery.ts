@@ -1,14 +1,21 @@
 import { useEffect, useState } from "react";
 
+type ReturnType = {
+    isMobile: boolean
+    checkingWidth: boolean
+}
+
 /**
  * Check if the device-width < 768px
  */
-export default function IsMobile() {
+export default function IsMobile(): ReturnType {
     const [isMobile, setIsMobile] = useState(false);
+    const [checkingWidth, setCheckingWidth] = useState(true);
   
     useEffect(() => {
         const mediaWatcher = window.matchMedia("(max-width: 768px)")
         setIsMobile(mediaWatcher.matches);
+        setCheckingWidth(false);
 
         function updateIsNarrowScreen(e: MediaQueryListEvent) {
             setIsMobile(e.matches);
@@ -21,5 +28,5 @@ export default function IsMobile() {
         }
     },[])
 
-    return isMobile
+    return { isMobile, checkingWidth }
 }

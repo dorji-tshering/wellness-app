@@ -58,7 +58,6 @@ const NutrientStats = () => {
                             }
                         }
 
-                        // 
                         setNutrientStats(stats);
                         setLoadingData(false);
                     });

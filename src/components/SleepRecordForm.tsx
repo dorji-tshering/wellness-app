@@ -101,7 +101,9 @@ const SleepRecordForm = ({ setShowSleepRecordForm }: Props) => {
                     </div>
                     <p className='mb-4'>
                         SLeep quality
-                        <span className='input-style block cursor-pointer' onClick={() => setShowSleepQualities(true)}>
+                        <span className={classNames('input-style block cursor-pointer',
+                            !sleepData.sleepQuality && 'text-gray-400')} 
+                            onClick={() => setShowSleepQualities(true)}>
                             { sleepData.sleepQuality ?? '--select quality--' }
                         </span>
                         { sleepQualityError && <span className='max-w-[200px] block mt-1 text-xs text-red-600'>{sleepQualityError}</span> }

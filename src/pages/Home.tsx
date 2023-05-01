@@ -136,8 +136,7 @@ const Home = () => {
 
             <div className="my-10">
                 <h1 className="font-bold text-gray-600 text-lg mb-5">My Fitness Goals</h1>
-                <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row xs:max-w-[70%] 
-                    sm:max-w-full xl:max-w-[80%] mx-auto justify-between ">
+                <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row mx-auto justify-between">
                     <div className="flex flex-col justify-center items-center py-6 rounded-md bg-[#67079F]/5
                         mb-10 sm:basis-[30%] md:basis-full lg:basis-[30%]">
                         <p className="mb-3"><GiTimeBomb size={30} color="#67079F"/></p>

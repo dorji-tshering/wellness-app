@@ -1,4 +1,4 @@
-import React, { SetStateAction, useEffect, useRef } from 'react';
+import React, { SetStateAction, useRef } from 'react';
 import classNames from 'classnames';
 import { NavLink } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
