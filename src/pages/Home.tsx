@@ -1,11 +1,28 @@
 import { updateProfile } from "firebase/auth";
 import { useAuthValue } from "../utils/authContext";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
+import SleepStats from "../components/SleepStats";
+import NutrientStats from "../components/NutrientStats";
+import { collection, onSnapshot, orderBy, query, where } from "firebase/firestore";
+import { database } from "../firebaseClient";
+import { GiAtomCore, GiPathDistance, GiTimeBomb } from "react-icons/gi";
+
+type WorkoutStats = {
+    timeSpent: number;
+    caloriesBurned: number;
+    distanceCovered: number;
+}
 
 const Home = () => {
     const [settingName, setSettingName] = useState(false);
     const [displayName, setDisplayName] = useState<string>('');
     const [modalOn, setModalOn] = useState(false);
+    const [loadingData, setLoadingData] = useState(true);
+    const [workoutStats, setWorkoutStats] = useState<WorkoutStats>({
+        timeSpent: 0,
+        caloriesBurned: 0,
+        distanceCovered: 0,
+    });
     const submitButtonRef = useRef<HTMLButtonElement>(null);
     const spaceRef = useRef(0);
     const user = useAuthValue();
@@ -16,6 +33,33 @@ const Home = () => {
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    useEffect(() => {
+        if(user) {
+            const q = query(collection(database, 'workout'), where('userId', '==', user.uid), orderBy('date', 'desc'));
+            const unsubscribe = onSnapshot(q, (querySnapshot) => {
+                let timeSpent = 0;
+                let caloriesBurned = 0;
+                let distanceCovered = 0;
+
+                querySnapshot.docs.forEach((record) => {
+                    timeSpent += record.data().timeSpent;
+                    caloriesBurned += record.data().caloriesBurned;
+                    distanceCovered += record.data().distanceCovered;
+                })
+
+                setWorkoutStats({
+                    timeSpent,
+                    caloriesBurned,
+                    distanceCovered,
+                });
+                setLoadingData(false);
+        });
+
+        return () => unsubscribe();
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[]);
 
     const updateDisplayName = async(event: FormEvent) => {
         event.preventDefault();
@@ -83,14 +127,48 @@ const Home = () => {
                         <button 
                             type="submit"
                             ref={submitButtonRef}
-                            className="bg-theme text-white rounded-full px-4 py-1">
-                                { settingName ? 'Just a minute..' : 'Set' }
+                            className="bg-theme text-white rounded-[4px] min-w-[80px] py-2">
+                                { settingName ? '. . .' : 'Set' }
                             </button>
                     </form>
                 </div>
             ) }
 
-            
+            <div className="my-10">
+                <h1 className="font-bold text-gray-600 text-lg mb-5">My Fitness Goals</h1>
+                <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row xs:max-w-[70%] 
+                    sm:max-w-full xl:max-w-[80%] mx-auto justify-between ">
+                    <div className="flex flex-col justify-center items-center py-6 rounded-md bg-[#67079F]/5
+                        mb-10 sm:basis-[30%] md:basis-full lg:basis-[30%]">
+                        <p className="mb-3"><GiTimeBomb size={30} color="#67079F"/></p>
+                        <p className="">Time Spent</p>
+                        <span className="mb-5 text-gray-500">(hr)</span>
+                        <p className="text-5xl font-bold text-[#67079F]">{workoutStats.timeSpent}</p>
+                    </div>
+                    <div className="flex flex-col justify-between items-center py-6 rounded-md bg-[#F2A90D]/5
+                        mb-10 sm:basis-[30%] md:basis-full lg:basis-[30%]">
+                        <p className="mb-3"><GiAtomCore size={30} color="#F2A90D"/></p>
+                        <p className="">Calories Burned</p>
+                        <span className="mb-5 text-gray-500">(cal)</span>
+                        <p className="text-5xl font-bold text-[#F2A90D]">{workoutStats.caloriesBurned}</p>
+                    </div>
+                    <div className="flex flex-col justify-between items-center py-6 rounded-md bg-[#1CC115]/5
+                    mb-10 sm:basis-[30%] md:basis-full lg:basis-[30%]">
+                        <p className="mb-3"><GiPathDistance size={30} color="#1CC115"/></p>
+                        <p className="">Distance Covered</p>
+                        <span className="mb-5 text-gray-500">(km)</span>
+                        <p className="text-5xl font-bold text-[#1CC115]">{workoutStats.distanceCovered}</p>
+                    </div>
+                </div>
+                <div className="mb-10">
+                    <h1 className="font-bold text-gray-600 text-lg mb-5">Nutrient Intakes</h1>
+                    <NutrientStats/>
+                </div>
+                <div>
+                    <h1 className="font-bold text-gray-600 text-lg mb-5">My Sleep Records</h1>
+                    <SleepStats/>
+                </div>
+            </div>
         </>
     )
 }

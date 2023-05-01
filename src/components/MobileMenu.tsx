@@ -18,10 +18,6 @@ const MobileMenu = ({showMenu, setShowMenu}: Props) => {
     const user = useAuthValue();
     const menuRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-
-    }, []);
-
     const logOut = async() => {
         try {
             await signOut(auth);

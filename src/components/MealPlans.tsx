@@ -24,13 +24,15 @@ const MealPlans = ({ setShowMealPlans }: Props) => {
     const setNotification = useNotification()?.setNotification;
 
     useEffect(() => {
-        const q = query(collection(database, 'mealplans'), where('userId', '==', user?.uid))
-        const unsubscribe = onSnapshot(q, (querySnapshot) => {
-            setMealPlans(querySnapshot.docs);
-            setLoadingData(false);
-        });
+        if(user) {
+            const q = query(collection(database, 'mealplans'), where('userId', '==', user?.uid))
+            const unsubscribe = onSnapshot(q, (querySnapshot) => {
+                setMealPlans(querySnapshot.docs);
+                setLoadingData(false);
+            });
 
-        return () => unsubscribe();
+            return () => unsubscribe();
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
 

@@ -2,7 +2,7 @@ import { DocumentData, collection, onSnapshot, query, where } from "firebase/fir
 import { useEffect, useState } from "react";
 import { database } from "../firebaseClient";
 import { useAuthValue } from "../utils/authContext";
-
+import Loader from "./Loader";
 
 const SleepRecord = () => {
     const [showRecordTable, setShowRecordTable] = useState(false);
@@ -11,29 +11,38 @@ const SleepRecord = () => {
     const user = useAuthValue();
 
     useEffect(() => {
-        const q = query(collection(database, 'sleeprecords'), where('userId', '==', user?.uid));
-        const unsubscribe = onSnapshot(q, (querySnapshot) => {
-            setSleepRecords(querySnapshot.docs);
-            setLoadingData(false);
-        })
+        if(user) {
+            const q = query(collection(database, 'sleeprecords'), where('userId', '==', user.uid));
+            const unsubscribe = onSnapshot(q, (querySnapshot) => {
+                setSleepRecords(querySnapshot.docs);
+                setLoadingData(false);
+            })
 
-        return () => unsubscribe();
-
+            return () => unsubscribe();
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
 
-    console.log(sleepRecords);
+    if(loadingData) {
+        return (
+            <div className="w-full relative h-[200px]">
+                <Loader/>
+            </div>
+        )
+    }
+
 
     return (
         <>
             { sleepRecords.length > 0 && (
                 <div>
-                    <button className="block text-gray-600 font-medium my-5 hover:text-theme hover:underline"
+                    <button className="block text-gray-600 font-medium mb-6 hover:text-theme hover:underline"
                         onClick={() => setShowRecordTable(!showRecordTable)}>{ showRecordTable ? 'Hide record' : 'View record' }
                     </button>
                     { showRecordTable && (
                         <>
-                            <div className="mx-auto xs:max-w-[70%] sm:max-w-full xl:max-w-[80%] flex flex-col border border-mainBorder rounded-md">
+                            <div className="mx-auto xs:max-w-[70%] sm:max-w-full xl:max-w-[80%] flex flex-col border border-mainBorder rounded-md
+                                mb-8">
                                 <div className="hidden sm:grid sm:grid-cols-3 border-b border-b-mainBorder bg-gray-100 
                                     rounded-tr-md rounded-tl-md">
                                     <p className="border-r border-r-mainBorder px-3 py-2 font-medium

@@ -21,7 +21,6 @@ type WorkoutStats = {
 }
 
 const WorkoutStatAndTable= ({ setEditMode, setShowWorkoutForm, setRecordId, setEditableRecord }: Props) => {
-    const user = useAuthValue();
     const [records, setRecords] = useState<Array<DocumentData>>([]);
     const [loadingData, setLoadingData] = useState(true); 
     const [confirmDelete, setConfirmDelete] = useState(false);
@@ -32,31 +31,34 @@ const WorkoutStatAndTable= ({ setEditMode, setShowWorkoutForm, setRecordId, setE
         caloriesBurned: 0,
         distanceCovered: 0,
     });
+    const user = useAuthValue();
     const setNotification = useNotification()?.setNotification;
 
     useEffect(() => {
-        const q = query(collection(database, 'workout'), where('userId', '==', user?.uid), orderBy('date', 'desc'));
-        const unsubscribe = onSnapshot(q, (querySnapshot) => {
-            setRecords(querySnapshot.docs);
-            let timeSpent = 0;
-            let caloriesBurned = 0;
-            let distanceCovered = 0;
+        if(user) {
+            const q = query(collection(database, 'workout'), where('userId', '==', user.uid), orderBy('date', 'desc'));
+            const unsubscribe = onSnapshot(q, (querySnapshot) => {
+                setRecords(querySnapshot.docs);
+                let timeSpent = 0;
+                let caloriesBurned = 0;
+                let distanceCovered = 0;
 
-            querySnapshot.docs.forEach((record) => {
-                timeSpent += record.data().timeSpent;
-                caloriesBurned += record.data().caloriesBurned;
-                distanceCovered += record.data().distanceCovered;
-            })
+                querySnapshot.docs.forEach((record) => {
+                    timeSpent += record.data().timeSpent;
+                    caloriesBurned += record.data().caloriesBurned;
+                    distanceCovered += record.data().distanceCovered;
+                })
 
-            setWorkoutStats({
-                timeSpent,
-                caloriesBurned,
-                distanceCovered,
-            });
-            setLoadingData(false);
+                setWorkoutStats({
+                    timeSpent,
+                    caloriesBurned,
+                    distanceCovered,
+                });
+                setLoadingData(false);
         });
 
         return () => unsubscribe();
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
 

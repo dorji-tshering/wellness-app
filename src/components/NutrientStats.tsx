@@ -4,6 +4,7 @@ import { database } from '../firebaseClient';
 import Recipes from '../utils/recipes';
 import classNames from 'classnames';
 import Loader from './Loader';
+import { useAuthValue } from '../utils/authContext';
 
 type Nutrients = {
     [index: string] : number | undefined
@@ -13,60 +14,62 @@ const NutrientStats = () => {
     const [nutrientStats, setNutrientStats] = useState<Nutrients | null>(null);
     const [activeMealplan, setActiveMealplan] = useState('');
     const [loadingData, setLoadingData] = useState(true);
+    const user = useAuthValue();
     const mealDays = ['dayOne', 'dayTwo', 'dayThree', 'dayFour', 'dayFive', 'daySix', 'daySeven'] as const;
 
     useEffect(() => {
-        const q = query(collection(database, 'mealplans'), where('active', '==', true));
-        const unsubscribe = onSnapshot(q, (querySnapshot) => {
-            if(querySnapshot.docs[0]?.exists()) {
-                const stats: Nutrients = {};
-                const mealPlan = querySnapshot.docs[0];
-                const recipeIds: string[] = [];
+        if(user) {
+            const q = query(collection(database, 'mealplans'), where('active', '==', true), where('userId', '==', user.uid));
+            const unsubscribe = onSnapshot(q, (querySnapshot) => {
+                if(querySnapshot.docs[0]?.exists()) {
+                    const stats: Nutrients = {};
+                    const mealPlan = querySnapshot.docs[0];
+                    const recipeIds: string[] = [];
 
-                setActiveMealplan(querySnapshot.docs[0].data().name);
+                    setActiveMealplan(querySnapshot.docs[0].data().name);
 
-                // push recipeIds of the active meal plan to an array
-                mealDays.forEach((mealday) => {
-                    if(mealPlan.data()[mealday].breakfast) {
-                        recipeIds.push(mealPlan.data()[mealday].breakfast);
-                    }
-                    if(mealPlan.data()[mealday].lunch) {
-                        recipeIds.push(mealPlan.data()[mealday].lunch);
-                    }
-                    if(mealPlan.data()[mealday].dinner) {
-                        recipeIds.push(mealPlan.data()[mealday].dinner);
-                    }
-                });
-
-                if(recipeIds.length === 0) {
-                    setLoadingData(false);
-                    return;
-                }
-                // get total nutrient intakes
-                recipeIds.forEach((recipeId) => {
-                    const nutrients: Nutrients | undefined = Recipes.find((recipe) => recipe.id === recipeId)?.nutrients;
-                    for(const nutrient in nutrients) {
-                        const prevValue = stats[nutrient];
-                        const currentValue = nutrients[nutrient];
-                        if(prevValue && currentValue) {
-                            stats[nutrient] = prevValue + currentValue;
-                        }else {
-                            stats[nutrient] = currentValue;
+                    // push recipeIds of the active meal plan to an array
+                    mealDays.forEach((mealday) => {
+                        if(mealPlan.data()[mealday].breakfast) {
+                            recipeIds.push(mealPlan.data()[mealday].breakfast);
                         }
+                        if(mealPlan.data()[mealday].lunch) {
+                            recipeIds.push(mealPlan.data()[mealday].lunch);
+                        }
+                        if(mealPlan.data()[mealday].dinner) {
+                            recipeIds.push(mealPlan.data()[mealday].dinner);
+                        }
+                    });
+
+                    if(recipeIds.length === 0) {
+                        setLoadingData(false);
+                        return;
                     }
+                    // get total nutrient intakes
+                    recipeIds.forEach((recipeId) => {
+                        const nutrients: Nutrients | undefined = Recipes.find((recipe) => recipe.id === recipeId)?.nutrients;
+                        for(const nutrient in nutrients) {
+                            const prevValue = stats[nutrient];
+                            const currentValue = nutrients[nutrient];
+                            if(prevValue && currentValue) {
+                                stats[nutrient] = prevValue + currentValue;
+                            }else {
+                                stats[nutrient] = currentValue;
+                            }
+                        }
 
-                    // 
-                    setNutrientStats(stats);
+                        // 
+                        setNutrientStats(stats);
+                        setLoadingData(false);
+                    });
+                }else {
+                    setNutrientStats(null);
                     setLoadingData(false);
-                });
-            }else {
-                setNutrientStats(null);
-                setLoadingData(false);
-            }
-        });
+                }
+            });
 
-        
-        return () => unsubscribe();
+            return () => unsubscribe();
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

@@ -5,6 +5,7 @@ import SleepRecordForm from "../components/SleepRecordForm";
 import { useState } from 'react';
 import SleepStats from "../components/SleepStats";
 import SleepRecord from "../components/SleepRecord";
+import ExcerciseGrid from "../components/ExcerciseGrid";
 
 const Wellness = () => {
     const [showSleepRecordForm, setShowSleepRecordForm] = useState(false);
@@ -45,6 +46,7 @@ const Wellness = () => {
             <div>
                 <SleepStats/>
                 <SleepRecord/>
+                <ExcerciseGrid/>
             </div>
         </div>      
     )
