@@ -42,11 +42,11 @@ const Nutrition = () => {
             { isMobile && (
                 <MobilePageHeader> 
                     <div className="flex justify-between">
-                        <h1>Manage Nutrition</h1>
+                        <h1 className="text-lg mr-2">Manage Nutrition</h1>
                         <div className="flex flex-col xs:flex-row-reverse">
                             <button 
                                 onClick={() => showMealPlans ? setAddMealPlan(true) : setShowMealPlans(true)}
-                                className={classNames('text-[13px] rounded-md px-2 py-1 font-medium shadow-sm h-fit',
+                                className={classNames('text-[13px] rounded-md px-2 py-1 font-medium shadow-sm h-fit whitespace-nowrap',
                                 showMealPlans ? 'bg-theme hover:bg-themeHover text-white shadow-black/50' : 
                                 'bg-gray-100 hover:bg-gray-200 text-theme shadow-black/30 transition-all duration-300')}>
                                 { showMealPlans ? 'Add meal plan' : 'Meal plans' }

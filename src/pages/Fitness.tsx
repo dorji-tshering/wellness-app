@@ -31,7 +31,10 @@ const Fitness = () => {
                         <h1 className="text-xl">My Fitness</h1>
                         <button 
                             onClick={() => setShowWorkoutForm(true)}
-                            className="text-sm bg-theme hover:bg-themeHover text-white rounded-md px-3 py-2 font-medium">Add workout</button>
+                            className="text-sm bg-theme hover:bg-themeHover text-white rounded-md px-3 py-2 font-medium
+                            shadow-sm shadow-black/50">
+                            Add workout
+                        </button>
                     </div>
                 </DesktopPageHeader>
             ) }
@@ -42,7 +45,9 @@ const Fitness = () => {
                         <h1>My Fitness</h1>
                         <button 
                             onClick={() => setShowWorkoutForm(true)}
-                            className="text-sm bg-theme text-white font-medium rounded-md px-3 py-2">Add workout</button>
+                            className="text-sm bg-theme text-white font-medium rounded-md px-3 py-2 shadow-sm shadow-black/50">
+                            Add workout
+                        </button>
                     </div>
                 </MobilePageHeader>
             ) }

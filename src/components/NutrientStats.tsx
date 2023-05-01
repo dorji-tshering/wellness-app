@@ -79,7 +79,7 @@ const NutrientStats = () => {
     }
 
     return (
-        <div className={classNames('mt-4 bg-green-500/10 px-5 rounded-xl', 
+        <div className={classNames('bg-green-500/10 px-5 rounded-xl', 
             nutrientStats ? 'pt-5' : 'py-5')}>
             { nutrientStats ? (
                 <>
