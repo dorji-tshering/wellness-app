@@ -23,7 +23,7 @@ const Login = () => {
                     {
                         onSignin ? 
                             <Signin setOnSignin={setOnSignin}/> 
-                            : 
+                            :  
                             <Register setOnSignin={setOnSignin}/>
                     }
                 </div>

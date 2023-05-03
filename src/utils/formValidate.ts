@@ -1,99 +1,43 @@
-type Error = React.Dispatch<React.SetStateAction<{
-    email: string;
-    password: string;
-}>>
-
-export const emailValidate = (email: string, setError: Error, registering = false) => {
-    let isValid = true;
+export const emailValidate = (email: string, registering = false) => {
     const allowedEmails = ['dorji@gmail.com', 'tshering@gmail.com'];
 
-    if(email === '') {
-        setError((error: {email: string, password: string}) => { 
-            return {
-                email: 'Email is required',
-                password: error.password
-            }
-        });
-        isValid = false;
-    }else if(!email.includes('@')) { 
-        setError((error: {email: string, password: string}) => { 
-            return {
-                email: 'Email must contain @ symbol',
-                password: error.password
-            }
-        });
-        isValid = false;
-    } else if(email.includes('@')) {
-        let input = document.createElement('input');
-
-        input.type = 'email';
-        input.required = true;
-        input.value = email;
-
-        let validity = typeof input.checkValidity === 'function' ? input.checkValidity() : /\S+@\S+\.\S+/.test(email);
-
-        if(!validity) {
-            setError((error: {email: string, password: string}) => { 
-                return {
-                    email: 'Email is invalid',
-                    password: error.password
-                }
-            });
-            isValid = false;
-        } else {
-            if(registering && !allowedEmails.includes(email)) {
-                setError((error: {email: string, password: string}) => { 
-                    return {
-                        email: 'Email is not allowed.',
-                        password: error.password
-                    }
-                });
-                isValid = false;
+    if(email) {
+        if(email.trim() === '') {
+            return 'Email is required';
+        }else if(!email.includes('@')) { 
+            return 'Email must contain @ symbol';
+        } else if(email.includes('@')) {
+            let input = document.createElement('input');
+            input.type = 'email';
+            input.required = true;
+            input.value = email;
+            let validity = typeof input.checkValidity === 'function' ? input.checkValidity() : /\S+@\S+\.\S+/.test(email);
+    
+            if(!validity) {
+                return 'Email is invalid';
             } else {
-                setError((error: {email: string, password: string}) => { 
-                    return {
-                        email: '',
-                        password: error.password
-                    }
-                });
+                if(registering && !allowedEmails.includes(email)) {
+                    return 'Email is not allowed';
+                } else {
+                    return undefined;
+                }
             }
-        }
-    } 
-
-    return isValid;
+        } 
+    }
 }
 
-/**
+/** 
  * 
  * 
  */
-export const passwordValidate = (password: string, setError: Error) => {
-    let isValid = true;
-
-    if(password === '') {
-        setError((error: {email: string, password: string}) => { 
-            return {
-                email: error.email,
-                password: 'Password is required.'
-            }
-        });
-        isValid = false;
-    } else if(password.length < 6) {
-        setError((error: {email: string, password: string}) => { 
-            return {
-                email: error.email,
-                password: 'Password must contain at least 6 characters.'
-            }
-        });
-        isValid = false;
-    }else {
-        setError((error: {email: string, password: string}) => { 
-            return {
-                email: error.email,
-                password: ''
-            }
-        });
+export const passwordValidate = (password: string) => {
+    if(password) {
+        if(password.trim() === '') {
+            return "Password can't have space";
+        } else if(password.trim().length < 6) {
+            return 'Password must contain at least 6 characters.';
+        }else {
+            return undefined;
+        }
     }
-
-    return isValid;
 }

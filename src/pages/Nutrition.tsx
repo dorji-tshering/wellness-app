@@ -8,7 +8,7 @@ import MealPlanForm from "../components/MealPlanForm";
 import classNames from "classnames";
 
 const Nutrition = () => {
-    const isMobile = IsMobile();
+    const {isMobile} = IsMobile();
     const [showMealPlans, setShowMealPlans] = useState(false);
     const [addMealPlan, setAddMealPlan] = useState(false);
 

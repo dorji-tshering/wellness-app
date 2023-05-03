@@ -9,7 +9,7 @@ import ExcerciseGrid from "../components/ExcerciseGrid";
 
 const Wellness = () => {
     const [showSleepRecordForm, setShowSleepRecordForm] = useState(false);
-    const isMobile = IsMobile();
+    const {isMobile} = IsMobile();
 
     return (
         <div>

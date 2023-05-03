@@ -1,4 +1,5 @@
-import { FormEvent, useRef, useState } from 'react';
+import { Form, Field } from 'react-final-form';
+import { FORM_ERROR } from 'final-form';
 import { emailValidate, passwordValidate } from '../utils/formValidate';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebaseClient';
@@ -9,83 +10,85 @@ type Props = {
 }
 
 const Signin = ({setOnSignin}: Props) => {
-    const [loginError, setLoginError] = useState<string | null>(null);
-    const [signingIn, setSigningIn] = useState(false);
-    const [inputError, setInputError] = useState({
-        email: '',
-        password: '',
-    });
-    const [formData, setFormData] = useState({
-        email: '',
-        password: '',
-    });
-    const submitButtonRef = useRef<HTMLButtonElement>(null)
     const navigate = useNavigate();
 
-    const handleSignin = async(event: FormEvent) => {
-        event.preventDefault();
-        const validEmail = emailValidate(formData.email, setInputError);
-        const validPassword = passwordValidate(formData.password, setInputError);
-
-        if(validEmail && validPassword && submitButtonRef.current) {
-            setSigningIn(true);
-            submitButtonRef.current.disabled = true;
-            try{
-                await signInWithEmailAndPassword(auth, formData.email, formData.password);
-                setSigningIn(false);
-                navigate('/');
-            }catch(err: any) {
-                setLoginError(err.code);
-                setSigningIn(false);
-                submitButtonRef.current.disabled = false;
-                return;
-            }
-        }else return;
+    const handleSignin = async(values: any) => {
+        try{
+            await signInWithEmailAndPassword(auth, values.email, values.password);
+            navigate('/');
+        }catch(err: any) {
+            return { [FORM_ERROR]: err.code };
+        }
     }
 
     return (
-        <form onSubmit={handleSignin}
-            className='flex items-center flex-col'
-            noValidate
-        >
-            <h2 className='mb-4 font-bold'>Sign up</h2>
-            {
-                loginError && (
-                    <p className='text-sm text-red-700 mb-4 bg-red-100 w-full rounded-[4px]
-                    py-1 text-center'>{loginError}</p>
-                )
-            }
-            <span className='mb-4 w-full md:w-[80%] md:mx-auto'>
-                <input 
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
-                    placeholder='Your email'
-                    className='border border-mainBorder outline-none rounded-[4px] px-3 py-2 w-full'
-                />
-                { inputError.email && <p className='text-sm text-red-700'>{inputError.email}</p> }
-            </span>
+        <Form 
+            onSubmit={handleSignin}
+            validate={values => {
+                const errors: any = {};
+                if(!values.email) {
+                    errors.email = 'Email is required';
+                }
+                if(!values.password || !values.password.trim()) {
+                    errors.password = "You can't have space as passwords";
+                }
+                return errors;
+            }}
+            >
+            {({ handleSubmit, submitError, submitting }) => (
+                <form onSubmit={handleSubmit}
+                    className='flex items-center flex-col'
+                    >
+                    <h2 className='mb-4 text-lg font-bold'>SIGN</h2>
+                    {
+                        submitError && (
+                            <p className='text-xs text-red-700 mb-4 bg-red-100 w-full rounded-[4px]
+                            py-1 text-center'>{submitError}</p>
+                        )
+                    }
+                    
+                    <Field name='email' type='email' placeholder='Your email' validate={value => emailValidate(value)}>
+                        {({input, meta, placeholder}) => (
+                            <span className='mb-4 w-full md:w-[80%] md:mx-auto'>
+                                <input 
+                                    {...input}
+                                    placeholder={placeholder}
+                                    className='border border-mainBorder outline-none rounded-[4px] px-3 py-2 w-full'
+                                />
+                                { (meta.error || meta.submitError) && meta.touched && (
+                                    <p className='text-xs text-red-700'>{meta.error || meta.submitError}</p>
+                                ) }
+                            </span>
+                        )}
+                    </Field>
 
-            <span className='mb-5 w-full md:w-[80%] md:mx-auto'>
-                <input 
-                    type="password" 
-                    value={formData.password}
-                    onChange={(e) => setFormData({...formData, password: e.target.value})}
-                    placeholder='Your password'
-                    className='border border-mainBorder outline-none rounded-[4px] px-3 py-2 w-full'
-                />
-                { inputError.password && <p className='text-sm text-red-700'>{inputError.password}</p> }
-            </span>
-            <button 
-                ref={submitButtonRef}
-                type='submit'
-                className='bg-theme text-white text-sm rounded-full px-4 py-2 w-full md:w-[80%] mb-3 hover:bg-themeHover'
-                >{ signingIn ? 'Signing in...' : 'Signin' }</button>
-            <button 
-                type='button'
-                onClick={() => setOnSignin(false)} 
-                className='text-theme hover:underline'>Register</button>
-        </form>
+                    <Field name='password' type='password' placeholder='Your password' validate={value => passwordValidate(value)}>
+                        {({input, meta, placeholder}) => (
+                            <span className='mb-4 w-full md:w-[80%] md:mx-auto'>
+                                <input 
+                                    {...input}
+                                    placeholder={placeholder}
+                                    className='border border-mainBorder outline-none rounded-[4px] px-3 py-2 w-full'
+                                />
+                                { (meta.error || meta.submitError) && meta.touched && (
+                                    <p className='text-xs text-red-700'>{meta.error || meta.submitError}</p>
+                                ) }
+                            </span>
+                        )}
+                    </Field>
+                            
+                    <button 
+                        type='submit'
+                        disabled={submitting}
+                        className='bg-theme text-white rounded-full px-4 py-2 w-full md:w-[80%] mb-3 hover:bg-themeHover'
+                        >{ submitting ? '. . .' : 'Signin' }</button>
+                    <button 
+                        type='button'
+                        onClick={() => setOnSignin(false)} 
+                        className='text-theme hover:underline'>Register</button>
+                </form>
+            )}
+        </Form>
     )
 }
 
