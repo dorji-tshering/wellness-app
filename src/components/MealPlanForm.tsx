@@ -97,17 +97,17 @@ const MealPlanForm = ({ setAddMealPlan }: Props) => {
                         <form onSubmit={handleSubmit}
                             className="bg-white flex flex-col items-center rounded-md shadow-md px-8 py-4">
                             { submitError && <p>{ submitError }</p> }
-                            <h2 className="font-bold">Create Meal Plan</h2>
+                            <h2 className="font-bold text-lg">Create Meal Plan</h2>
                             <p className="text-sm text-gray-500 mb-3 text-center">Give a descriptive name for your meal plan</p>
                             <Field name="mealplanName" type="text">
                                 {({ input, meta }) => (
                                     <div className="flex flex-col mb-4">
                                         <input 
                                         {...input}
-                                        placeholder="Meal plan name"
+                                        placeholder="Mealplan name"
                                         className="input-style mb-1"
                                         />
-                                        { (meta.error) && meta.touched && <span className="text-xs text-red-700">{ meta.error }</span> }
+                                        { (meta.error) && meta.touched && <span className="text-xs text-center text-red-700">{ meta.error }</span> }
                                     </div>
                                 )}
                             </Field>

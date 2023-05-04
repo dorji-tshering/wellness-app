@@ -100,8 +100,8 @@ const WorkoutForm = ({ setShowForm, setEditMode, setRecordId, editing, recordId,
                     {({ handleSubmit, submitError, submitting, pristine }) => (
                         <form onSubmit={handleSubmit}
                             className='bg-white shadow-md rounded-md px-6 py-8 sm:p-8 flex flex-col'>
-                            <h2 className='text-center font-bold mb-5'>{ editing ? 'Update workout record' : 'Add workout record' }</h2>
-                            { submitError && <p className='text-xs text-red-600 mb-3 text-center'>{ submitError }</p> }
+                            <h2 className='text-center text-lg font-bold mb-5'>{ editing ? 'Update workout record' : 'Add workout record' }</h2>
+                            { submitError && <p className='text-xs text-red-600 mb-3 text-center -mt-3'>{ submitError }</p> }
                             <div className='sm:flex sm:justify-between'>
                                 <Field name='date' type='date'>
                                     {({ input }) => (
