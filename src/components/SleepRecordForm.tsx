@@ -54,11 +54,12 @@ const SleepRecordForm = ({ setShowSleepRecordForm }: Props) => {
             onClick={() => setShowSleepRecordForm(false)}>
             <div className="max-h-full overflow-auto rounded-md" onClick={(e) => e.stopPropagation()}>
                 <Form onSubmit={addSleepRecord}>
-                    {({ handleSubmit, submitting, values }) => (
+                    {({ handleSubmit, submitting, values, submitError }) => (
                         <>
                             <form onSubmit={handleSubmit}
                                 className='bg-white rounded-md shadow-md px-3 xs:px-8 py-5'>
                                 <h2 className='text-center text-lg font-bold mb-4'>Add sleep record</h2>
+                                { submitError && <p className='text-xs text-red-600 mb-3 text-center -mt-3'>{ submitError }</p> }
                                 <Field name='date' type='date'>
                                     {({ input }) => (
                                         <label className='mb-5 block'>

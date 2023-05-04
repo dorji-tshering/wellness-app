@@ -45,13 +45,7 @@ const Register = ({setOnSignin}: Props) => {
                         className='flex items-center flex-col'
                         >
                         <h2 className='mb-4 text-lg font-bold'>REGISTER</h2>
-                        {
-                            submitError && (
-                                <p className='text-xs text-red-700 mb-4 bg-red-100 w-full rounded-[4px]
-                                py-1 text-center'>{submitError}</p>
-                            )
-                        }
-                        
+                        { submitError && <p className='text-xs text-red-600 mb-3 text-center -mt-3'>{ submitError }</p> }
                         <Field name='email' type='email' placeholder='Your email' validate={value => emailValidate(value, true)}>
                             {({input, meta, placeholder}) => (
                                 <span className='mb-4 w-full md:w-[80%] md:mx-auto'>
