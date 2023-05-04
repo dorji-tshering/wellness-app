@@ -45,7 +45,7 @@ const Fitness = () => {
                         <h1 className="lg">My Fitness</h1>
                         <button 
                             onClick={() => setShowWorkoutForm(true)}
-                            className="text-sm bg-theme text-white font-medium rounded-md px-3 py-2 shadow-sm shadow-black/50">
+                            className="text-sm bg-theme text-white font-medium rounded-md px-2 py-1 shadow-sm shadow-black/50">
                             Add workout
                         </button>
                     </div>

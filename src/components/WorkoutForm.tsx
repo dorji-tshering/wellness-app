@@ -1,22 +1,18 @@
-import { FormEvent, useState, SetStateAction, ChangeEvent } from 'react';
+import { SetStateAction } from 'react';
 import isNumeric from '../utils/isNumeric';
 import { DocumentData, addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { database } from '../firebaseClient';
 import { useAuthValue } from '../utils/authContext';
 import { useNotification } from '../utils/notificationContext';
-import { isEqualObject } from '../utils/compareObjects';
+import { Form, Field } from 'react-final-form';
+import { FORM_ERROR } from 'final-form';
+import classNames from 'classnames';
 
 interface FormData {
     date: string;
     timeSpent: string;
     caloriesBurned?: string;
     distanceCovered?: string;
-}
-
-interface InputErrors {
-    timeInputError: string;
-    caloriesInputError: string;
-    distanceInputError: string;
 }
 
 type Props = {
@@ -31,154 +27,52 @@ type Props = {
 
 // component
 const WorkoutForm = ({ setShowForm, setEditMode, setRecordId, editing, recordId, editableRecord, setEditableRecord }: Props) => {
-    const [formError, setFormError] = useState('');
-    const [submitting, setSubmitting] = useState(false);
-    const [inputError, setInputError] = useState<InputErrors>({
-        timeInputError: '',
-        caloriesInputError: '',
-        distanceInputError: '',
-    }); 
-    const [formData, setFormData] = useState<FormData>(
-        editing && editableRecord ? {
-            date: editableRecord.data().date,
-            timeSpent: editableRecord.data().timeSpent.toString(),
-            caloriesBurned: editableRecord.data().caloriesBurned.toString(),
-            distanceCovered: editableRecord.data().distanceCovered.toString(),
-        } : {
-            date: '',
-            timeSpent: '',
-            caloriesBurned: '',
-            distanceCovered: '',
-        }
-    ); 
-
     const user = useAuthValue();
     const setNotification = useNotification()?.setNotification;
 
-    const addWorkoutRecord = async(event: FormEvent) => {
-        event.preventDefault();
-        const { timeInputError, caloriesInputError, distanceInputError } = inputError;
-
-        if(!formData.caloriesBurned && !formData.distanceCovered) {
-            setFormError('Either calories or distance field is required');
-            return;
+    const addWorkoutRecord = async(values: FormData) => {
+        const { caloriesBurned, distanceCovered, date, timeSpent } = values;
+        if((!caloriesBurned || !caloriesBurned.trim()) && (!distanceCovered || !distanceCovered.trim())) {
+            return { [FORM_ERROR]: 'Either distance or calories field is required' }
         }
 
-        if(!timeInputError && !caloriesInputError && !distanceInputError) {
-            setSubmitting(true);
+        try {
             await addDoc(collection(database, 'workout'), {
-                date: formData.date,
-                timeSpent: isNaN(parseFloat(formData.timeSpent)) ? 0 : parseFloat(formData.timeSpent),
-                caloriesBurned: isNaN(parseFloat(formData.caloriesBurned as string)) ? 0 : parseFloat(formData.caloriesBurned as string),
-                distanceCovered: isNaN(parseFloat(formData.distanceCovered as string)) ? 0 : parseFloat(formData.distanceCovered as string),
+                date: date,
+                timeSpent: parseFloat(timeSpent),
+                caloriesBurned: isNaN(parseFloat(caloriesBurned as string)) ? 0 : parseFloat(caloriesBurned as string),
+                distanceCovered: isNaN(parseFloat(distanceCovered as string)) ? 0 : parseFloat(distanceCovered as string),
                 userId: user?.uid
             });
-            setSubmitting(false);
             setNotification && setNotification('Record added successfully.');
             setShowForm(false);
-        } else {
-            return;
-        }
-
-        
-
-        //...
-    }
-
-    const editRecord = async(event: FormEvent) => {
-        event.preventDefault();
-
-        const { timeInputError, caloriesInputError, distanceInputError } = inputError;
-
-        if(!formData.caloriesBurned && !formData.distanceCovered) {
-            setFormError('Either calories or distance field is required');
-            return;
-        }
-
-        if(!timeInputError && !caloriesInputError && !distanceInputError && recordId) {
-            if(isEqualObject(formData, {
-                date: editableRecord?.data().date,
-                timeSpent: editableRecord?.data().timeSpent.toString(),
-                caloriesBurned: editableRecord?.data().caloriesBurned.toString(),
-                distanceCovered: editableRecord?.data().distanceCovered.toString(),
-            }) && setNotification) {
-                setNotification('No field value has been changed, please change any of the value to update.');
-                return;
-            }
-
-            setSubmitting(true);
-            await updateDoc(doc(database, 'workout', recordId), {
-                date: formData.date,
-                timeSpent: isNaN(parseFloat(formData.timeSpent)) ? 0 : parseFloat(formData.timeSpent),
-                caloriesBurned: isNaN(parseFloat(formData.caloriesBurned as string)) ? 0 : parseFloat(formData.caloriesBurned as string),
-                distanceCovered: isNaN(parseFloat(formData.distanceCovered as string)) ? 0 : parseFloat(formData.distanceCovered as string),
-            });
-            setSubmitting(false);
-            setNotification && setNotification('Record updated successfully.');
-            setRecordId('');
-            setEditMode(false);
-            setEditableRecord(null);
-            setShowForm(false);
-        } else {
-            return;
+        }catch(err: any) {
+            return { [FORM_ERROR]: err.code };
         }
     }
 
-    const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = event.target;
-        setFormData({
-            ...formData,
-            [name]: value.trim(), // no spacing allowed for form values
-        })
-
-        if(value && !isNumeric(value) && (name !== 'date')) {
-            switch (name) {
-                case 'timeSpent': {
-                    setInputError({
-                        ...inputError,
-                        timeInputError: 'Time spent must either be in decimal or number',
-                    });
-                    break;
-                }
-                case 'caloriesBurned': {
-                    setInputError({
-                        ...inputError,
-                        caloriesInputError: 'Calories must either be in decimal or number',
-                    });
-                    break;
-                }
-                case 'distanceCovered': {
-                    setInputError({
-                        ...inputError,
-                        distanceInputError: 'Distance must either be in decimal or number',
-                    });
-                    break;
-                }
-                default: 
-                    break;
-            }
-        }else {
-            if(name === 'timeSpent') {
-                setInputError({
-                    ...inputError,
-                    timeInputError: ''
-                });
-            }else if(name === 'caloriesBurned') {
-                setInputError({
-                    ...inputError,
-                    caloriesInputError: ''
-                });
-            }else if(name === 'distanceCovered') {
-                setInputError({
-                    ...inputError,
-                    distanceInputError: ''
-                });
-            }
+    const editRecord = async(values: FormData) => {
+        const { caloriesBurned, distanceCovered, date, timeSpent } = values;
+        if((!caloriesBurned || !caloriesBurned.trim()) && (!distanceCovered || !distanceCovered.trim())) {
+            return { [FORM_ERROR]: 'Either distance or calories field is required' }
         }
 
-        // remove form error when either of the field is entered
-        if(formData.caloriesBurned || formData.distanceCovered) {
-            setFormError('');
+        try {
+            if(recordId) {
+                await updateDoc(doc(database, 'workout', recordId), {
+                    date: date,
+                    timeSpent: parseFloat(timeSpent),
+                    caloriesBurned: isNaN(parseFloat(caloriesBurned as string)) ? 0 : parseFloat(caloriesBurned as string),
+                    distanceCovered: isNaN(parseFloat(distanceCovered as string)) ? 0 : parseFloat(distanceCovered as string),
+                });
+                setNotification && setNotification('Record updated successfully.');
+                setRecordId('');
+                setEditMode(false);
+                setEditableRecord(null);
+                setShowForm(false);
+            }
+        }catch(err: any) {
+            return { [FORM_ERROR]: err.code };
         }
     }
 
@@ -191,82 +85,102 @@ const WorkoutForm = ({ setShowForm, setEditMode, setRecordId, editing, recordId,
 
     return (
         <div className='fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center
-             p-5 bg-black/30 z-20'
-             onClick={closeForm}>
-            <form 
-                onSubmit={editing ? editRecord : addWorkoutRecord}
-                onClick={(e) => e.stopPropagation()}
-                className='bg-white max-h-full overflow-y-auto shadow-md rounded-md px-4 py-8 sm:p-8 flex flex-col'>
-                <h2 className='text-center font-bold mb-5'>{ editing ? 'Update workout record' : 'Add workout record' }</h2>
-                { formError && <p className='text-xs text-red-600 mb-3 text-center'>{formError}</p> }
-                <div className='sm:flex sm:justify-between'>
-                    <label className='sm:mr-5 mb-5 block'>
-                        Date
-                        <input 
-                            type="date"
-                            required
-                            value={formData.date}
-                            name='date'
-                            max={new Date().toISOString().split("T")[0]}
-                            onChange={handleInputChange}
-                            className='block outline-none input-style'  />
-                    </label>
-                    <div className='mb-5'>
-                        <label>
-                            Time Spent <span className='text-gray-400 text-sm'>(in hours)</span>
-                            <input 
-                                type="text"
-                                inputMode='numeric'
-                                name='timeSpent'
-                                required
-                                value={formData.timeSpent}
-                                onChange={handleInputChange}
-                                className='input-style block' />
-                        </label>
-                        { inputError.timeInputError && <p className='text-xs max-w-[200px] text-red-600 mt-1'>{inputError.timeInputError}</p> }
-                    </div>
-                </div>
-                <div className='sm:flex sm:justify-between'>
-                    <div className='mb-5 sm:mr-5'>
-                        <label>
-                            Calories Burned <span className='text-gray-400 text-sm'>(in calories)</span>
-                            <input 
-                                type="text"
-                                inputMode='decimal'
-                                name='caloriesBurned'
-                                value={formData.caloriesBurned}
-                                onChange={handleInputChange}
-                                className='input-style block' />
-                        </label>
-                        { inputError.caloriesInputError && <p className='text-xs max-w-[200px] text-red-600 mt-1'>{inputError.caloriesInputError}</p> }
-                    </div>
-                    <div className='mb-5'>
-                        <label>
-                            Distance Covered <span className='text-gray-400 text-sm'>(in kilometers)</span>
-                            <input 
-                                type="text"
-                                inputMode='decimal'
-                                name='distanceCovered'
-                                value={formData.distanceCovered}
-                                onChange={handleInputChange}
-                                className='input-style block' />
-                        </label>
-                        { inputError.distanceInputError && <p className='text-xs max-w-[200px] text-red-600 mt-1'>{inputError.distanceInputError}</p> }
-                    </div>
-                </div>
+            px-2 py-5 xs:p-5 bg-black/30 z-30'
+            onClick={closeForm}>
+            <div className="max-h-full overflow-y-auto rounded-md" onClick={(e) => e.stopPropagation()}>
+                <Form onSubmit={editing ? editRecord : addWorkoutRecord}
+                    initialValues={
+                        (editing && editableRecord) ? {
+                            date: editableRecord.data().date,
+                            timeSpent: editableRecord.data().timeSpent.toString(),
+                            caloriesBurned: editableRecord.data().caloriesBurned.toString(),
+                            distanceCovered: editableRecord.data().distanceCovered.toString(),
+                        }: undefined
+                    }>
+                    {({ handleSubmit, submitError, submitting, pristine }) => (
+                        <form onSubmit={handleSubmit}
+                            className='bg-white shadow-md rounded-md px-6 py-8 sm:p-8 flex flex-col'>
+                            <h2 className='text-center font-bold mb-5'>{ editing ? 'Update workout record' : 'Add workout record' }</h2>
+                            { submitError && <p className='text-xs text-red-600 mb-3 text-center'>{ submitError }</p> }
+                            <div className='sm:flex sm:justify-between'>
+                                <Field name='date' type='date'>
+                                    {({ input }) => (
+                                        <label className='sm:mr-5 mb-5 block'>
+                                            Date
+                                            <input 
+                                                {...input}
+                                                required
+                                                max={new Date().toISOString().split("T")[0]}
+                                                className='block outline-none input-style'  />
+                                    </label>
+                                    )}
+                                </Field>
+                                <Field name='timeSpent' type='text'
+                                    validate={(value) => !isNumeric(value) && 'Value should be number or decimal' }>
+                                    {({ input, meta }) => (
+                                        <div className='mb-5'>
+                                            <label>
+                                                Time Spent <span className='text-gray-400 text-xs'>(in hrs)</span>
+                                                <input 
+                                                    {...input}
+                                                    inputMode='numeric'
+                                                    className='input-style block' />
+                                            </label>
+                                            { meta.error && meta.touched && <p className='text-xs max-w-[200px] text-red-600 mt-1'>{ meta.error }</p> }
+                                        </div>
+                                    )}
+                                </Field>
+                            </div>
+                            <div className='sm:flex sm:justify-between'>
+                                <Field name='caloriesBurned' type='text'
+                                    validate={(value) => value && value.trim() && !isNumeric(value) && 'Value should be number or decimal' }>
+                                    {({ input, meta }) => (
+                                        <div className='mb-5 sm:mr-5'>
+                                            <label>
+                                                Calories Burned <span className='text-gray-400 text-xs'>(in cal)</span>
+                                                <input 
+                                                    {...input}
+                                                    inputMode='decimal'
+                                                    className='input-style block' />
+                                            </label>
+                                            { meta.error && meta.touched && <p className='text-xs max-w-[200px] text-red-600 mt-1'>{ meta.error }</p> }
+                                        </div>
+                                    )}
+                                </Field>
 
-                <div className='flex justify-center'>
-                    <button 
-                        type='submit'
-                        className='bg-theme hover:bg-themeHover py-2 px-4 w-[80px] text-white rounded-md text-sm font-medium'>
-                            { editing ? ( submitting ? '. . .' : 'Update') : (submitting ? '. . .' : 'Add')}
-                        </button>
-                    <button 
-                        type='button'
-                        className='py-2 px-4 rounded-md ml-5 hover:bg-gray-100 w-[80px] border-mainBorder border text-sm font-medium'
-                        onClick={closeForm}>Cancel</button>
-                </div>
-            </form>
+                                <Field name='distanceCovered' type='text'
+                                    validate={(value) => value && value.trim() && !isNumeric(value) && 'Value should be number or decimal' }>
+                                    {({ input, meta }) => (
+                                        <div className='mb-5'>
+                                            <label>
+                                                Distance Covered <span className='text-gray-400 text-xs'>(in km)</span>
+                                                <input 
+                                                    {...input}
+                                                    inputMode='decimal'                                              
+                                                    className='input-style block' />
+                                            </label>
+                                            { meta.error && meta.touched && <p className='text-xs max-w-[200px] text-red-600 mt-1'>{ meta.error }</p> }
+                                        </div>
+                                    )}
+                                </Field>
+                            </div>
+                            <div className='flex justify-center'>
+                                <button 
+                                    type='submit'
+                                    disabled={submitting || (editing && pristine)}
+                                    className={classNames(`bg-theme hover:bg-themeHover py-2 px-4 w-[80px] text-white rounded-md text-sm 
+                                        font-medium'`, editing && pristine && 'opacity-[.6]')}>
+                                        { editing ? ( submitting ? '. . .' : 'Update') : (submitting ? '. . .' : 'Add')}
+                                    </button>
+                                <button 
+                                    type='button'
+                                    className='py-2 px-4 rounded-md ml-5 hover:bg-gray-100 w-[80px] border-mainBorder border text-sm font-medium'
+                                    onClick={closeForm}>Cancel</button>
+                            </div>
+                        </form>
+                    )}
+                </Form>
+            </div>
         </div>
     )
 }

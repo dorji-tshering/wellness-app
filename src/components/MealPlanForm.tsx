@@ -1,16 +1,24 @@
 import { addDoc, collection, getCountFromServer } from "firebase/firestore";
-import { FormEvent, useRef, useState, SetStateAction, useEffect } from 'react';
+import { useState, SetStateAction, useEffect } from 'react';
 import { database } from '../firebaseClient';
 import { useAuthValue } from "../utils/authContext";
 import { useNotification } from "../utils/notificationContext";
+import { Form, Field } from 'react-final-form';
+import { FORM_ERROR } from "final-form";
 
 type Props = {
     setAddMealPlan: React.Dispatch<SetStateAction<boolean>>
 }
 
+type MealPlanProps = {
+    mealplanName: string
+}
+
+type MealPlanFormError = {
+    mealplanName?: string
+}
+
 const MealPlanForm = ({ setAddMealPlan }: Props) => {
-    const mealPlanNameRef = useRef<HTMLInputElement | null>(null);
-    const [creatingPlan, setCreatingPlan] = useState(false);
     const [mealplanCount, setMealplanCount] = useState(0);
     const user = useAuthValue();
     const setNotification = useNotification()?.setNotification;
@@ -21,16 +29,13 @@ const MealPlanForm = ({ setAddMealPlan }: Props) => {
         });
     }, []);
 
-    const createMealPlan = async(event: FormEvent) => {
-        event.preventDefault();
-
-        if(mealPlanNameRef.current && mealPlanNameRef.current.value.trim() && user) {
-            setCreatingPlan(true);
+    const createMealPlan = async(values: MealPlanProps) => {
+        const { mealplanName } = values;
 
             try {
                 await addDoc(collection(database, 'mealplans'), {
-                    name: mealPlanNameRef.current.value,
-                    userId: user.uid,
+                    name: mealplanName,
+                    userId: user?.uid,
                     active: mealplanCount > 0 ? false : true,
                     dayOne: {
                         breakfast: '',
@@ -69,38 +74,56 @@ const MealPlanForm = ({ setAddMealPlan }: Props) => {
                     },
                 });
             }catch(err: any) {
-                console.log(err.code);
+                return { [FORM_ERROR]: err.Error }
             }
-            setCreatingPlan(false);
             setNotification && setNotification('Meal plan added successfully. Now you can start adding recipes to your meal plan.');
             setAddMealPlan(false);
-        }
     }
 
     return (
-        <div className="fixed top-0 right-0 left-0 bottom-0 flex items-center justify-center bg-black/30 z-30 py-5"
+        <div className="fixed top-0 right-0 left-0 bottom-0 flex items-center justify-center bg-black/30 z-30 p-5"
             onClick={() => setAddMealPlan(false)}>
             <div className="max-h-full overflow-y-auto rounded-md" onClick={(e) => e.stopPropagation()}>
-                <form onSubmit={createMealPlan}
-                    className="bg-white flex flex-col items-center rounded-md shadow-md px-8 py-4">
-                    <h2 className="font-bold">Create Meal Plan</h2>
-                    <p className="text-sm text-gray-500 mb-3">Give a descriptive name for your meal plan</p>
-                    <input 
-                        type="text"
-                        ref={mealPlanNameRef}
-                        aria-label="meal plan name"
-                        placeholder="Meal plan name"
-                        className="input-style mb-3" />
-                    <div>
-                        <button type='submit'
-                            className="w-[80px] bg-theme text-white mr-2 rounded-[4px] text-sm font-medium py-2
-                            hover:bg-themeHover transition-all">{ creatingPlan ? '. . .' : 'Create'}</button>
-                        <button type="button"
-                            className="w-[80px] border border-mainBorder ml-2 rounded-[4px] text-sm font-medium py-2
-                            hover:bg-gray-100 transition-all"
-                            onClick={() => setAddMealPlan(false)}>Cancel</button>
-                    </div>
-                </form>
+                <Form onSubmit={createMealPlan}
+                    validate={(values) => {
+                        let { mealplanName } = values;
+                        const errors :MealPlanFormError = {};
+                        if(!mealplanName || !mealplanName.trim()) {
+                            errors.mealplanName = 'Meal plan name is required'
+                        }
+                        return errors;
+                    }}>
+                    {({ handleSubmit, submitError, submitting }) => (
+                        <form onSubmit={handleSubmit}
+                            className="bg-white flex flex-col items-center rounded-md shadow-md px-8 py-4">
+                            { submitError && <p>{ submitError }</p> }
+                            <h2 className="font-bold">Create Meal Plan</h2>
+                            <p className="text-sm text-gray-500 mb-3 text-center">Give a descriptive name for your meal plan</p>
+                            <Field name="mealplanName" type="text">
+                                {({ input, meta }) => (
+                                    <div className="flex flex-col mb-4">
+                                        <input 
+                                        {...input}
+                                        placeholder="Meal plan name"
+                                        className="input-style mb-1"
+                                        />
+                                        { (meta.error) && meta.touched && <span className="text-xs text-red-700">{ meta.error }</span> }
+                                    </div>
+                                )}
+                            </Field>
+                            <div>
+                                <button type='submit'
+                                    disabled={submitting}
+                                    className="w-[80px] bg-theme text-white mr-2 rounded-[4px] text-sm font-medium py-2
+                                    hover:bg-themeHover transition-all">{ submitting ? '. . .' : 'Create'}</button>
+                                <button type="button"
+                                    className="w-[80px] border border-mainBorder ml-2 rounded-[4px] text-sm font-medium py-2
+                                    hover:bg-gray-100 transition-all"
+                                    onClick={() => setAddMealPlan(false)}>Cancel</button>
+                            </div>
+                        </form>
+                    )}
+                </Form>
             </div>
         </div>
     )
