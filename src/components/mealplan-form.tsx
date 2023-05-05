@@ -1,11 +1,10 @@
-import { addDoc, collection, getCountFromServer } from "firebase/firestore";
 import { useState, useEffect } from 'react';
-import { database } from '../firebaseClient';
 import { useAuthValue } from "../utils/auth-context";
 import { useNotification } from "../utils/notification-context";
 import { Form, Field } from 'react-final-form';
 import { FORM_ERROR } from "final-form";
 import { MealPlanFormError, MealPlanProps, Props } from "../model/mealplan-form";
+import { getMealplansCount, createMealplan } from "../services/facade.service";
 
 const MealPlanForm = ({ setAddMealPlan }: Props) => {
     const [mealplanCount, setMealplanCount] = useState(0);
@@ -13,67 +12,26 @@ const MealPlanForm = ({ setAddMealPlan }: Props) => {
     const setNotification = useNotification()?.setNotification;
 
     useEffect(() => {
-        getCountFromServer(collection(database, 'mealplans')).then((countObject) => {
-            setMealplanCount(countObject.data().count);
-        });
+        getMealplansCount().then((count) => setMealplanCount(count));
     }, []);
 
-    const createMealPlan = async(values: MealPlanProps) => {
+    const createNewMealPlan = async(values: MealPlanProps) => {
         const { mealplanName } = values;
 
-            try {
-                await addDoc(collection(database, 'mealplans'), {
-                    name: mealplanName,
-                    userId: user?.uid,
-                    active: mealplanCount > 0 ? false : true,
-                    dayOne: {
-                        breakfast: '',
-                        lunch: '',
-                        dinner: ''
-                    },
-                    dayTwo: {
-                        breakfast: '',
-                        lunch: '',
-                        dinner: ''
-                    },
-                    dayThree: {
-                        breakfast: '',
-                        lunch: '',
-                        dinner: ''
-                    },
-                    dayFour: {
-                        breakfast: '',
-                        lunch: '',
-                        dinner: ''
-                    },
-                    dayFive: {
-                        breakfast: '',
-                        lunch: '',
-                        dinner: ''
-                    },
-                    daySix: {
-                        breakfast: '',
-                        lunch: '',
-                        dinner: ''
-                    },
-                    daySeven: {
-                        breakfast: '',
-                        lunch: '',
-                        dinner: ''
-                    },
-                });
-            }catch(err: any) {
-                return { [FORM_ERROR]: err.Error }
-            }
-            setNotification && setNotification('Meal plan added successfully. Now you can start adding recipes to your meal plan.');
-            setAddMealPlan(false);
+        try {
+            user && await createMealplan(mealplanName, user?.uid, mealplanCount);
+        }catch(err: any) {
+            return { [FORM_ERROR]: err.Error }
+        }
+        setNotification && setNotification('Meal plan added successfully. Now you can start adding recipes to your meal plan.');
+        setAddMealPlan(false);
     }
 
     return (
         <div className="fixed top-0 right-0 left-0 bottom-0 flex items-center justify-center bg-black/30 z-30 p-5"
             onClick={() => setAddMealPlan(false)}>
             <div className="max-h-full overflow-y-auto rounded-md" onClick={(e) => e.stopPropagation()}>
-                <Form onSubmit={createMealPlan}
+                <Form onSubmit={createNewMealPlan}
                     validate={(values) => {
                         let { mealplanName } = values;
                         const errors :MealPlanFormError = {};

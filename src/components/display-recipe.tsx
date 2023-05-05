@@ -32,7 +32,9 @@ const DisplayRecipe = () => {
                                     className="object-cover h-[120%] w-[120%] group-hover:scale-[120%] transition-transform 
                                     duration-300 ease-out"/>
                             </div>
-                            <p className="grow font-bold text-[18px] py-2 group-hover:bg-gray-100 w-full">{recipe.name}</p>
+                            <div className="grow text-[16px] font-bold p-2 group-hover:bg-gray-100 w-full flex justify-center items-center">
+                                <span className='line-clamp-1'>{recipe.name}</span>
+                            </div>
                         </button>
                         <button className="py-3 block relative group border-t border-t-mainBorder hover:bg-theme/5 hover:text-theme"
                             aria-label='Add to meal plan' onClick={() => setRecipeIdToAdd(recipe.id)}>

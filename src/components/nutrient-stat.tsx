@@ -1,4 +1,4 @@
-import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import { collection, query, where } from 'firebase/firestore';
 import { useState, useEffect } from 'react';
 import { database } from '../firebaseClient';
 import Recipes from '../utils/recipes';
@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import Loader from './loader';
 import { useAuthValue } from '../utils/auth-context';
 import { Nutrients } from '../model/nutrient-stat';
+import { listenToDocs } from '../services/facade.service';
 
 const NutrientStats = () => {
     const [nutrientStats, setNutrientStats] = useState<Nutrients | null>(null);
@@ -17,7 +18,7 @@ const NutrientStats = () => {
     useEffect(() => {
         if(user) {
             const q = query(collection(database, 'mealplans'), where('active', '==', true), where('userId', '==', user.uid));
-            const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            const unsubscribe = listenToDocs(q, (querySnapshot) => {
                 if(querySnapshot.docs[0]?.exists()) {
                     const stats: Nutrients = {};
                     const mealPlan = querySnapshot.docs[0];

@@ -1,32 +1,20 @@
 import isNumeric from '../utils/is-numeric';
-import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
-import { database } from '../firebaseClient';
 import { useAuthValue } from '../utils/auth-context';
 import { useNotification } from '../utils/notification-context';
 import { Form, Field } from 'react-final-form';
 import { FORM_ERROR } from 'final-form';
 import classNames from 'classnames';
 import { FormData, Props,  } from '../model/workout-form';
+import { addWorkoutRecord, editWorkoutRecord } from '../services/facade.service';
 
 const WorkoutForm = ({ setShowForm, setEditMode, setRecordId, editing, recordId, 
     editableRecord, setEditableRecord }: Props) => {
     const user = useAuthValue();
     const setNotification = useNotification()?.setNotification;
 
-    const addWorkoutRecord = async(values: FormData) => {
-        const { caloriesBurned, distanceCovered, date, timeSpent } = values;
-        if((!caloriesBurned || !caloriesBurned.trim()) && (!distanceCovered || !distanceCovered.trim())) {
-            return { [FORM_ERROR]: 'Either distance or calories field is required' }
-        }
-
+    const handleWorkoutRecordAdd = async(values: FormData) => {
         try {
-            await addDoc(collection(database, 'workout'), {
-                date: date,
-                timeSpent: parseFloat(timeSpent),
-                caloriesBurned: isNaN(parseFloat(caloriesBurned as string)) ? 0 : parseFloat(caloriesBurned as string),
-                distanceCovered: isNaN(parseFloat(distanceCovered as string)) ? 0 : parseFloat(distanceCovered as string),
-                userId: user?.uid
-            });
+            user && await addWorkoutRecord(user.uid, values);
             setNotification && setNotification('Record added successfully.');
             setShowForm(false);
         }catch(err: any) {
@@ -34,26 +22,14 @@ const WorkoutForm = ({ setShowForm, setEditMode, setRecordId, editing, recordId,
         }
     }
 
-    const editRecord = async(values: FormData) => {
-        const { caloriesBurned, distanceCovered, date, timeSpent } = values;
-        if((!caloriesBurned || !caloriesBurned.trim()) && (!distanceCovered || !distanceCovered.trim())) {
-            return { [FORM_ERROR]: 'Either distance or calories field is required' }
-        }
-
+    const handleWorkoutRecordEdit = async(values: FormData) => {
         try {
-            if(recordId) {
-                await updateDoc(doc(database, 'workout', recordId), {
-                    date: date,
-                    timeSpent: parseFloat(timeSpent),
-                    caloriesBurned: isNaN(parseFloat(caloriesBurned as string)) ? 0 : parseFloat(caloriesBurned as string),
-                    distanceCovered: isNaN(parseFloat(distanceCovered as string)) ? 0 : parseFloat(distanceCovered as string),
-                });
-                setNotification && setNotification('Record updated successfully.');
-                setRecordId('');
-                setEditMode(false);
-                setEditableRecord(null);
-                setShowForm(false);
-            }
+            recordId && editWorkoutRecord(recordId, values);
+            setNotification && setNotification('Record updated successfully.');
+            setRecordId('');
+            setEditMode(false);
+            setEditableRecord(null);
+            setShowForm(false);
         }catch(err: any) {
             return { [FORM_ERROR]: err.code };
         }
@@ -71,7 +47,7 @@ const WorkoutForm = ({ setShowForm, setEditMode, setRecordId, editing, recordId,
             px-2 py-5 xs:p-5 bg-black/30 z-30'
             onClick={closeForm}>
             <div className="max-h-full overflow-y-auto rounded-md" onClick={(e) => e.stopPropagation()}>
-                <Form onSubmit={editing ? editRecord : addWorkoutRecord}
+                <Form onSubmit={editing ? handleWorkoutRecordEdit : handleWorkoutRecordAdd}
                     initialValues={
                         (editing && editableRecord) ? {
                             date: editableRecord.data().date,

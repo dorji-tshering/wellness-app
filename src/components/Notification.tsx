@@ -3,7 +3,7 @@ import { IoMdClose } from 'react-icons/io';
 
 const Notification = () => {
     const notification = useNotification();
-
+    
     setTimeout(() => {
         notification?.setNotification('');
     }, 3000);

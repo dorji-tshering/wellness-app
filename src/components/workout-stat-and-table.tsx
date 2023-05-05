@@ -1,4 +1,4 @@
-import { DocumentData, collection, deleteDoc, doc, onSnapshot, orderBy, query, where } from "firebase/firestore";
+import { DocumentData, collection, deleteDoc, doc, orderBy, query, where } from "firebase/firestore";
 import { useEffect, useState } from 'react';
 import { database } from "../firebaseClient";
 import { useAuthValue } from "../utils/auth-context";
@@ -7,6 +7,7 @@ import { useNotification } from "../utils/notification-context";
 import { GiTimeBomb, GiPathDistance, GiAtomCore } from 'react-icons/gi';
 import { MdHourglassEmpty } from 'react-icons/md';
 import { Props, WorkoutStats } from "../model/workout-stat-and-table";
+import { listenToDocs } from "../services/facade.service";
 
 const WorkoutStatAndTable= ({ setEditMode, setShowWorkoutForm, setRecordId, setEditableRecord }: Props) => {
     const [records, setRecords] = useState<Array<DocumentData>>([]);
@@ -25,7 +26,7 @@ const WorkoutStatAndTable= ({ setEditMode, setShowWorkoutForm, setRecordId, setE
     useEffect(() => {
         if(user) {
             const q = query(collection(database, 'workout'), where('userId', '==', user.uid), orderBy('date', 'desc'));
-            const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            const unsubscribe = listenToDocs(q, (querySnapshot) => {
                 setRecords(querySnapshot.docs);
                 let timeSpent = 0;
                 let caloriesBurned = 0;

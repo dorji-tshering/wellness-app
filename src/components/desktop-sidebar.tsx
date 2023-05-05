@@ -4,19 +4,10 @@ import { NavLink } from "react-router-dom";
 import { IoIosFitness } from 'react-icons/io';
 import { GiFruitBowl, GiPeaceDove } from 'react-icons/gi';
 import { BiLogOutCircle } from 'react-icons/bi';
-import { signOut } from "firebase/auth";
-import { auth } from "../firebaseClient";
+import { logOut } from "../services/facade.service";
 
 const DesktopSidebar = () => {
     const user = useAuthValue();
-
-    const logOut = async() => {
-        try {
-            await signOut(auth);
-        }catch(err: any) {
-            console.log(err.code)
-        }
-    }
     
     return (
         <div className="bg-white min-w-[200px] max-w-[200px] border-r border-r-mainBorder shadow-md py-7 flex flex-col">
@@ -67,4 +58,4 @@ const DesktopSidebar = () => {
     )
 }
 
-export default DesktopSidebar
+export default DesktopSidebar;

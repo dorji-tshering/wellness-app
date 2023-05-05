@@ -1,17 +1,16 @@
 import { emailValidate, passwordValidate } from '../utils/form-validate';
-import { auth } from '../firebaseClient';
 import { FORM_ERROR } from 'final-form';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { Form, Field } from 'react-final-form';
 import { Props, RegistrationProps } from '../model/register';
-
+import { registerUserWithEmailAndPassword } from '../services/facade.service';
+ 
 const Register = ({setOnSignin}: Props) => {
     const navigate = useNavigate();
 
     const handleRegistration = async({email, password}: RegistrationProps) => {
         try {
-            await createUserWithEmailAndPassword(auth, email, password);
+            await registerUserWithEmailAndPassword( email, password);
             navigate('/');
         }catch(err: any) {
             return { [FORM_ERROR]: err.code };

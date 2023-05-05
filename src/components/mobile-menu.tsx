@@ -1,22 +1,21 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import classNames from 'classnames';
 import { NavLink } from 'react-router-dom';
-import { signOut } from 'firebase/auth';
-import { auth } from '../firebaseClient';
 import { BiLogOutCircle } from 'react-icons/bi';
 import { IoIosFitness } from 'react-icons/io';
 import { GiFruitBowl, GiPeaceDove } from 'react-icons/gi';
 import { VscChromeClose } from 'react-icons/vsc';
 import { useAuthValue } from '../utils/auth-context';
 import { Props } from '../model/mobile-menu';
+import { logOut } from '../services/facade.service';
 
 const MobileMenu = ({showMenu, setShowMenu}: Props) => {
     const user = useAuthValue();
     const menuRef = useRef<HTMLDivElement>(null);
 
-    const logOut = async() => {
+    const logOutCurrentUser = async() => {
         try {
-            await signOut(auth);
+            await logOut();
             setShowMenu(false);
         }catch(err: any) {
             console.log(err.code)
@@ -74,7 +73,7 @@ const MobileMenu = ({showMenu, setShowMenu}: Props) => {
 
                 <div className="grow flex flex-col justify-center">
                     <button 
-                        onClick={logOut}
+                        onClick={logOutCurrentUser}
                         className="text-left px-5 py-3 flex items-center text-gray-600 hover:text-black
                         hover:bg-black/5">
                             <BiLogOutCircle className="mr-2 text-gray-700"/> Logout</button>

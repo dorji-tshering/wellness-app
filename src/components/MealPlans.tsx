@@ -1,4 +1,4 @@
-import { DocumentData, collection, deleteDoc, doc, onSnapshot, query, updateDoc, where } from "firebase/firestore";
+import { DocumentData, collection, deleteDoc, doc, query, where } from "firebase/firestore";
 import { useEffect, useRef, useState } from 'react';
 import { MdOutlineArrowBack, MdRadioButtonUnchecked, MdCheckCircle } from 'react-icons/md';
 import { database } from '../firebaseClient';
@@ -9,6 +9,8 @@ import { RiDeleteBin6Line, RiEyeLine } from 'react-icons/ri';
 import { useNotification } from "../utils/notification-context";
 import classNames from "classnames";
 import { Props } from "../model/mealplans";
+import { listenToDocs } from "../services/facade.service";
+import { toggleActiveMealplan } from "../services/facade.service";
 
 const MealPlans = ({ setShowMealPlans }: Props) => {
     const [mealPlans, setMealPlans] = useState<Array<DocumentData>>([]);
@@ -23,7 +25,7 @@ const MealPlans = ({ setShowMealPlans }: Props) => {
     useEffect(() => {
         if(user) {
             const q = query(collection(database, 'mealplans'), where('userId', '==', user?.uid))
-            const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            const unsubscribe = listenToDocs(q, (querySnapshot) => {
                 setMealPlans(querySnapshot.docs);
                 setLoadingData(false);
             });
@@ -32,20 +34,6 @@ const MealPlans = ({ setShowMealPlans }: Props) => {
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
-
-    const toggleActiveMealplan = async(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, isActiveMealPlan=false, mealplanID: string) => {
-        event.stopPropagation();
-        if(isActiveMealPlan) return;
-
-        if(activeMealplanRef.current) {
-            await updateDoc(doc(database, 'mealplans', activeMealplanRef.current as string), {
-                active: false,
-            }); 
-        }
-        await updateDoc(doc(database, 'mealplans', mealplanID), {
-            active: true,
-        });
-    }
 
     // store current active mealplan in a ref
     const currentActiveMealplan = (mealPlanID: string) => {
@@ -117,8 +105,8 @@ const MealPlans = ({ setShowMealPlans }: Props) => {
                                                 <button className={ classNames('absolute top-2 right-2 group rounded-full',
                                                     mealPlan.data().active ? 'text-theme cursor-default' : 
                                                     `text-gray-500 hover:ring-[3px] hover:ring-gray-300 transition-all duration-500`) }
-                                                    onClick={ mealPlan.data().active ? (e) => toggleActiveMealplan(e, true, mealPlan.id) : 
-                                                    (e) => toggleActiveMealplan(e, false, mealPlan.id)}>
+                                                    onClick={ mealPlan.data().active ? (e) => toggleActiveMealplan(e, true, mealPlan.id, activeMealplanRef) : 
+                                                    (e) => toggleActiveMealplan(e, false, mealPlan.id, activeMealplanRef)}>
                                                     { mealPlan.data().active ? <MdCheckCircle size={20}/> : <MdRadioButtonUnchecked size={20}/> }
                                                     <span className="absolute hidden whitespace-nowrap  md:group-hover:block w-[90px] left-1/2 -top-2 
                                                         -translate-y-full px-2 py-1 -ml-[45px]

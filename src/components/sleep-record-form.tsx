@@ -1,13 +1,12 @@
 import { useState } from 'react';
 import isNumeric from '../utils/is-numeric';
 import classNames from 'classnames';
-import { addDoc, collection } from 'firebase/firestore';
-import { database } from '../firebaseClient';
 import { useAuthValue } from '../utils/auth-context';
 import { useNotification } from '../utils/notification-context';
 import { Form, Field } from 'react-final-form';
 import { FORM_ERROR } from 'final-form';
 import { Props, SleepData } from '../model/sleep-record-form';
+import { addSleepRecord } from '../services/facade.service';
 
 const SleepRecordForm = ({ setShowSleepRecordForm }: Props) => {
     const [showSleepQualities, setShowSleepQualities] = useState(false);
@@ -15,24 +14,9 @@ const SleepRecordForm = ({ setShowSleepRecordForm }: Props) => {
     const setNotification = useNotification()?.setNotification;
     const sleepQualities = ['Excellent', 'Good', 'Poor'] as const;
 
-    const addSleepRecord = async(values: SleepData) => {
-        const { date, sleepTime, sleepQuality } = values;
-
-        if(!sleepTime || !sleepTime.trim()) {
-            return { sleepTime: 'Sleep time is required' }
-        }
-
-        if(!sleepQuality) {
-            return { sleepQuality: 'Select your sleep quality' }
-        }
-
+    const handleSleepRecordAdd = async(values: SleepData) => {
         try {
-            await addDoc(collection(database, 'sleeprecords'), {
-                date: date,
-                sleepTime: parseFloat(sleepTime),
-                sleepQuality: sleepQuality,
-                userId: user?.uid,
-            })
+            user && await addSleepRecord(user?.uid, values);
             setShowSleepRecordForm(false);
             setNotification &&  setNotification('Your record has been added successfully.');
         }catch(err: any) {
@@ -44,7 +28,7 @@ const SleepRecordForm = ({ setShowSleepRecordForm }: Props) => {
         <div className='fixed top-0 right-0 left-0 bottom-0 bg-black/30 z-30 flex justify-center items-center px-4 py-5'
             onClick={() => setShowSleepRecordForm(false)}>
             <div className="max-h-full overflow-auto rounded-md" onClick={(e) => e.stopPropagation()}>
-                <Form onSubmit={addSleepRecord}>
+                <Form onSubmit={handleSleepRecordAdd}>
                     {({ handleSubmit, submitting, values, submitError }) => (
                         <>
                             <form onSubmit={handleSubmit}

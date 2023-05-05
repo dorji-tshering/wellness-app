@@ -1,8 +1,9 @@
-import { DocumentData, collection, onSnapshot, query, where } from "firebase/firestore";
+import { DocumentData, collection, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { database } from "../firebaseClient";
 import { useAuthValue } from "../utils/auth-context";
 import Loader from "./loader";
+import { listenToDocs } from "../services/facade.service";
 
 const SleepRecord = () => {
     const [showRecordTable, setShowRecordTable] = useState(false);
@@ -13,7 +14,7 @@ const SleepRecord = () => {
     useEffect(() => {
         if(user) {
             const q = query(collection(database, 'sleeprecords'), where('userId', '==', user.uid));
-            const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            const unsubscribe = listenToDocs(q, (querySnapshot) => {
                 setSleepRecords(querySnapshot.docs);
                 setLoadingData(false);
             })
@@ -30,7 +31,6 @@ const SleepRecord = () => {
             </div>
         )
     }
-
 
     return (
         <>

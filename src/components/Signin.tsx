@@ -1,17 +1,16 @@
 import { Form, Field } from 'react-final-form';
 import { FORM_ERROR } from 'final-form';
 import { emailValidate, passwordValidate } from '../utils/form-validate';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebaseClient';
 import { useNavigate } from 'react-router-dom';
 import { Props } from '../model/signin';
+import { loginWithEmailAndPassword } from '../services/facade.service';
 
 const Signin = ({setOnSignin}: Props) => {
     const navigate = useNavigate();
 
     const handleSignin = async(values: any) => {
         try{
-            await signInWithEmailAndPassword(auth, values.email, values.password);
+            await loginWithEmailAndPassword(values.email, values.password);
             navigate('/');
         }catch(err: any) {
             return { [FORM_ERROR]: err.code };

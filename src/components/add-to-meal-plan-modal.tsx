@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { DocumentData, collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
+import { DocumentData, collection, query, where } from 'firebase/firestore';
 import Loader from './loader';
 import { useAuthValue } from '../utils/auth-context';
 import { database } from '../firebaseClient';
@@ -8,6 +8,18 @@ import { useNotification } from '../utils/notification-context';
 import { Form, Field } from 'react-final-form';
 import { FORM_ERROR } from 'final-form';
 import { AddToMealplanError, Meal, MealDataType, MealDay, Props } from '../model/add-to-meal-plan-modal';
+import { addToMealplan, getDocuments } from '../services/facade.service';
+
+const mealDayOptions: {[index: string]: string} = {
+    'Day One': 'dayOne',
+    'Day Two': 'dayTwo',
+    'Day Three': 'dayThree',
+    'Day Four': 'dayFour',
+    'Day Five': 'dayFive',
+    'Day Six': 'daySix',
+    'Day Seven': 'daySeven',
+};
+const mealOptions = ['Breakfast', 'Lunch', 'Dinner'];
 
 const AddToMealPlanModal = ({ recipeId, setRecipeIdToAdd }: Props) => {
     const [mealPlans, setMealPlans] = useState<Array<DocumentData> | null>(null);
@@ -18,21 +30,10 @@ const AddToMealPlanModal = ({ recipeId, setRecipeIdToAdd }: Props) => {
     const user = useAuthValue();
     const setNotification = useNotification()?.setNotification;
 
-    const mealDayOptions: {[index: string]: string} = {
-        'Day One': 'dayOne',
-        'Day Two': 'dayTwo',
-        'Day Three': 'dayThree',
-        'Day Four': 'dayFour',
-        'Day Five': 'dayFive',
-        'Day Six': 'daySix',
-        'Day Seven': 'daySeven',
-    };
-    const mealOptions = ['Breakfast', 'Lunch', 'Dinner'];
-
     useEffect(() => {
         const q = query(collection(database, 'mealplans'), where('userId', '==', user?.uid));
-        getDocs(q).then((querySnapshot) => {
-            setMealPlans(querySnapshot.docs);
+        getDocuments(q).then((documents) => {
+            setMealPlans(documents);
             setLoadingData(false);
         }).catch((err) => {
             console.log(err.code);
@@ -42,11 +43,8 @@ const AddToMealPlanModal = ({ recipeId, setRecipeIdToAdd }: Props) => {
     },[]);
 
     const addRecipeToMealPlan = async(values: MealDataType) => {
-        const { meal, mealDay, mealPlan } = values;
         try {
-            await updateDoc(doc(database, 'mealplans', mealPlan?.id), {
-                [`${mealDay}.${meal}`]: recipeId, 
-            })
+            await addToMealplan(recipeId, values);
             setNotification && setNotification('Recipe added to meal successfully.');
             setRecipeIdToAdd('');
         }catch(err: any) {

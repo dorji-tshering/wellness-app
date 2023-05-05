@@ -1,4 +1,4 @@
-import { DocumentData, doc, onSnapshot, updateDoc } from 'firebase/firestore';
+import { DocumentData, doc } from 'firebase/firestore';
 import { useEffect } from 'react'
 import { useState } from 'react';
 import { MdOutlineArrowBack } from 'react-icons/md';
@@ -7,7 +7,8 @@ import classNames from 'classnames';
 import { BiReset } from 'react-icons/bi';
 import { database } from '../firebaseClient';
 import Loader from './loader';
-import { MealDay, Props } from '../model/meal-plan-details';
+import { Props } from '../model/meal-plan-details';
+import { listenDoc, resetMeals } from '../services/facade.service';
 
 const MealPlanDetails = ({ mealPlanID, setMealplanIdToView }: Props) => {
     const [mealPlanDetails, setMealPlanDetails] = useState<DocumentData | null>(null);
@@ -17,7 +18,7 @@ const MealPlanDetails = ({ mealPlanID, setMealplanIdToView }: Props) => {
     const mealDaysMapping = ['Day One', 'Day Two', 'Day Three', 'Day Four', 'Day Five', 'Day Six', 'Day Seven'] as const;
 
     useEffect(() => {
-        const unsubscribe = onSnapshot(doc(database, 'mealplans', mealPlanID), (querySnapshot) => {
+        const unsubscribe = listenDoc(doc(database, 'mealplans', mealPlanID), (querySnapshot) => {
             setMealPlanDetails(querySnapshot);
             setLoadingData(false);
         });
@@ -25,16 +26,6 @@ const MealPlanDetails = ({ mealPlanID, setMealplanIdToView }: Props) => {
         return () => unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    const resetMealday = async(mealday: MealDay) => {
-        await updateDoc(doc(database, 'mealplans', mealPlanID), {
-            [mealday]: {
-                breakfast: '',
-                lunch: '',
-                dinner: '',
-            }
-        })
-    }
 
     if(loadingData) {
         return (
@@ -69,7 +60,7 @@ const MealPlanDetails = ({ mealPlanID, setMealplanIdToView }: Props) => {
                                 mealPlanDetails.data()[mealDay].dinner ) && (
                                 <button className='absolute group top-2 right-2 rounded-full text-gray-500 hover:ring-[3px]
                                     hover:ring-gray-200 hover:text-gray-600 transition-all from-neutral-500'
-                                    onClick={() => resetMealday(mealDay)}>
+                                    onClick={() => resetMeals(mealPlanID, mealDay)}>
                                     <BiReset size={20}/>
                                     <span className="absolute hidden whitespace-nowrap  group-hover:block w-[90px] left-1/2 -top-2 
                                         -translate-y-full px-2 py-1 -ml-[45px]

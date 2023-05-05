@@ -1,10 +1,11 @@
-import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import { collection, query, where } from 'firebase/firestore';
 import { useState, useEffect } from 'react';
 import { database } from '../firebaseClient';
 import { useAuthValue } from '../utils/auth-context'; 
 import classNames from 'classnames';
 import Loader from './loader';
 import { SleepQuality } from '../model/sleep-stat';
+import { listenToDocs } from '../services/facade.service';
 
 const SleepStats = () => {
     const [averageSleephours, setAverageSleephours] = useState(0);
@@ -20,7 +21,7 @@ const SleepStats = () => {
     useEffect(() => {
         if(user) {
             const q = query(collection(database, 'sleeprecords'), where('userId', '==', user.uid));
-            const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            const unsubscribe = listenToDocs(q, (querySnapshot) => {
                 if(querySnapshot.docs.length > 0) {
                     const recordLength = querySnapshot.docs.length;
                     let totalSleephours = 0;
