@@ -1,18 +1,13 @@
 import { DocumentData, doc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { useEffect } from 'react'
-import { SetStateAction, useState } from 'react';
+import { useState } from 'react';
 import { MdOutlineArrowBack } from 'react-icons/md';
-import RecipeModal from './RecipeModal';
+import RecipeModal from './recipe-modal';
 import classNames from 'classnames';
 import { BiReset } from 'react-icons/bi';
 import { database } from '../firebaseClient';
-import Loader from './Loader';
-
-type Props = {
-    mealPlanID: string
-    setMealplanIdToView: React.Dispatch<SetStateAction<string | null>>
-}
-type MealDay = 'dayOne' | 'dayTwo' | 'dayThree' | 'dayFour' | 'dayFive' | 'daySix' | 'daySeven';
+import Loader from './loader';
+import { MealDay, Props } from '../model/meal-plan-details';
 
 const MealPlanDetails = ({ mealPlanID, setMealplanIdToView }: Props) => {
     const [mealPlanDetails, setMealPlanDetails] = useState<DocumentData | null>(null);

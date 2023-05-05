@@ -1,30 +1,13 @@
-import { SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { DocumentData, collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
-import Loader from './Loader';
-import { useAuthValue } from '../utils/authContext';
+import Loader from './loader';
+import { useAuthValue } from '../utils/auth-context';
 import { database } from '../firebaseClient';
-import { useNotification } from '../utils/notificationContext';
+import { useNotification } from '../utils/notification-context';
 import { Form, Field } from 'react-final-form';
 import { FORM_ERROR } from 'final-form';
-
-type Props = {
-    recipeId: string
-    setRecipeIdToAdd: React.Dispatch<SetStateAction<string>>
-}
-type MealDay = 'dayOne' | 'dayTwo' | 'dayThree' | 'dayFour' | 'dayFive' | 'daySix' | 'daySeven';
-type Meal = 'breakfast' | 'lunch' | 'dinner';
-type MealDataType = {
-    mealDay: MealDay | null
-    meal: Meal | null
-    mealPlan: DocumentData | null
-}
-
-type AddToMealplanError = {
-    mealDay?: string
-    meal?: string
-    mealPlan?: string
-}
+import { AddToMealplanError, Meal, MealDataType, MealDay, Props } from '../model/add-to-meal-plan-modal';
 
 const AddToMealPlanModal = ({ recipeId, setRecipeIdToAdd }: Props) => {
     const [mealPlans, setMealPlans] = useState<Array<DocumentData> | null>(null);

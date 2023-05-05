@@ -1,8 +1,4 @@
-import React from 'react'
-
-type Props = {
-    children: React.ReactNode;
-}
+import { Props } from "../model/desktop-page-header";
 
 const DesktopPageHeader = ({ children }: Props) => {
     return (

@@ -3,12 +3,9 @@ import { useState, useEffect } from 'react';
 import { database } from '../firebaseClient';
 import Recipes from '../utils/recipes';
 import classNames from 'classnames';
-import Loader from './Loader';
-import { useAuthValue } from '../utils/authContext';
-
-type Nutrients = {
-    [index: string] : number | undefined
-}
+import Loader from './loader';
+import { useAuthValue } from '../utils/auth-context';
+import { Nutrients } from '../model/nutrient-stat';
 
 const NutrientStats = () => {
     const [nutrientStats, setNutrientStats] = useState<Nutrients | null>(null);

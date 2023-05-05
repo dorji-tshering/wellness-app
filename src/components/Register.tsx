@@ -1,18 +1,10 @@
-import { emailValidate, passwordValidate } from '../utils/formValidate';
+import { emailValidate, passwordValidate } from '../utils/form-validate';
 import { auth } from '../firebaseClient';
 import { FORM_ERROR } from 'final-form';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { Form, Field } from 'react-final-form';
-
-type Props = {
-    setOnSignin: React.Dispatch<React.SetStateAction<boolean>>
-}
-
-type RegistrationProps = {
-    email: string
-    password: string
-}
+import { Props, RegistrationProps } from '../model/register';
 
 const Register = ({setOnSignin}: Props) => {
     const navigate = useNavigate();

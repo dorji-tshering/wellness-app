@@ -1,22 +1,11 @@
 import { addDoc, collection, getCountFromServer } from "firebase/firestore";
-import { useState, SetStateAction, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { database } from '../firebaseClient';
-import { useAuthValue } from "../utils/authContext";
-import { useNotification } from "../utils/notificationContext";
+import { useAuthValue } from "../utils/auth-context";
+import { useNotification } from "../utils/notification-context";
 import { Form, Field } from 'react-final-form';
 import { FORM_ERROR } from "final-form";
-
-type Props = {
-    setAddMealPlan: React.Dispatch<SetStateAction<boolean>>
-}
-
-type MealPlanProps = {
-    mealplanName: string
-}
-
-type MealPlanFormError = {
-    mealplanName?: string
-}
+import { MealPlanFormError, MealPlanProps, Props } from "../model/mealplan-form";
 
 const MealPlanForm = ({ setAddMealPlan }: Props) => {
     const [mealplanCount, setMealplanCount] = useState(0);

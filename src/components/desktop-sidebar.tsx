@@ -1,4 +1,4 @@
-import { useAuthValue } from "../utils/authContext";
+import { useAuthValue } from "../utils/auth-context";
 import { MdHealthAndSafety } from 'react-icons/md';
 import { NavLink } from "react-router-dom";
 import { IoIosFitness } from 'react-icons/io';

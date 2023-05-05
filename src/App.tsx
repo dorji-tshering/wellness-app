@@ -1,17 +1,17 @@
-import Login from "./pages/Login";
-import Home from "./pages/Home";
+import Login from "./pages/login";
+import Home from "./pages/home";
 import { Route, Routes } from "react-router-dom";
 import { auth } from './firebaseClient';
 import { onAuthStateChanged } from "firebase/auth";
-import { AuthContextProvider } from "./utils/authContext";
+import { AuthContextProvider } from "./utils/auth-context";
 import { useEffect, useState } from "react";
 import { User } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import Fitness from "./pages/Fitness";
-import Nutrition from "./pages/Nutrition";
-import Wellness from "./pages/Wellness";
-import Layout from "./components/Layout";
-import Loader from './components/Loader';
+import Fitness from "./pages/fitness";
+import Nutrition from "./pages/nutrition";
+import Wellness from "./pages/wellness";
+import Layout from "./components/layout";
+import Loader from './components/loader';
 
 function App() {
     const [currentUser, setCurrentUser] = useState<User | null>(null);

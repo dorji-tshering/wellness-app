@@ -1,10 +1,10 @@
-import DesktopPageHeader from "../components/DesktopPageHeader";
-import MobilePageHeader from "../components/MobilePageHeader";
-import IsMobile from "../utils/useMediaQuery";
-import DisplayRecipe from "../components/DisplayRecipe";
-import MealPlans from "../components/MealPlans";
+import DesktopPageHeader from "../components/desktop-page-header";
+import MobilePageHeader from "../components/mobile-page-header";
+import IsMobile from "../utils/use-media-query";
+import DisplayRecipe from "../components/display-recipe";
+import MealPlans from "../components/mealplans";
 import { useState } from "react";
-import MealPlanForm from "../components/MealPlanForm";
+import MealPlanForm from "../components/mealplan-form";
 import classNames from "classnames";
 
 const Nutrition = () => {

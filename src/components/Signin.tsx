@@ -1,13 +1,10 @@
 import { Form, Field } from 'react-final-form';
 import { FORM_ERROR } from 'final-form';
-import { emailValidate, passwordValidate } from '../utils/formValidate';
+import { emailValidate, passwordValidate } from '../utils/form-validate';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebaseClient';
 import { useNavigate } from 'react-router-dom';
-
-type Props = {
-    setOnSignin: React.Dispatch<React.SetStateAction<boolean>>
-}
+import { Props } from '../model/signin';
 
 const Signin = ({setOnSignin}: Props) => {
     const navigate = useNavigate();

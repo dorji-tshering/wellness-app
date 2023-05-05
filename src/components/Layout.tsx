@@ -1,15 +1,12 @@
-import IsMobile from '../utils/useMediaQuery';
-import MobileHeader from "./MobileHeader";
-import DesktopSidebar from "./DesktopSidebar";
-import { useAuthValue } from "../utils/authContext";
-import MobileMenu from "./MobileMenu";
+import IsMobile from '../utils/use-media-query';
+import MobileHeader from "./mobile-header";
+import DesktopSidebar from "./desktop-sidebar";
+import { useAuthValue } from "../utils/auth-context";
+import MobileMenu from "./mobile-menu";
 import { useState } from "react";
-import { NotificationContextProvider } from "../utils/notificationContext";
-import Notification from "./Notification";
-
-type Props = {
-    children: React.ReactNode;
-}
+import { NotificationContextProvider } from "../utils/notification-context";
+import Notification from "./notification";
+import { Props } from '../model/layout';
 
 const Layout = ({ children }: Props) => {
     const [showMobileMenu, setShowMobileMenu] = useState(false);

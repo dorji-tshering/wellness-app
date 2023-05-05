@@ -1,4 +1,4 @@
-import React, { SetStateAction, useRef } from 'react';
+import React, { useRef } from 'react';
 import classNames from 'classnames';
 import { NavLink } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
@@ -7,12 +7,8 @@ import { BiLogOutCircle } from 'react-icons/bi';
 import { IoIosFitness } from 'react-icons/io';
 import { GiFruitBowl, GiPeaceDove } from 'react-icons/gi';
 import { VscChromeClose } from 'react-icons/vsc';
-import { useAuthValue } from '../utils/authContext';
-
-type Props = {
-    showMenu: boolean;
-    setShowMenu: React.Dispatch<SetStateAction<boolean>>
-}
+import { useAuthValue } from '../utils/auth-context';
+import { Props } from '../model/mobile-menu';
 
 const MobileMenu = ({showMenu, setShowMenu}: Props) => {
     const user = useAuthValue();

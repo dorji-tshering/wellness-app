@@ -1,11 +1,11 @@
-import DesktopPageHeader from "../components/DesktopPageHeader";
-import MobilePageHeader from "../components/MobilePageHeader";
-import IsMobile from "../utils/useMediaQuery";
-import SleepRecordForm from "../components/SleepRecordForm";
+import DesktopPageHeader from "../components/desktop-page-header";
+import MobilePageHeader from "../components/mobile-page-header";
+import IsMobile from "../utils/use-media-query";
+import SleepRecordForm from "../components/sleep-record-form";
 import { useState } from 'react';
-import SleepStats from "../components/SleepStats";
-import SleepRecord from "../components/SleepRecord";
-import ExcerciseGrid from "../components/ExcerciseGrid";
+import SleepStats from "../components/sleep-stat";
+import SleepRecord from "../components/sleep-record";
+import ExcerciseGrid from "../components/exercise-grid";
 
 const Wellness = () => {
     const [showSleepRecordForm, setShowSleepRecordForm] = useState(false);

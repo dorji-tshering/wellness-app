@@ -1,9 +1,9 @@
 import { useState } from "react";
-import DesktopPageHeader from "../components/DesktopPageHeader";
-import MobilePageHeader from "../components/MobilePageHeader";
-import IsMobile from "../utils/useMediaQuery";
-import WorkoutForm from "../components/WorkoutForm";
-import WorkoutStatAndTable from "../components/WorkoutStatAndTable";
+import DesktopPageHeader from "../components/desktop-page-header";
+import MobilePageHeader from "../components/mobile-page-header";
+import IsMobile from "../utils/use-media-query";
+import WorkoutForm from "../components/workout-form";
+import WorkoutStatAndTable from "../components/workout-stat-and-table";
 import { DocumentData } from "firebase/firestore";
 
 const Fitness = () => {

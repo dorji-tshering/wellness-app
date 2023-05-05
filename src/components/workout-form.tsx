@@ -1,32 +1,15 @@
-import { SetStateAction } from 'react';
-import isNumeric from '../utils/isNumeric';
-import { DocumentData, addDoc, collection, doc, updateDoc } from 'firebase/firestore';
+import isNumeric from '../utils/is-numeric';
+import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { database } from '../firebaseClient';
-import { useAuthValue } from '../utils/authContext';
-import { useNotification } from '../utils/notificationContext';
+import { useAuthValue } from '../utils/auth-context';
+import { useNotification } from '../utils/notification-context';
 import { Form, Field } from 'react-final-form';
 import { FORM_ERROR } from 'final-form';
 import classNames from 'classnames';
+import { FormData, Props,  } from '../model/workout-form';
 
-interface FormData {
-    date: string;
-    timeSpent: string;
-    caloriesBurned?: string;
-    distanceCovered?: string;
-}
-
-type Props = {
-    setShowForm: React.Dispatch<SetStateAction<boolean>>
-    setEditMode: React.Dispatch<SetStateAction<boolean>>
-    setRecordId: React.Dispatch<SetStateAction<string>>
-    setEditableRecord: React.Dispatch<SetStateAction<DocumentData | null>>
-    editing: boolean
-    recordId?: string
-    editableRecord: DocumentData | null
-}
-
-// component
-const WorkoutForm = ({ setShowForm, setEditMode, setRecordId, editing, recordId, editableRecord, setEditableRecord }: Props) => {
+const WorkoutForm = ({ setShowForm, setEditMode, setRecordId, editing, recordId, 
+    editableRecord, setEditableRecord }: Props) => {
     const user = useAuthValue();
     const setNotification = useNotification()?.setNotification;
 

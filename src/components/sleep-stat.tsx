@@ -1,13 +1,10 @@
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { useState, useEffect } from 'react';
 import { database } from '../firebaseClient';
-import { useAuthValue } from '../utils/authContext'; 
+import { useAuthValue } from '../utils/auth-context'; 
 import classNames from 'classnames';
-import Loader from './Loader';
-
-type SleepQuality = {
-    [index: string]: string
-}
+import Loader from './loader';
+import { SleepQuality } from '../model/sleep-stat';
 
 const SleepStats = () => {
     const [averageSleephours, setAverageSleephours] = useState(0);

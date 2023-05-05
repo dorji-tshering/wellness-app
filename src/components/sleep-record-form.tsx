@@ -1,22 +1,13 @@
-import { SetStateAction, useState } from 'react';
-import isNumeric from '../utils/isNumeric';
+import { useState } from 'react';
+import isNumeric from '../utils/is-numeric';
 import classNames from 'classnames';
 import { addDoc, collection } from 'firebase/firestore';
 import { database } from '../firebaseClient';
-import { useAuthValue } from '../utils/authContext';
-import { useNotification } from '../utils/notificationContext';
+import { useAuthValue } from '../utils/auth-context';
+import { useNotification } from '../utils/notification-context';
 import { Form, Field } from 'react-final-form';
 import { FORM_ERROR } from 'final-form';
-
-type Props = {
-    setShowSleepRecordForm: React.Dispatch<SetStateAction<boolean>>
-}
-
-type SleepData = {
-    date: string
-    sleepTime: string
-    sleepQuality: 'Excellent' | 'Good' | 'Poor' | null
-}
+import { Props, SleepData } from '../model/sleep-record-form';
 
 const SleepRecordForm = ({ setShowSleepRecordForm }: Props) => {
     const [showSleepQualities, setShowSleepQualities] = useState(false);

@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import Recipes from "../utils/recipes";
 import { AiOutlinePlus } from 'react-icons/ai';
-import RecipeModal from "./RecipeModal";
-import AddToMealPlanModal from "./AddToMealPlanModal";
-import NutrientStats from './NutrientStats';
+import RecipeModal from "./recipe-modal";
+import AddToMealPlanModal from "./add-to-meal-plan-modal";
+import NutrientStats from './nutrient-stat';
 
 
 const DisplayRecipe = () => {

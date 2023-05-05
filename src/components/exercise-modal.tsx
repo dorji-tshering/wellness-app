@@ -1,10 +1,5 @@
-import { SetStateAction } from 'react';
-import Exercises from '../utils/meditationExercises';
-
-type Props = {
-    exerciseId: string
-    setExerciseId: React.Dispatch<SetStateAction<string>>
-}
+import { Props } from '../model/exercise-modal';
+import Exercises from '../utils/meditation-exercises';
 
 const MeditationModal = ({ exerciseId, setExerciseId }: Props) => {
     const exercise = Exercises.find((exercise) => exercise.id === exerciseId);

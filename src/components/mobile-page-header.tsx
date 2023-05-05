@@ -1,8 +1,4 @@
-import React from 'react'
-
-type Props = {
-    children: React.ReactNode;
-}
+import { Props } from "../model/mobile-page-header";
 
 const MobilePageHeader = ({children}: Props) => {
     return (

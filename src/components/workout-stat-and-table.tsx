@@ -1,24 +1,12 @@
 import { DocumentData, collection, deleteDoc, doc, onSnapshot, orderBy, query, where } from "firebase/firestore";
-import { useEffect, useState, SetStateAction } from 'react';
+import { useEffect, useState } from 'react';
 import { database } from "../firebaseClient";
-import { useAuthValue } from "../utils/authContext";
-import Loader from "./Loader";
-import { useNotification } from "../utils/notificationContext";
+import { useAuthValue } from "../utils/auth-context";
+import Loader from "./loader";
+import { useNotification } from "../utils/notification-context";
 import { GiTimeBomb, GiPathDistance, GiAtomCore } from 'react-icons/gi';
 import { MdHourglassEmpty } from 'react-icons/md';
-
-type Props = {
-    setEditMode: React.Dispatch<SetStateAction<boolean>>;
-    setShowWorkoutForm: React.Dispatch<SetStateAction<boolean>>;
-    setRecordId: React.Dispatch<SetStateAction<string>>;
-    setEditableRecord: React.Dispatch<SetStateAction<DocumentData>>;
-}
-
-type WorkoutStats = {
-    timeSpent: number;
-    caloriesBurned: number;
-    distanceCovered: number;
-}
+import { Props, WorkoutStats } from "../model/workout-stat-and-table";
 
 const WorkoutStatAndTable= ({ setEditMode, setShowWorkoutForm, setRecordId, setEditableRecord }: Props) => {
     const [records, setRecords] = useState<Array<DocumentData>>([]);

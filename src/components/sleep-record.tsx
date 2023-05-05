@@ -1,8 +1,8 @@
 import { DocumentData, collection, onSnapshot, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { database } from "../firebaseClient";
-import { useAuthValue } from "../utils/authContext";
-import Loader from "./Loader";
+import { useAuthValue } from "../utils/auth-context";
+import Loader from "./loader";
 
 const SleepRecord = () => {
     const [showRecordTable, setShowRecordTable] = useState(false);

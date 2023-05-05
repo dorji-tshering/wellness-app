@@ -1,21 +1,5 @@
-import { SetStateAction } from 'react';
 import Recipes from '../utils/recipes';
-
-type Props = {
-    recipeId: string, 
-    setViewRecipeWithID: React.Dispatch<SetStateAction<string>>
-}
-
-type Recipe = {
-    name: string;
-    id: string;
-    image: string;
-    ingredients: string[];
-    directions: string[];
-    nutrients: {
-        [index: string]: number | undefined
-    };
-}
+import { Props, Recipe } from '../model/recipe-modal';
 
 const RecipeModal = ({ recipeId, setViewRecipeWithID }: Props) => {
     const recipe: Recipe | undefined = Recipes.find((recipe) => recipe.id === recipeId);

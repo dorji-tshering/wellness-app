@@ -1,6 +1,6 @@
 import { useState } from "react";
-import ExcerciseModal from "./ExcerciseModal";
-import Exercises from "../utils/meditationExercises";
+import ExcerciseModal from "./exercise-modal";
+import Exercises from "../utils/meditation-exercises";
 
 
 const MeditationGrid = () => {

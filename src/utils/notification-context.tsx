@@ -1,12 +1,5 @@
-import { createContext, useContext, SetStateAction } from 'react';
-
-type Props = {
-    value: {
-        notification: string;
-        setNotification: React.Dispatch<SetStateAction<string>>
-    };
-    children: React.ReactNode;
-}
+import { createContext, useContext } from 'react';
+import { Props } from '../model/notification-context';
 
 const NotificationContext = createContext<Props['value'] | null>(null);
 

@@ -1,4 +1,4 @@
-import { useNotification } from "../utils/notificationContext";
+import { useNotification } from "../utils/notification-context";
 import { IoMdClose } from 'react-icons/io';
 
 const Notification = () => {

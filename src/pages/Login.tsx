@@ -1,7 +1,7 @@
-import Signin from "../components/Signin";
-import Register from "../components/Register";
+import Signin from '../components/signin';
+import Register from "../components/register";
 import { useEffect, useState } from "react";
-import { useAuthValue } from "../utils/authContext";
+import { useAuthValue } from "../utils/auth-context";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {

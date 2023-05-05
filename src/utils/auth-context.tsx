@@ -1,10 +1,6 @@
 import { createContext, useContext } from "react";
 import { User } from 'firebase/auth';
-
-type Props = {
-    value: User | null;
-    children: React.ReactNode;
-}
+import { Props } from "../model/auth-context";
 
 const AuthContext = createContext<User | null>(null);
 

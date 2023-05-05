@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
-
-type ReturnType = {
-    isMobile: boolean
-    checkingWidth: boolean
-}
+import { ReturnType } from "../model/use-media-query";
 
 /**
  * Check if the device-width < 768px

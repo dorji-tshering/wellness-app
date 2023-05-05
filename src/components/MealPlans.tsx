@@ -1,17 +1,14 @@
 import { DocumentData, collection, deleteDoc, doc, onSnapshot, query, updateDoc, where } from "firebase/firestore";
-import { SetStateAction, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { MdOutlineArrowBack, MdRadioButtonUnchecked, MdCheckCircle } from 'react-icons/md';
 import { database } from '../firebaseClient';
-import { useAuthValue } from "../utils/authContext";
-import MealPlanDetails from "./MealPlanDetails";
-import Loader from "./Loader";
+import { useAuthValue } from "../utils/auth-context";
+import MealPlanDetails from "./meal-plan-details";
+import Loader from "./loader";
 import { RiDeleteBin6Line, RiEyeLine } from 'react-icons/ri';
-import { useNotification } from "../utils/notificationContext";
+import { useNotification } from "../utils/notification-context";
 import classNames from "classnames";
-
-type Props = {
-    setShowMealPlans: React.Dispatch<SetStateAction<boolean>>
-}
+import { Props } from "../model/mealplans";
 
 const MealPlans = ({ setShowMealPlans }: Props) => {
     const [mealPlans, setMealPlans] = useState<Array<DocumentData>>([]);
