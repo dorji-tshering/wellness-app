@@ -7,12 +7,7 @@ import { collection, onSnapshot, orderBy, query, where } from "firebase/firestor
 import { database } from "../firebaseClient";
 import { GiAtomCore, GiPathDistance, GiTimeBomb } from "react-icons/gi";
 import Loader from "../components/loader";
-
-type WorkoutStats = {
-    timeSpent: number;
-    caloriesBurned: number;
-    distanceCovered: number;
-}
+import { WorkoutStats } from "../model/workout-stat-and-table";
 
 const Home = () => {
     const [settingName, setSettingName] = useState(false);
@@ -75,7 +70,6 @@ const Home = () => {
                 });
                 window.location.reload();
             }catch(err: any) {
-                console.log(err.code)
                 submitButtonRef.current.disabled = false;
                 setSettingName(false);
             }

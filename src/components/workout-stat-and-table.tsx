@@ -44,9 +44,9 @@ const WorkoutStatAndTable= ({ setEditMode, setShowWorkoutForm, setRecordId, setE
                     distanceCovered,
                 });
                 setLoadingData(false);
-        });
+            });
 
-        return () => unsubscribe();
+            return () => unsubscribe();
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);

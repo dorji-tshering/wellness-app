@@ -44,6 +44,7 @@ const MealPlans = ({ setShowMealPlans }: Props) => {
         setDeleting(true);
         await deleteDoc(doc(database, 'mealplans', mealplanIdToDelete));
         setNotification && setNotification('Meal plan deleted successfully.');
+        activeMealplanRef.current = null;
         setDeleting(false);
         setMealplanIdToDelete('');
     }

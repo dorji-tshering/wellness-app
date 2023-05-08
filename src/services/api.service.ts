@@ -1,4 +1,3 @@
-import { FORM_ERROR } from 'final-form';
 import { DocumentData, DocumentReference, DocumentSnapshot, Query, QuerySnapshot, addDoc, collection, doc, getCountFromServer, getDocs, onSnapshot, updateDoc } from "firebase/firestore";
 import { auth, database } from "../firebaseClient";
 import { MealDataType } from "../model/add-to-meal-plan-modal";
@@ -118,13 +117,6 @@ export const loginWithEmailAndPassword_ = async(email: string, password: string)
 export const addSleepRecord_ = async(userId: string, values: SleepData) => {
     const { date, sleepTime, sleepQuality } = values;
 
-    if(!sleepTime || !sleepTime.trim()) {
-        return { sleepTime: 'Sleep time is required' }
-    }
-
-    if(!sleepQuality) {
-        return { sleepQuality: 'Select your sleep quality' }
-    }
     addDoc(collection(database, 'sleeprecords'), {
         date: date,
         sleepTime: parseFloat(sleepTime),
@@ -135,9 +127,6 @@ export const addSleepRecord_ = async(userId: string, values: SleepData) => {
 
 export const addWorkoutRecord_ = async(userId: string, values: FormData) => {
     const { caloriesBurned, distanceCovered, date, timeSpent } = values;
-    if((!caloriesBurned || !caloriesBurned.trim()) && (!distanceCovered || !distanceCovered.trim())) {
-        return { [FORM_ERROR]: 'Either distance or calories field is required' }
-    }
 
     addDoc(collection(database, 'workout'), {
         date: date,
@@ -150,9 +139,6 @@ export const addWorkoutRecord_ = async(userId: string, values: FormData) => {
 
 export const editWorkoutRecord_ = async(recordId: string, values: FormData) => {
     const { caloriesBurned, distanceCovered, date, timeSpent } = values;
-    if((!caloriesBurned || !caloriesBurned.trim()) && (!distanceCovered || !distanceCovered.trim())) {
-        return { [FORM_ERROR]: 'Either distance or calories field is required' }
-    }
 
     updateDoc(doc(database, 'workout', recordId), {
         date: date,

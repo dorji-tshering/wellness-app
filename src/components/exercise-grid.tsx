@@ -16,7 +16,7 @@ const MeditationGrid = () => {
                         key={idx}
                         onClick={() => setExerciseId(exercise.id)}>
                         <h2 className="font-bold text-lg">{ exercise.title }</h2>
-                        <p className="line-clamp-3">{ exercise.excerpt }</p>
+                        <p className="line-clamp-3 text-gray-600">{ exercise.excerpt }</p>
                         <span className="block text-sm font-medium text-gray-500 mt-2 text-right">{ exercise.category }</span>
                     </div>
                 )) }

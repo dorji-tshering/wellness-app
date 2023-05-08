@@ -17,7 +17,7 @@ const MeditationModal = ({ exerciseId, setExerciseId }: Props) => {
                         text-gray-500 hover:text-inherit hover:shadow-md h-fit' 
                             onClick={() => setExerciseId('')}>CLOSE</button>
                     </header>
-                    <section>
+                    <section className='text-gray-600'>
                         { exercise?.steps ? (
                             <>
                                 <p className='mb-4'>{ exercise.excerpt }</p>

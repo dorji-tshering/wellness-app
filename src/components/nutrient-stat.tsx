@@ -87,7 +87,7 @@ const NutrientStats = () => {
                     <p className='mb-3 text-xs text-gray-600 font-medium'>Active plan: <span className='text-theme font-bold'>{activeMealplan}</span></p>
                     <div className='flex flex-wrap'>
                         { Object.keys(nutrientStats).sort().map((nutrient, idx) => (
-                            <div className='border border-black flex px-3 py-1 mb-5 mr-3 sm:mr-6 rounded-md'
+                            <div className='border border-black flex px-3 py-1 mb-4 mr-3 sm:mr-6 rounded-md'
                                 key={idx}>
                                 <p className='mr-2 text-sm'>{ nutrient.charAt(0).toUpperCase() + nutrient.slice(1) + ':' }</p> 
                                 <span className='font-bold text-gray-700'>{ nutrientStats[nutrient] }</span>
@@ -98,6 +98,9 @@ const NutrientStats = () => {
             ) : (
                 <div>
                     <p>No nutrient stats to show for now. Stats will show here based on your active meal plan after you have added a recipe to the plan.</p>
+                    { activeMealplan && <p className='mt-3 text-xs text-gray-600 font-medium'>
+                        Active plan: <span className='text-theme font-bold'>{activeMealplan}</span>
+                    </p> }
                 </div>
             ) }
         </div>

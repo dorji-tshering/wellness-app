@@ -13,6 +13,12 @@ const WorkoutForm = ({ setShowForm, setEditMode, setRecordId, editing, recordId,
     const setNotification = useNotification()?.setNotification;
 
     const handleWorkoutRecordAdd = async(values: FormData) => {
+        const { caloriesBurned, distanceCovered } = values;
+
+        if((!caloriesBurned || !caloriesBurned.trim()) && (!distanceCovered || !distanceCovered.trim())) {
+            return { [FORM_ERROR]: 'Either distance or calories field is required' }
+        }
+
         try {
             user && await addWorkoutRecord(user.uid, values);
             setNotification && setNotification('Record added successfully.');
@@ -23,6 +29,11 @@ const WorkoutForm = ({ setShowForm, setEditMode, setRecordId, editing, recordId,
     }
 
     const handleWorkoutRecordEdit = async(values: FormData) => {
+        const { caloriesBurned, distanceCovered } = values;
+
+        if((!caloriesBurned || !caloriesBurned.trim()) && (!distanceCovered || !distanceCovered.trim())) {
+            return { [FORM_ERROR]: 'Either distance or calories field is required' }
+        }
         try {
             recordId && editWorkoutRecord(recordId, values);
             setNotification && setNotification('Record updated successfully.');

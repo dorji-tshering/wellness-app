@@ -16,7 +16,7 @@ const RecipeModal = ({ recipeId, setViewRecipeWithID }: Props) => {
                         text-gray-500 hover:text-inherit hover:shadow-md h-fit' 
                             onClick={() => setViewRecipeWithID('')}>CLOSE</button>
                     </header>
-                    <section>
+                    <section className='text-gray-600'>
                         <div className='h-[150px] sm:h-[200px] md:h-[250px] overflow-hidden'>
                             <img className='object-cover h-full w-full' 
                                 src={recipe?.image} 

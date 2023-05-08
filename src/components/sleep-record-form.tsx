@@ -28,7 +28,19 @@ const SleepRecordForm = ({ setShowSleepRecordForm }: Props) => {
         <div className='fixed top-0 right-0 left-0 bottom-0 bg-black/30 z-30 flex justify-center items-center px-4 py-5'
             onClick={() => setShowSleepRecordForm(false)}>
             <div className="max-h-full overflow-auto rounded-md" onClick={(e) => e.stopPropagation()}>
-                <Form onSubmit={handleSleepRecordAdd}>
+                <Form onSubmit={handleSleepRecordAdd}
+                    validate={(values) => {
+                        const { sleepQuality, sleepTime } = values;
+                        const errors: {sleepTime?: string, sleepQuality?: string} = {};
+                        if(!sleepTime || !sleepTime.trim()) {
+                            errors.sleepTime = 'Sleep time is required';
+                        }
+                    
+                        if(!sleepQuality) {
+                            errors.sleepQuality = 'Select your sleep quality';
+                        }
+                        return errors;
+                    }}>
                     {({ handleSubmit, submitting, values, submitError }) => (
                         <>
                             <form onSubmit={handleSubmit}
@@ -53,14 +65,14 @@ const SleepRecordForm = ({ setShowSleepRecordForm }: Props) => {
                                         {({ input, meta }) => (
                                             <>
                                                 <label className='block'>
-                                                    Sleep timeeee <span className='text-gray-400 text-sm'>(in hours)</span>
+                                                    Sleep time <span className='text-gray-400 text-sm'>(in hours)</span>
                                                     <input 
                                                         {...input}
                                                         inputMode='decimal'   
                                                         className='input-style block' />
                                                 </label>
-                                                { (meta.error || meta.submitError) && meta.touched && (<span className='max-w-[200px] block mt-1 text-xs text-red-600'>
-                                                    {meta.error || meta.submitError}
+                                                { meta.error && meta.touched && (<span className='max-w-[200px] block mt-1 text-xs text-red-600'>
+                                                    { meta.error }
                                                     </span>
                                                 ) }
                                             </>
@@ -78,8 +90,8 @@ const SleepRecordForm = ({ setShowSleepRecordForm }: Props) => {
                                                     onClick={() => setShowSleepQualities(true)}>
                                                     { values.sleepQuality ?? '--select quality--' }
                                                 </span>
-                                                    { meta.submitError && <span className='max-w-[200px] block mt-1 text-xs text-red-600'>
-                                                    { meta.submitError }
+                                                    { meta.error && meta.touched && <span className='max-w-[200px] block mt-1 text-xs text-red-600'>
+                                                    { meta.error }
                                                 </span> }
                                             </>
                                         )}
