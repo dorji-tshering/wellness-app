@@ -14,6 +14,7 @@ const Fitness = lazy(() => import('./pages/fitness'));
 const Nutrition = lazy(() => import('./pages/nutrition'));
 const Wellness = lazy(() => import('./pages/wellness'));
 const Login = lazy(() => import('./pages/login'));
+const NotFound = lazy(() => import('./pages/not-found'));
 
 function App() {
     const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -28,6 +29,7 @@ function App() {
     }, [loadingUser, currentUser]);
 
     useEffect(() => {
+        console.log('hello')
         onAuthStateChanged(auth, (user) => {
             if(user) {
                 setCurrentUser(user); 
@@ -54,6 +56,7 @@ function App() {
                         <Route path="/fitness" element={<Fitness/>}/>
                         <Route path="/nutrition" element={<Nutrition/>}/>
                         <Route path="/wellness" element={<Wellness/>}/>
+                        <Route path='*' element={<NotFound/>}/>
                     </Routes>
                 </Suspense>
             </Layout>

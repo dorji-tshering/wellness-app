@@ -5,6 +5,7 @@ import IsMobile from "../utils/use-media-query";
 import WorkoutForm from "../components/workout-form";
 import WorkoutStatAndTable from "../components/workout-stat-and-table";
 import { DocumentData } from "firebase/firestore";
+import { ErrorBoundary } from "react-error-boundary";
 
 const Fitness = () => {
     const {isMobile} = IsMobile();
@@ -53,11 +54,13 @@ const Fitness = () => {
             ) }
 
             <div>
-                <WorkoutStatAndTable 
-                    setEditMode={setEditMode} 
-                    setShowWorkoutForm={setShowWorkoutForm} 
-                    setRecordId={setRecordId}
-                    setEditableRecord={setEditableRecord}/>
+                <ErrorBoundary fallback={<div>Something went wrong</div>}>
+                    <WorkoutStatAndTable 
+                        setEditMode={setEditMode} 
+                        setShowWorkoutForm={setShowWorkoutForm} 
+                        setRecordId={setRecordId}
+                        setEditableRecord={setEditableRecord}/>
+                </ErrorBoundary>
             </div>
         </div>
     )

@@ -11,7 +11,7 @@ import { listenToDocs } from "../services/facade.service";
 
 const WorkoutStatAndTable= ({ setEditMode, setShowWorkoutForm, setRecordId, setEditableRecord }: Props) => {
     const [records, setRecords] = useState<Array<DocumentData>>([]);
-    const [loadingData, setLoadingData] = useState(true); 
+    const [loadingData, setLoadingData] = useState(true);      
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [deleteRecordId, setDeleteRecordId] = useState('');
     const [deleting, setDeleting] = useState(false);
@@ -37,7 +37,7 @@ const WorkoutStatAndTable= ({ setEditMode, setShowWorkoutForm, setRecordId, setE
                     caloriesBurned += record.data().caloriesBurned;
                     distanceCovered += record.data().distanceCovered;
                 })
-
+                
                 setWorkoutStats({
                     timeSpent,
                     caloriesBurned,
