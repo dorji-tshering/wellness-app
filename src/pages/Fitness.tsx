@@ -4,15 +4,15 @@ import MobilePageHeader from "../components/mobile-page-header";
 import IsMobile from "../utils/use-media-query";
 import WorkoutForm from "../components/workout-form";
 import WorkoutStatAndTable from "../components/workout-stat-and-table";
-import { DocumentData } from "firebase/firestore";
 import { ErrorBoundary } from "react-error-boundary";
+import { WorkoutRecord } from "../model/workout-stat-and-table";
 
 const Fitness = () => {
     const {isMobile} = IsMobile();
     const [showWorkoutForm, setShowWorkoutForm] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const [recordId, setRecordId] = useState('');
-    const [editableRecord, setEditableRecord] = useState<DocumentData | null>(null);
+    const [editableRecord, setEditableRecord] = useState<WorkoutRecord | null>(null);
 
     return (
         <div>

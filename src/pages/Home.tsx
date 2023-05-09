@@ -3,25 +3,21 @@ import { useAuthValue } from "../utils/auth-context";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import SleepStats from "../components/sleep-stat";
 import NutrientStats from "../components/nutrient-stat";
-import { collection, onSnapshot, orderBy, query, where } from "firebase/firestore";
-import { database } from "../firebaseClient";
 import { GiAtomCore, GiPathDistance, GiTimeBomb } from "react-icons/gi";
 import Loader from "../components/loader";
-import { WorkoutStats } from "../model/workout-stat-and-table";
+import { useAppDispatch, useAppSelector } from "../state/hooks";
+import { fetchWorkoutStats, selectStatus, selectWorkoutStats } from "../state/workout-stats/workout-stat.slice";
 
 const Home = () => {
     const [settingName, setSettingName] = useState(false);
     const [displayName, setDisplayName] = useState<string>('');
     const [modalOn, setModalOn] = useState(false);
-    const [loadingData, setLoadingData] = useState(true);
-    const [workoutStats, setWorkoutStats] = useState<WorkoutStats>({
-        timeSpent: 0,
-        caloriesBurned: 0,
-        distanceCovered: 0,
-    });
     const submitButtonRef = useRef<HTMLButtonElement>(null);
     const spaceRef = useRef(0);
     const user = useAuthValue();
+    const dispatch = useAppDispatch();
+    const workoutStats = useAppSelector(selectWorkoutStats);
+    const status = useAppSelector(selectStatus);
 
     useEffect(() => {
         if(user && !user.displayName) {
@@ -31,31 +27,11 @@ const Home = () => {
     }, []);
 
     useEffect(() => {
-        if(user) {
-            const q = query(collection(database, 'workout'), where('userId', '==', user.uid), orderBy('date', 'desc'));
-            const unsubscribe = onSnapshot(q, (querySnapshot) => {
-                let timeSpent = 0;
-                let caloriesBurned = 0;
-                let distanceCovered = 0;
-
-                querySnapshot.docs.forEach((record) => {
-                    timeSpent += record.data().timeSpent;
-                    caloriesBurned += record.data().caloriesBurned;
-                    distanceCovered += record.data().distanceCovered;
-                })
-
-                setWorkoutStats({
-                    timeSpent,
-                    caloriesBurned,
-                    distanceCovered,
-                });
-                setLoadingData(false);
-        });
-
-        return () => unsubscribe();
+        if(user && status === 'idle') {
+            dispatch(fetchWorkoutStats(user.uid));
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[]);
+    }, []);
 
     const updateDisplayName = async(event: FormEvent) => {
         event.preventDefault();
@@ -131,7 +107,7 @@ const Home = () => {
 
             <div className="my-10">
                 <h1 className="font-bold text-gray-600 text-lg mb-5">My Fitness Goals</h1>
-                { loadingData ? (
+                { status === 'idle' || status === 'pending' ? (
                     <div className="w-full relative h-[200px]">
                         <Loader/>
                     </div>

@@ -6,11 +6,14 @@ import { FORM_ERROR } from 'final-form';
 import classNames from 'classnames';
 import { FormData, Props,  } from '../model/workout-form';
 import { addWorkoutRecord, editWorkoutRecord } from '../services/facade.service';
+import { useAppDispatch } from '../state/hooks';
+import { fetchWorkoutStats } from '../state/workout-stats/workout-stat.slice';
 
 const WorkoutForm = ({ setShowForm, setEditMode, setRecordId, editing, recordId, 
     editableRecord, setEditableRecord }: Props) => {
     const user = useAuthValue();
     const setNotification = useNotification()?.setNotification;
+    const dispatch = useAppDispatch();
 
     const handleWorkoutRecordAdd = async(values: FormData) => {
         const { caloriesBurned, distanceCovered } = values;
@@ -22,6 +25,7 @@ const WorkoutForm = ({ setShowForm, setEditMode, setRecordId, editing, recordId,
         try {
             user && await addWorkoutRecord(user.uid, values);
             setNotification && setNotification('Record added successfully.');
+            user && await dispatch(fetchWorkoutStats(user.uid));
             setShowForm(false);
         }catch(err: any) {
             return { [FORM_ERROR]: err.code };
@@ -37,6 +41,7 @@ const WorkoutForm = ({ setShowForm, setEditMode, setRecordId, editing, recordId,
         try {
             recordId && editWorkoutRecord(recordId, values);
             setNotification && setNotification('Record updated successfully.');
+            user && await dispatch(fetchWorkoutStats(user.uid));
             setRecordId('');
             setEditMode(false);
             setEditableRecord(null);
@@ -61,10 +66,10 @@ const WorkoutForm = ({ setShowForm, setEditMode, setRecordId, editing, recordId,
                 <Form onSubmit={editing ? handleWorkoutRecordEdit : handleWorkoutRecordAdd}
                     initialValues={
                         (editing && editableRecord) ? {
-                            date: editableRecord.data().date,
-                            timeSpent: editableRecord.data().timeSpent.toString(),
-                            caloriesBurned: editableRecord.data().caloriesBurned.toString(),
-                            distanceCovered: editableRecord.data().distanceCovered.toString(),
+                            date: editableRecord.date,
+                            timeSpent: editableRecord.timeSpent.toString(),
+                            caloriesBurned: editableRecord.caloriesBurned.toString(),
+                            distanceCovered: editableRecord.distanceCovered.toString(),
                         }: undefined
                     }>
                     {({ handleSubmit, submitError, submitting, pristine }) => (

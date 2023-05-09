@@ -1,4 +1,4 @@
-import { DocumentData, collection, deleteDoc, doc, orderBy, query, where } from "firebase/firestore";
+import { deleteDoc, doc } from "firebase/firestore";
 import { useEffect, useState } from 'react';
 import { database } from "../firebaseClient";
 import { useAuthValue } from "../utils/auth-context";
@@ -7,46 +7,26 @@ import { useNotification } from "../utils/notification-context";
 import { GiTimeBomb, GiPathDistance, GiAtomCore } from 'react-icons/gi';
 import { MdHourglassEmpty } from 'react-icons/md';
 import { Props, WorkoutStats } from "../model/workout-stat-and-table";
-import { listenToDocs } from "../services/facade.service";
+import { selectRecords, selectStatus, selectWorkoutStats } from "../state/workout-stats/workout-stat.slice";
+import { useAppDispatch, useAppSelector } from "../state/hooks";
+import { fetchWorkoutStats } from "../state/workout-stats/workout-stat.slice";
+import { useSelector } from 'react-redux';
 
 const WorkoutStatAndTable= ({ setEditMode, setShowWorkoutForm, setRecordId, setEditableRecord }: Props) => {
-    const [records, setRecords] = useState<Array<DocumentData>>([]);
-    const [loadingData, setLoadingData] = useState(true);      
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [deleteRecordId, setDeleteRecordId] = useState('');
     const [deleting, setDeleting] = useState(false);
-    const [workoutStats, setWorkoutStats] = useState<WorkoutStats>({
-        timeSpent: 0,
-        caloriesBurned: 0,
-        distanceCovered: 0,
-    });
     const user = useAuthValue();
     const setNotification = useNotification()?.setNotification;
 
+    const status = useAppSelector(selectStatus);
+    const workoutStats = useSelector(selectWorkoutStats);
+    const records = useSelector(selectRecords);
+    const dispatch = useAppDispatch();
+
     useEffect(() => {
-        if(user) {
-            const q = query(collection(database, 'workout'), where('userId', '==', user.uid), orderBy('date', 'desc'));
-            const unsubscribe = listenToDocs(q, (querySnapshot) => {
-                setRecords(querySnapshot.docs);
-                let timeSpent = 0;
-                let caloriesBurned = 0;
-                let distanceCovered = 0;
-
-                querySnapshot.docs.forEach((record) => {
-                    timeSpent += record.data().timeSpent;
-                    caloriesBurned += record.data().caloriesBurned;
-                    distanceCovered += record.data().distanceCovered;
-                })
-                
-                setWorkoutStats({
-                    timeSpent,
-                    caloriesBurned,
-                    distanceCovered,
-                });
-                setLoadingData(false);
-            });
-
-            return () => unsubscribe();
+        if(user && status === 'idle') {
+           dispatch(fetchWorkoutStats(user.uid));
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
@@ -55,19 +35,20 @@ const WorkoutStatAndTable= ({ setEditMode, setShowWorkoutForm, setRecordId, setE
         setDeleting(true);
         await deleteDoc(doc(database, 'workout', deleteRecordId));
         setNotification && setNotification('Record deleted successfully.');
+        user && await dispatch(fetchWorkoutStats(user.uid));
         setDeleteRecordId('');
         setDeleting(false);
         setConfirmDelete(false);
     }
 
-    const showEditForm = (recordId: string, record: DocumentData) => {
+    const showEditForm = (recordId: string, record: WorkoutStats & {id: string, date: string}) => {
         setEditMode(true);
         setShowWorkoutForm(true);
         setEditableRecord(record);
         setRecordId(recordId);
     }
 
-    if(loadingData) {
+    if(status === 'idle' || status === 'pending') {
         return (
             <div className="w-full relative h-[200px]">
                 <Loader/>
@@ -94,7 +75,7 @@ const WorkoutStatAndTable= ({ setEditMode, setShowWorkoutForm, setRecordId, setE
                     </div>
                 </div>
             ) }
-            { records.length > 0 ? (
+            { !!records.length ? (
                     <>
                         <p className="mt-3 mb-5 text-center">Maintain your workout records here and stay fit!</p>
                         {/* workout record table */}
@@ -115,19 +96,19 @@ const WorkoutStatAndTable= ({ setEditMode, setShowWorkoutForm, setRecordId, setE
                                     ">
                                     <div className="workout-table-cell">
                                         <span className="sm:hidden font-medium">Date</span>
-                                        <span className="whitespace-nowrap text-gray-500 sm:text-inherit">{record.data().date}</span>
+                                        <span className="whitespace-nowrap text-gray-500 sm:text-inherit">{record.date}</span>
                                     </div>
                                     <div className="workout-table-cell">
                                         <span className="sm:hidden font-medium">Time <span className="text-xs text-gray-500 pl-[2px]">(hr)</span></span>
-                                        <span className="text-gray-500 sm:text-inherit">{record.data().timeSpent}</span>
+                                        <span className="text-gray-500 sm:text-inherit">{record.timeSpent}</span>
                                     </div>
                                     <div className="workout-table-cell">
                                         <span className="sm:hidden font-medium">Calories <span className="text-xs text-gray-500 pl-[2px]">(cal)</span></span>
-                                        <span className="text-gray-500 sm:text-inherit">{record.data().caloriesBurned}</span>
+                                        <span className="text-gray-500 sm:text-inherit">{record.caloriesBurned}</span>
                                     </div>
                                     <div className="workout-table-cell">
                                         <span className="sm:hidden font-medium">Distance <span className="text-xs text-gray-500 pl-[2px]">(km)</span></span>
-                                        <span className="text-gray-500 sm:text-inherit">{record.data().distanceCovered}</span>
+                                        <span className="text-gray-500 sm:text-inherit">{record.distanceCovered}</span>
                                     </div>
                                     <div className="flex justify-between py-1 sm:py-2 px-3 font-medium">
                                         <button 

@@ -1,4 +1,4 @@
-import { DocumentData } from "firebase/firestore";
+import { WorkoutRecord } from "./workout-stat-and-table";
 
 export interface FormData {
     date: string;
@@ -11,8 +11,8 @@ export type Props = {
     setShowForm: React.Dispatch<React.SetStateAction<boolean>>
     setEditMode: React.Dispatch<React.SetStateAction<boolean>>
     setRecordId: React.Dispatch<React.SetStateAction<string>>
-    setEditableRecord: React.Dispatch<React.SetStateAction<DocumentData | null>>
+    setEditableRecord: React.Dispatch<React.SetStateAction<WorkoutRecord | null>>
     editing: boolean
     recordId?: string
-    editableRecord: DocumentData | null
+    editableRecord: WorkoutRecord | null
 }

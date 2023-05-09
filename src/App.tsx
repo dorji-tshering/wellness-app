@@ -29,7 +29,6 @@ function App() {
     }, [loadingUser, currentUser]);
 
     useEffect(() => {
-        console.log('hello')
         onAuthStateChanged(auth, (user) => {
             if(user) {
                 setCurrentUser(user); 

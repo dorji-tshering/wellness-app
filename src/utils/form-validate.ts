@@ -1,5 +1,5 @@
 export const emailValidate = (email: string, registering = false) => {
-    const allowedEmails = ['dorji@gmail.com', 'tshering@gmail.com'];
+    const allowedEmails = ['dorji@gmail.com', 'tshering@gmail.com', 'abc@gmail.com'];
 
     if(email) {
         if(email.trim() === '') {

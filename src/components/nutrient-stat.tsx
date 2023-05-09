@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import Loader from './loader';
 import { useAuthValue } from '../utils/auth-context';
 import { Nutrients } from '../model/nutrient-stat';
-import { listenToDocs } from '../services/facade.service';
+import { listenDocs } from '../services/facade.service';
 
 const NutrientStats = () => {
     const [nutrientStats, setNutrientStats] = useState<Nutrients | null>(null);
@@ -18,7 +18,7 @@ const NutrientStats = () => {
     useEffect(() => {
         if(user) {
             const q = query(collection(database, 'mealplans'), where('active', '==', true), where('userId', '==', user.uid));
-            const unsubscribe = listenToDocs(q, (querySnapshot) => {
+            const unsubscribe = listenDocs(q, (querySnapshot) => {
                 if(querySnapshot.docs[0]?.exists()) {
                     const stats: Nutrients = {};
                     const mealPlan = querySnapshot.docs[0];

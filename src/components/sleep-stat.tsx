@@ -5,7 +5,7 @@ import { useAuthValue } from '../utils/auth-context';
 import classNames from 'classnames';
 import Loader from './loader';
 import { SleepQuality } from '../model/sleep-stat';
-import { listenToDocs } from '../services/facade.service';
+import { listenDocs } from '../services/facade.service';
 
 const SleepStats = () => {
     const [averageSleephours, setAverageSleephours] = useState(0);
@@ -21,7 +21,7 @@ const SleepStats = () => {
     useEffect(() => {
         if(user) {
             const q = query(collection(database, 'sleeprecords'), where('userId', '==', user.uid));
-            const unsubscribe = listenToDocs(q, (querySnapshot) => {
+            const unsubscribe = listenDocs(q, (querySnapshot) => {
                 if(querySnapshot.docs.length > 0) {
                     const recordLength = querySnapshot.docs.length;
                     let totalSleephours = 0;

@@ -6,32 +6,32 @@ import { MealDay } from "../model/meal-plan-details";
 import { SleepData } from "../model/sleep-record-form";
 import { FormData } from "../model/workout-form";
 
-export const fetchDocuments = async(query: Query<DocumentData>) => {
+export const getDocumentsAPI = async(query: Query<DocumentData>) => {
     const querySnapshot = await getDocs(query);
     return querySnapshot.docs;
 }
 
-export const addRecipeToMealPlan = async(recipeId: string, values: MealDataType) => {
+export const addToMealplanAPI = async(recipeId: string, values: MealDataType) => {
     const { meal, mealDay, mealPlan } = values;
     updateDoc(doc(database, 'mealplans', mealPlan?.id), {
         [`${mealDay}.${meal}`]: recipeId, 
     })
 }
 
-export const logoutUser = async() => {
+export const logOutAPI = async() => {
     signOut(auth);
 }
 
-export const listenToDoc = (reference: DocumentReference<DocumentData>, 
+export const listenDocAPI = (reference: DocumentReference<DocumentData>, 
     callback: (snapshot: DocumentSnapshot<DocumentData>) => void) => {
     return onSnapshot(reference, callback);
 }
 
-export const listenToDocs_ = (query: Query<DocumentData>, callback: (snapshot: QuerySnapshot<DocumentData>) => void) => {
+export const listenDocsAPI = (query: Query<DocumentData>, callback: (snapshot: QuerySnapshot<DocumentData>) => void) => {
     return onSnapshot(query, callback);
 }
 
-export const resetMealday = (mealplanID: string, mealday: MealDay) => {
+export const resetMealsAPI = (mealplanID: string, mealday: MealDay) => {
     updateDoc(doc(database, 'mealplans', mealplanID), {
         [mealday]: {
             breakfast: '',
@@ -41,11 +41,11 @@ export const resetMealday = (mealplanID: string, mealday: MealDay) => {
     })
 }
 
-export const getMealplansCount_ = async() => {
+export const getMealplansCountAPI = async() => {
     return (await getCountFromServer(collection(database, 'mealplans'))).data().count;
 }
 
-export const createMealplan_ = async(mealplanName: string, userId: string, mealplanCount: number) => {
+export const createMealplanAPI = async(mealplanName: string, userId: string, mealplanCount: number) => {
     return addDoc(collection(database, 'mealplans'), {
         name: mealplanName,
         userId: userId,
@@ -88,7 +88,7 @@ export const createMealplan_ = async(mealplanName: string, userId: string, mealp
     });
 }
 
-export const toggleActiveMealplan_ = (
+export const toggleActiveMealplanAPI = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>, 
     isActiveMealPlan=false, 
     mealplanID: string, activeMealplanRef: React.MutableRefObject<string | null>
@@ -106,15 +106,15 @@ export const toggleActiveMealplan_ = (
     });
 }
 
-export const registerUserWithEmailAndPassword_ = async(email: string, password: string) => {
+export const registerUserWithEmailAndPasswordAPI = async(email: string, password: string) => {
     return createUserWithEmailAndPassword(auth, email, password)
 }
 
-export const loginWithEmailAndPassword_ = async(email: string, password: string) => {
+export const loginWithEmailAndPasswordAPI = async(email: string, password: string) => {
     return signInWithEmailAndPassword(auth, email, password);
 }
 
-export const addSleepRecord_ = async(userId: string, values: SleepData) => {
+export const addSleepRecordAPI = async(userId: string, values: SleepData) => {
     const { date, sleepTime, sleepQuality } = values;
 
     addDoc(collection(database, 'sleeprecords'), {
@@ -125,7 +125,7 @@ export const addSleepRecord_ = async(userId: string, values: SleepData) => {
     })
 }
 
-export const addWorkoutRecord_ = async(userId: string, values: FormData) => {
+export const addWorkoutRecordAPI = async(userId: string, values: FormData) => {
     const { caloriesBurned, distanceCovered, date, timeSpent } = values;
 
     addDoc(collection(database, 'workout'), {
@@ -137,7 +137,7 @@ export const addWorkoutRecord_ = async(userId: string, values: FormData) => {
     });
 }
 
-export const editWorkoutRecord_ = async(recordId: string, values: FormData) => {
+export const editWorkoutRecordAPI = async(recordId: string, values: FormData) => {
     const { caloriesBurned, distanceCovered, date, timeSpent } = values;
 
     updateDoc(doc(database, 'workout', recordId), {

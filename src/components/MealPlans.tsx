@@ -9,7 +9,7 @@ import { RiDeleteBin6Line, RiEyeLine } from 'react-icons/ri';
 import { useNotification } from "../utils/notification-context";
 import classNames from "classnames";
 import { Props } from "../model/mealplans";
-import { listenToDocs } from "../services/facade.service";
+import { listenDocs } from "../services/facade.service";
 import { toggleActiveMealplan } from "../services/facade.service";
 
 const MealPlans = ({ setShowMealPlans }: Props) => {
@@ -25,7 +25,7 @@ const MealPlans = ({ setShowMealPlans }: Props) => {
     useEffect(() => {
         if(user) {
             const q = query(collection(database, 'mealplans'), where('userId', '==', user?.uid))
-            const unsubscribe = listenToDocs(q, (querySnapshot) => {
+            const unsubscribe = listenDocs(q, (querySnapshot) => {
                 setMealPlans(querySnapshot.docs);
                 setLoadingData(false);
             });
