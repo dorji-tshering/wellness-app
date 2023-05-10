@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { DocumentData, collection, query, where } from 'firebase/firestore';
 import Loader from './loader';
 import { useAuthValue } from '../utils/auth-context';
-import { database } from '../firebaseClient';
 import { useNotification } from '../utils/notification-context';
 import { Form, Field } from 'react-final-form';
 import { FORM_ERROR } from 'final-form';
 import { AddToMealplanError, Meal, MealDataType, MealDay, Props } from '../model/add-to-meal-plan-modal';
-import { addToMealplan, getDocuments } from '../services/facade.service';
+import { useAppDispatch, useAppSelector } from '../state/hooks';
+import { addRecipeToMealplan, fetchMealplans, selectFetchStatus, selectMealplans } from '../state/mealplans/mealplans.slice';
 
 const mealDayOptions: {[index: string]: string} = {
     'Day One': 'dayOne',
@@ -22,29 +21,26 @@ const mealDayOptions: {[index: string]: string} = {
 const mealOptions = ['Breakfast', 'Lunch', 'Dinner'];
 
 const AddToMealPlanModal = ({ recipeId, setRecipeIdToAdd }: Props) => {
-    const [mealPlans, setMealPlans] = useState<Array<DocumentData> | null>(null);
-    const [loadingData, setLoadingData] = useState(true);
     const [showMealPlanOptions, setShowMealPlanOptions] = useState(false);
     const [showMealDayOptions, setShowMealDayOptions] = useState(false);
     const [showMealOptions, setShowMealOptions] = useState(false);
     const user = useAuthValue();
     const setNotification = useNotification()?.setNotification;
+    const fetchStatus = useAppSelector(selectFetchStatus);
+    const mealPlans = useAppSelector(selectMealplans);
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
-        const q = query(collection(database, 'mealplans'), where('userId', '==', user?.uid));
-        getDocuments(q).then((documents) => {
-            setMealPlans(documents);
-            setLoadingData(false);
-        }).catch((err) => {
-            console.log(err.code);
-        })
+        if(user && fetchStatus === 'idle') {
+            dispatch(fetchMealplans(user.uid));
+        }
         
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
 
-    const addRecipeToMealPlan = async(values: MealDataType) => {
+    const handleRecipeAddToMealplan = async(values: MealDataType) => {
         try {
-            await addToMealplan(recipeId, values);
+            await dispatch(addRecipeToMealplan({recipeId, values}));
             setNotification && setNotification('Recipe added to meal successfully.');
             setRecipeIdToAdd('');
         }catch(err: any) {
@@ -55,13 +51,13 @@ const AddToMealPlanModal = ({ recipeId, setRecipeIdToAdd }: Props) => {
     return (
         <div className="fixed top-0 right-0 left-0 bottom-0 bg-black/30 z-30 flex justify-center items-center px-4 py-5"
             onClick={() => setRecipeIdToAdd('')}>
-            { loadingData ? (
+            { fetchStatus === 'idle' || fetchStatus === 'pending' ? (
                 <div className='min-w-full xs:min-w-[360px] py-20 flex justify-center items-center bg-white rounded-md'>
                     <Loader/>
                 </div>
             ) : (
                 <div className="max-h-full overflow-auto rounded-md" onClick={(e) => e.stopPropagation()}>
-                    <Form onSubmit={addRecipeToMealPlan}
+                    <Form onSubmit={handleRecipeAddToMealplan}
                         validate={(values) => {
                             const errors: AddToMealplanError = {};
                             if(!values.meal) {
@@ -87,8 +83,8 @@ const AddToMealPlanModal = ({ recipeId, setRecipeIdToAdd }: Props) => {
                                                 <div className='flex flex-col mb-4'>
                                                     <p aria-label='Meal plan' onClick={() => setShowMealPlanOptions(true)}
                                                         className={classNames('mx-2 border border-gray-600 rounded-[4px] px-3 py-1 cursor-pointer', 
-                                                        !values.mealPlan?.data().name && 'text-gray-500')}>
-                                                        { values.mealPlan?.data().name ?? '--Select Mealplan--' }
+                                                        !values.mealPlan?.name && 'text-gray-500')}>
+                                                        { values.mealPlan?.name ?? '--Select Mealplan--' }
                                                     </p>
                                                     { meta.error && meta.touched && <span className="text-xs text-center text-red-700">
                                                         { meta.error }
@@ -148,14 +144,14 @@ const AddToMealPlanModal = ({ recipeId, setRecipeIdToAdd }: Props) => {
                                             <ul className='bg-white rounded-md py-2'>
                                                 { mealPlans.map((mealPlan, idx) => (
                                                     <li className={classNames('text-center py-2 px-8 cursor-pointer',
-                                                        values.mealPlan?.data().name === mealPlan.data().name ? 'bg-theme text-white' : 
+                                                        values.mealPlan?.name === mealPlan.name ? 'bg-theme text-white' : 
                                                         'hover:bg-gray-100')}
                                                         key={idx}
                                                         onClick={() => {
                                                             values.mealPlan = mealPlan;
                                                             setShowMealPlanOptions(false);
                                                         }}>
-                                                        { mealPlan.data().name }
+                                                        { mealPlan.name }
                                                     </li>
                                                 )) }
                                             </ul>

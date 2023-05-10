@@ -1,33 +1,22 @@
-import { DocumentData, doc } from 'firebase/firestore';
-import { useEffect } from 'react'
 import { useState } from 'react';
 import { MdOutlineArrowBack } from 'react-icons/md';
 import RecipeModal from './recipe-modal';
 import classNames from 'classnames';
 import { BiReset } from 'react-icons/bi';
-import { database } from '../firebaseClient';
-import Loader from './loader';
 import { Props } from '../model/meal-plan-details';
-import { listenDoc, resetMeals } from '../services/facade.service';
+import { useAppDispatch, useAppSelector } from '../state/hooks';
+import { resetAMeal, selectMealplans } from '../state/mealplans/mealplans.slice';
+import Loader from './loader';
 
 const MealPlanDetails = ({ mealPlanID, setMealplanIdToView }: Props) => {
-    const [mealPlanDetails, setMealPlanDetails] = useState<DocumentData | null>(null);
-    const [loadingData, setLoadingData] = useState(true);
     const [viewRecipeWithID, setViewRecipeWithID] = useState('');
     const mealDays = ['dayOne', 'dayTwo', 'dayThree', 'dayFour', 'dayFive', 'daySix', 'daySeven'] as const;
     const mealDaysMapping = ['Day One', 'Day Two', 'Day Three', 'Day Four', 'Day Five', 'Day Six', 'Day Seven'] as const;
+    const dispatch = useAppDispatch();
 
-    useEffect(() => {
-        const unsubscribe = listenDoc(doc(database, 'mealplans', mealPlanID), (querySnapshot) => {
-            setMealPlanDetails(querySnapshot);
-            setLoadingData(false);
-        });
+    const mealPlanDetails = useAppSelector(selectMealplans).find(plan => plan.id === mealPlanID);
 
-        return () => unsubscribe();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    if(loadingData) {
+    if(!mealPlanDetails) {
         return (
             <div className="w-full relative h-[200px]">
                 <Loader/>
@@ -45,7 +34,7 @@ const MealPlanDetails = ({ mealPlanID, setMealplanIdToView }: Props) => {
                     group transition-all duration-300 absolute left-0">
                     <MdOutlineArrowBack size={18} className="text-gray-500 group-hover:text-black"/>
                 </button>
-                <h2 className="font-medium md:text-lg">{mealPlanDetails?.data().name}</h2>
+                <h2 className="font-medium md:text-lg">{mealPlanDetails?.name}</h2>
             </header>
 
             <div className='mt-8 flex justify-center flex-wrap'>
@@ -55,12 +44,15 @@ const MealPlanDetails = ({ mealPlanID, setMealplanIdToView }: Props) => {
                             xs:max-w-[300px]'>
                         <h2 className='py-3 font-bold border-b text-center relative'>
                             { mealDaysMapping[idx] }
-                            { ( mealPlanDetails.data()[mealDay].breakfast || 
-                                mealPlanDetails.data()[mealDay].lunch ||
-                                mealPlanDetails.data()[mealDay].dinner ) && (
+                            { ( mealPlanDetails[mealDay].breakfast || 
+                                mealPlanDetails[mealDay].lunch ||
+                                mealPlanDetails[mealDay].dinner ) && (
                                 <button className='absolute group top-2 right-2 rounded-full text-gray-500 hover:ring-[3px]
                                     hover:ring-gray-200 hover:text-gray-600 transition-all from-neutral-500'
-                                    onClick={() => resetMeals(mealPlanID, mealDay)}>
+                                    onClick={() => dispatch(resetAMeal({
+                                        mealplanId: mealPlanID,
+                                        mealday: mealDay,
+                                    }))}>
                                     <BiReset size={20}/>
                                     <span className="absolute hidden whitespace-nowrap  group-hover:block w-[90px] left-1/2 -top-2 
                                         -translate-y-full px-2 py-1 -ml-[45px]
@@ -77,36 +69,36 @@ const MealPlanDetails = ({ mealPlanID, setMealplanIdToView }: Props) => {
                                 <p className='basis-1/2 text-right'>
                                     Breakfast : 
                                 </p>
-                                <button onClick={() => setViewRecipeWithID(mealPlanDetails.data()[mealDay].breakfast)}
-                                    disabled={mealPlanDetails.data()[mealDay].breakfast ? false : true}
+                                <button onClick={() => setViewRecipeWithID(mealPlanDetails[mealDay].breakfast)}
+                                    disabled={mealPlanDetails[mealDay].breakfast ? false : true}
                                     className={classNames('basis-1/2 text-left ml-2 font-medium', 
-                                    mealPlanDetails.data()[mealDay].breakfast ? 'text-theme hover:underline' : 
+                                    mealPlanDetails[mealDay].breakfast ? 'text-theme hover:underline' : 
                                     'text-gray-500')}>
-                                    { mealPlanDetails.data()[mealDay].breakfast ? ('#' + mealPlanDetails.data()[mealDay].breakfast) : 'Not added' }
+                                    { mealPlanDetails[mealDay].breakfast ? ('#' + mealPlanDetails[mealDay].breakfast) : 'Not added' }
                                 </button>
                             </div>
                             <div className='flex justify-center py-1'>
                                 <p className='basis-1/2 text-right'>
                                     Lunch : 
                                 </p>
-                                <button onClick={() => setViewRecipeWithID(mealPlanDetails.data()[mealDay].lunch)}
-                                    disabled={mealPlanDetails.data()[mealDay].lunch ? false : true}
+                                <button onClick={() => setViewRecipeWithID(mealPlanDetails[mealDay].lunch)}
+                                    disabled={mealPlanDetails[mealDay].lunch ? false : true}
                                     className={classNames('basis-1/2 text-left ml-2 font-medium', 
-                                    mealPlanDetails.data()[mealDay].lunch ? 'text-theme hover:underline' : 
+                                    mealPlanDetails[mealDay].lunch ? 'text-theme hover:underline' : 
                                     'text-gray-500')}>
-                                    { mealPlanDetails.data()[mealDay].lunch ? ('#' + mealPlanDetails.data()[mealDay].lunch) : 'Not added' }
+                                    { mealPlanDetails[mealDay].lunch ? ('#' + mealPlanDetails[mealDay].lunch) : 'Not added' }
                                 </button>
                             </div>
                             <div className='flex justify-center py-1'>
                                 <p className='basis-1/2 text-right'>
                                     Dinner : 
                                 </p>
-                                <button onClick={() => setViewRecipeWithID(mealPlanDetails.data()[mealDay].dinner)}
-                                    disabled={mealPlanDetails.data()[mealDay].dinner ? false : true}
+                                <button onClick={() => setViewRecipeWithID(mealPlanDetails[mealDay].dinner)}
+                                    disabled={mealPlanDetails[mealDay].dinner ? false : true}
                                     className={classNames('basis-1/2 text-left ml-2 font-medium', 
-                                    mealPlanDetails.data()[mealDay].dinner ? 'text-theme hover:underline' : 
+                                    mealPlanDetails[mealDay].dinner ? 'text-theme hover:underline' : 
                                     'text-gray-500')}>
-                                    { mealPlanDetails.data()[mealDay].dinner ? ('#' + mealPlanDetails.data()[mealDay].dinner) : 'Not added' }
+                                    { mealPlanDetails[mealDay].dinner ? ('#' + mealPlanDetails[mealDay].dinner) : 'Not added' }
                                 </button>
                             </div>
                         </div>

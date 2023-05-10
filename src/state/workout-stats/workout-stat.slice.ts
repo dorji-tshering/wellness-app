@@ -69,7 +69,6 @@ const workoutStatSlice = createSlice({
             state.stats = action.payload.stats;
             state.records = action.payload.records;
             state.status = 'succeeded';
-            console.log('mello')
         })
         .addCase(fetchWorkoutStats.rejected, (state) => {
             state.status = 'failed';

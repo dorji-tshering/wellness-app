@@ -6,6 +6,7 @@ import MealPlans from "../components/mealplans";
 import { useState } from "react";
 import MealPlanForm from "../components/mealplan-form";
 import classNames from "classnames";
+import NutrientStats from "../components/nutrient-stat";
 
 const Nutrition = () => {
     const {isMobile} = IsMobile();
@@ -70,7 +71,12 @@ const Nutrition = () => {
                     showMealPlans ? (
                         <MealPlans 
                             setShowMealPlans={setShowMealPlans}/>
-                    ) : <DisplayRecipe/>
+                    ) : (
+                        <>
+                            <NutrientStats/>
+                            <DisplayRecipe/>
+                        </>
+                    )
                 }
             </div>
         </>

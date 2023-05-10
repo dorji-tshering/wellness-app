@@ -1,30 +1,14 @@
-import { DocumentData, collection, query, where } from "firebase/firestore";
-import { useEffect, useState } from "react";
-import { database } from "../firebaseClient";
-import { useAuthValue } from "../utils/auth-context";
+import { useState } from "react";
 import Loader from "./loader";
-import { listenDocs } from "../services/facade.service";
+import { useAppSelector } from "../state/hooks";
+import { selectSleepRecords, selectStatus } from "../state/sleep-record/sleep-record.slice";
 
 const SleepRecord = () => {
     const [showRecordTable, setShowRecordTable] = useState(false);
-    const [sleepRecords, setSleepRecords] = useState<Array<DocumentData>>([]);
-    const [loadingData, setLoadingData] = useState(true);
-    const user = useAuthValue();
+    const fetchStatus = useAppSelector(selectStatus);
+    const sleepRecords = useAppSelector(selectSleepRecords);
 
-    useEffect(() => {
-        if(user) {
-            const q = query(collection(database, 'sleeprecords'), where('userId', '==', user.uid));
-            const unsubscribe = listenDocs(q, (querySnapshot) => {
-                setSleepRecords(querySnapshot.docs);
-                setLoadingData(false);
-            })
-
-            return () => unsubscribe();
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[]);
-
-    if(loadingData) {
+    if(fetchStatus === 'idle' || fetchStatus === 'pending') {
         return (
             <div className="w-full relative h-[200px]">
                 <Loader/>
@@ -59,18 +43,18 @@ const SleepRecord = () => {
                                         <div className="flex justify-between sm:block px-3 py-2 border-r border-r-mainBorder
                                             border-b border-b-mainBorder sm:border-b-0">
                                             <span className="sm:hidden font-medium">Date</span>
-                                            <span className="text-gray-500 sm:text-inherit">{ record.data().date }</span>
+                                            <span className="text-gray-500 sm:text-inherit">{ record.date }</span>
                                         </div>
                                         <div className="flex justify-between sm:block px-3 py-2 border-r border-r-mainBorder
                                             border-b border-b-mainBorder sm:border-b-0">
                                             <span className="sm:hidden font-medium">
                                                 Sleep time <span className="text-xs text-gray-500 pl-[2px]">(hrs)</span>
                                             </span>
-                                            <span className="text-gray-500 sm:text-inherit">{ record.data().sleepTime }</span>
+                                            <span className="text-gray-500 sm:text-inherit">{ record.sleepTime }</span>
                                         </div>
                                         <div className="flex justify-between sm:block px-3 py-2">
                                             <span className="sm:hidden font-medium">Sleep quality</span>
-                                            <span className="text-gray-500 sm:text-inherit">{ record.data().sleepQuality }</span>
+                                            <span className="text-gray-500 sm:text-inherit">{ record.sleepQuality }</span>
                                         </div>
                                     </div>
                                 )) }

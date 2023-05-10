@@ -13,7 +13,7 @@ export const getDocumentsAPI = async(query: Query<DocumentData>) => {
 
 export const addToMealplanAPI = async(recipeId: string, values: MealDataType) => {
     const { meal, mealDay, mealPlan } = values;
-    updateDoc(doc(database, 'mealplans', mealPlan?.id), {
+    mealPlan && updateDoc(doc(database, 'mealplans', mealPlan?.id), {
         [`${mealDay}.${meal}`]: recipeId, 
     })
 }
@@ -31,7 +31,7 @@ export const listenDocsAPI = (query: Query<DocumentData>, callback: (snapshot: Q
     return onSnapshot(query, callback);
 }
 
-export const resetMealsAPI = (mealplanID: string, mealday: MealDay) => {
+export const resetMealsAPI = async (mealplanID: string, mealday: MealDay) => {
     updateDoc(doc(database, 'mealplans', mealplanID), {
         [mealday]: {
             breakfast: '',
@@ -88,13 +88,11 @@ export const createMealplanAPI = async(mealplanName: string, userId: string, mea
     });
 }
 
-export const toggleActiveMealplanAPI = (
+export const toggleActiveMealplanAPI = async(
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>, 
-    isActiveMealPlan=false, 
     mealplanID: string, activeMealplanRef: React.MutableRefObject<string | null>
 ) => {
     event.stopPropagation();
-    if(isActiveMealPlan) return;
 
     if(activeMealplanRef.current) {
         updateDoc(doc(database, 'mealplans', activeMealplanRef.current as string), {

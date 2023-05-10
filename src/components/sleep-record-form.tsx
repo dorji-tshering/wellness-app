@@ -6,17 +6,22 @@ import { useNotification } from '../utils/notification-context';
 import { Form, Field } from 'react-final-form';
 import { FORM_ERROR } from 'final-form';
 import { Props, SleepData } from '../model/sleep-record-form';
-import { addSleepRecord } from '../services/facade.service';
+import { useAppDispatch } from '../state/hooks';
+import { addASleepRecord } from '../state/sleep-record/sleep-record.slice';
 
 const SleepRecordForm = ({ setShowSleepRecordForm }: Props) => {
     const [showSleepQualities, setShowSleepQualities] = useState(false);
     const user = useAuthValue();
     const setNotification = useNotification()?.setNotification;
     const sleepQualities = ['Excellent', 'Good', 'Poor'] as const;
+    const dispatch = useAppDispatch();
 
     const handleSleepRecordAdd = async(values: SleepData) => {
         try {
-            user && await addSleepRecord(user?.uid, values);
+            user && await dispatch(addASleepRecord({
+                userId: user.uid,
+                values,
+            }));
             setShowSleepRecordForm(false);
             setNotification &&  setNotification('Your record has been added successfully.');
         }catch(err: any) {

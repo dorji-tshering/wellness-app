@@ -4,22 +4,29 @@ import { useNotification } from "../utils/notification-context";
 import { Form, Field } from 'react-final-form';
 import { FORM_ERROR } from "final-form";
 import { MealPlanFormError, MealPlanProps, Props } from "../model/mealplan-form";
-import { getMealplansCount, createMealplan } from "../services/facade.service";
+import { getMealplansCount } from "../services/facade.service";
+import { useAppDispatch } from '../state/hooks';
+import { addMealplan } from '../state/mealplans/mealplans.slice';
 
 const MealPlanForm = ({ setAddMealPlan }: Props) => {
-    const [mealplanCount, setMealplanCount] = useState(0);
+    const [mealplansCount, setMealplansCount] = useState(0);
     const user = useAuthValue();
     const setNotification = useNotification()?.setNotification;
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
-        getMealplansCount().then((count) => setMealplanCount(count));
+        getMealplansCount().then((count) => setMealplansCount(count));
     }, []);
 
     const createNewMealPlan = async(values: MealPlanProps) => {
         const { mealplanName } = values;
 
         try {
-            user && await createMealplan(mealplanName, user?.uid, mealplanCount);
+            user && await dispatch(addMealplan({
+                mealplanName,
+                userId: user.uid,
+                mealplansCount
+            }));
         }catch(err: any) {
             return { [FORM_ERROR]: err.Error }
         }

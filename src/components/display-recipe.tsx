@@ -3,8 +3,6 @@ import Recipes from "../utils/recipes";
 import { AiOutlinePlus } from 'react-icons/ai';
 import RecipeModal from "./recipe-modal";
 import AddToMealPlanModal from "./add-to-meal-plan-modal";
-import NutrientStats from './nutrient-stat';
-
 
 const DisplayRecipe = () => {
     const [viewRecipeWithID, setViewRecipeWithID] = useState('');
@@ -15,8 +13,6 @@ const DisplayRecipe = () => {
             { viewRecipeWithID && <RecipeModal recipeId={viewRecipeWithID} setViewRecipeWithID={setViewRecipeWithID}/> }
 
             { recipeIdToAdd && <AddToMealPlanModal recipeId={recipeIdToAdd} setRecipeIdToAdd={setRecipeIdToAdd}/> }
-
-            <NutrientStats/>
 
             <h2 className="my-5">A list of recipes to keep you healthy.</h2>
             <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 gap-x-5 gap-y-10 lg:gap-y-16">

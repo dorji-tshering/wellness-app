@@ -1,5 +1,5 @@
-import { DocumentData } from "firebase/firestore";
 import { SetStateAction } from "react";
+import { MealPlan } from "./mealplans";
 
 export type Props = {
     recipeId: string
@@ -12,7 +12,7 @@ export type Meal = 'breakfast' | 'lunch' | 'dinner';
 export type MealDataType = {
     mealDay: MealDay | null
     meal: Meal | null
-    mealPlan: DocumentData | null
+    mealPlan: MealPlan | null
 }
 
 export type AddToMealplanError = {
