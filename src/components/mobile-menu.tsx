@@ -8,15 +8,18 @@ import { VscChromeClose } from 'react-icons/vsc';
 import { useAuthValue } from '../utils/auth-context';
 import { Props } from '../model/mobile-menu';
 import { logOut } from '../services/facade.service';
+import { resetAll, useAppDispatch } from '../state/hooks';
 
 const MobileMenu = ({showMenu, setShowMenu}: Props) => {
     const user = useAuthValue();
     const menuRef = useRef<HTMLDivElement>(null);
+    const dispatch = useAppDispatch();
 
     const logOutCurrentUser = async() => {
         try {
             await logOut();
             setShowMenu(false);
+            dispatch(resetAll());
         }catch(err: any) {
             console.log(err.code)
         }

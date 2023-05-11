@@ -5,6 +5,7 @@ import { addToMealplan, createMealplan, getDocuments, resetMeals, toggleActiveMe
 import { RootState } from '../store';
 import { MealPlan } from '../../model/mealplans';
 import { MealDataType, MealDay } from '../../model/add-to-meal-plan-modal';
+import { resetAll } from '../hooks';
 
 interface InitialState {
     mealplans: Array<MealPlan>
@@ -231,6 +232,7 @@ const mealplansSlice = createSlice({
                 dinner: '',
             }
         })
+        .addCase(resetAll, () => initialState)
     }
 });
 

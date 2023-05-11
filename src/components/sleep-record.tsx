@@ -1,12 +1,23 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Loader from "./loader";
 import { useAppSelector } from "../state/hooks";
 import { selectSleepRecords, selectStatus } from "../state/sleep-record/sleep-record.slice";
 
-const SleepRecord = () => {
+const SleepRecord = ({ startDate, endDate }: {startDate: string, endDate: string}) => {
     const [showRecordTable, setShowRecordTable] = useState(false);
     const fetchStatus = useAppSelector(selectStatus);
     const sleepRecords = useAppSelector(selectSleepRecords);
+
+    const filteredRecords = useMemo(() => {
+      if(startDate && endDate) {
+        return sleepRecords.filter(record => {
+          return record.date >= startDate && record.date <= endDate;
+        });
+      }else {
+        return sleepRecords;
+      } 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [startDate, endDate, sleepRecords]);
 
     if(fetchStatus === 'idle' || fetchStatus === 'pending') {
         return (
@@ -18,7 +29,7 @@ const SleepRecord = () => {
 
     return (
         <>
-            { sleepRecords.length > 0 && (
+            { filteredRecords.length > 0 && (
                 <div>
                     <button className="block text-gray-600 font-medium mb-6 hover:text-theme hover:underline"
                         onClick={() => setShowRecordTable(!showRecordTable)}>{ showRecordTable ? 'Hide record' : 'View record' }
@@ -36,7 +47,7 @@ const SleepRecord = () => {
                                     <p className="px-3 py-2 font-medium
                                         flex items-center">Sleep quality</p>
                                 </div>
-                                { sleepRecords.map((record, idx) => (
+                                { filteredRecords.map((record, idx) => (
                                     <div className="flex flex-col sm:grid sm:grid-cols-3 border-b border-b-black 
                                         sm:border-b-mainBorder last:border-b-0"
                                         key={idx}>

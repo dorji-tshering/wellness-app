@@ -4,15 +4,18 @@ import { collection, query, where } from "firebase/firestore";
 import { database } from "../../firebaseClient";
 import { addSleepRecord, getDocuments } from "../../services/facade.service";
 import { RootState } from "../store";
+import { resetAll } from "../hooks";
 
 interface InitialState {
     sleepRecords: Array<Omit<SleepData, 'sleepTime'> & { sleepTime: number }>
+    filteredRecords: Array<Omit<SleepData, 'sleepTime'> & { sleepTime: number }>
     fetchStatus: 'idle' | 'pending' | 'succeeded' | 'failed'
 }
 
 const initialState = {
     sleepRecords: [],
-    fetchStatus: 'idle'
+    filteredRecords: [],
+    fetchStatus: 'idle',
 } as InitialState;
 
 export const fetchSleepRecords = createAsyncThunk(
@@ -68,6 +71,7 @@ const sleepRecordSlice = createSlice({
         .addCase(addASleepRecord.fulfilled, (state, action) => {
             state.sleepRecords.push(action.payload.sleepData);
         })
+        .addCase(resetAll, () => initialState)
     }
 });
 

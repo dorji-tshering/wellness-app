@@ -5,9 +5,12 @@ import { IoIosFitness } from 'react-icons/io';
 import { GiFruitBowl, GiPeaceDove } from 'react-icons/gi';
 import { BiLogOutCircle } from 'react-icons/bi';
 import { logOut } from "../services/facade.service";
+import { useAppDispatch } from "../state/hooks";
+import { resetAll } from "../state/hooks";
 
 const DesktopSidebar = () => {
     const user = useAuthValue();
+    const dispatch = useAppDispatch();
     
     return (
         <div className="bg-white min-w-[200px] max-w-[200px] border-r border-r-mainBorder shadow-md py-7 flex flex-col">
@@ -49,7 +52,10 @@ const DesktopSidebar = () => {
 
             <div className="grow flex flex-col justify-center">
                 <button 
-                    onClick={logOut}
+                    onClick={() => {
+                      logOut();
+                      dispatch(resetAll());
+                    }}
                     className="text-left px-5 py-3 flex items-center text-gray-600 hover:text-black
                     hover:bg-black/5">
                         <BiLogOutCircle className="mr-2 text-gray-700"/> Logout</button>

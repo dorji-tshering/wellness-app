@@ -4,6 +4,7 @@ import { RootState } from '../store';
 import { getDocuments } from '../../services/facade.service';
 import { collection, orderBy, query, where } from 'firebase/firestore';
 import { database } from '../../firebaseClient';
+import { resetAll } from '../hooks';
 
 interface InitialState {
     stats: WorkoutStats
@@ -72,7 +73,8 @@ const workoutStatSlice = createSlice({
         })
         .addCase(fetchWorkoutStats.rejected, (state) => {
             state.status = 'failed';
-        });
+        })
+        .addCase(resetAll, () => initialState)
     }
 }); 
 
