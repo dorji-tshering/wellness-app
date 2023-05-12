@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import Home from "./pages/home";
+import Home from "./pages/home/home";
 import { Route, Routes } from "react-router-dom";
 import { auth } from './firebaseClient';
 import { onAuthStateChanged } from "firebase/auth";
@@ -7,14 +7,14 @@ import { AuthContextProvider } from "./utils/auth-context";
 import { useEffect, useState } from "react";
 import { User } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import Layout from "./components/layout";
-import Loader from './components/loader';
+import Layout from "./components/layout/layout";
+import Loader from './components/loader/loader';
 
-const Fitness = lazy(() => import('./pages/fitness'));
-const Nutrition = lazy(() => import('./pages/nutrition'));
-const Wellness = lazy(() => import('./pages/wellness'));
-const Login = lazy(() => import('./pages/login'));
-const NotFound = lazy(() => import('./pages/not-found'));
+const Fitness = lazy(() => import('./pages/fitness/fitness'));
+const Nutrition = lazy(() => import('./pages/nutrition/nutrition'));
+const Wellness = lazy(() => import('./pages/wellness/wellness'));
+const Login = lazy(() => import('./pages/login/login'));
+const NotFound = lazy(() => import('./pages/not-found/not-found'));
 
 function App() {
     const [currentUser, setCurrentUser] = useState<User | null>(null);

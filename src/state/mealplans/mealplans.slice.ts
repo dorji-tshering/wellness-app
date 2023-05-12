@@ -237,6 +237,7 @@ const mealplansSlice = createSlice({
 });
 
 export const selectMealplans = (state: RootState) => state.mealplans.mealplans;
+export const selectMealplanByID = (state: RootState, id: string) => state.mealplans.mealplans.find(plan => plan.id === id);
 export const selectFetchStatus = (state: RootState) => state.mealplans.fetchStatus;
-
+export const selectActiveMealplan = (state: RootState) => state.mealplans.mealplans.find(plan => plan.active)
 export default mealplansSlice.reducer;

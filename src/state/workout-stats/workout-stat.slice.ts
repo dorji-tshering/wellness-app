@@ -78,8 +78,8 @@ const workoutStatSlice = createSlice({
     }
 }); 
 
-export const selectWorkoutStats = (state: RootState) => state.workoutStats.stats; 
-export const selectStatus = (state: RootState) => state.workoutStats.status; 
-export const selectRecords = (state: RootState) => state.workoutStats.records;
+export const selectWorkoutStats = (state: RootState) => state.workout.stats; 
+export const selectStatus = (state: RootState) => state.workout.status; 
+export const selectRecords = (state: RootState) => state.workout.records;
 
 export default workoutStatSlice.reducer;

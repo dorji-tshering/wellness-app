@@ -26,10 +26,6 @@ export const emailValidate = (email: string, registering = false) => {
     }
 }
 
-/** 
- * 
- * 
- */
 export const passwordValidate = (password: string) => {
     if(password) {
         if(password.trim() === '') {

@@ -8,13 +8,11 @@ import { resetAll } from "../hooks";
 
 interface InitialState {
     sleepRecords: Array<Omit<SleepData, 'sleepTime'> & { sleepTime: number }>
-    filteredRecords: Array<Omit<SleepData, 'sleepTime'> & { sleepTime: number }>
     fetchStatus: 'idle' | 'pending' | 'succeeded' | 'failed'
 }
 
 const initialState = {
     sleepRecords: [],
-    filteredRecords: [],
     fetchStatus: 'idle',
 } as InitialState;
 
@@ -65,7 +63,7 @@ const sleepRecordSlice = createSlice({
             state.sleepRecords = action.payload.sleepRecords;
             state.fetchStatus = 'succeeded';
         })
-        .addCase(fetchSleepRecords.rejected, (state) => {
+        .addCase(fetchSleepRecords.rejected, (state, action) => {
             state.fetchStatus = 'failed';
         })
         .addCase(addASleepRecord.fulfilled, (state, action) => {
@@ -75,6 +73,6 @@ const sleepRecordSlice = createSlice({
     }
 });
 
-export const selectSleepRecords = (state: RootState) => state.sleepRecord.sleepRecords;
-export const selectStatus = (state: RootState) => state.sleepRecord.fetchStatus;
+export const selectSleepRecords = (state: RootState) => state.sleep.sleepRecords;
+export const selectStatus = (state: RootState) => state.sleep.fetchStatus;
 export default sleepRecordSlice.reducer;

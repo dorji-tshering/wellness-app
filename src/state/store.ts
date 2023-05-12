@@ -5,9 +5,9 @@ import sleepRecordReducer from './sleep-record/sleep-record.slice';
 
 export const store = configureStore({
     reducer: {
-        workoutStats: workoutReducer,
+        workout: workoutReducer,
         mealplans: mealplanReducer,
-        sleepRecord: sleepRecordReducer,
+        sleep: sleepRecordReducer,
     }
 });
 
