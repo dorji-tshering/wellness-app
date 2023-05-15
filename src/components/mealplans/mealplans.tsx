@@ -73,7 +73,7 @@ const Mealplans = ({ setShowMealPlans }: Props) => {
             
             { mealplanIdToView ? 
                 (
-                    <MealPlanDetails mealPlanID={mealplanIdToView} setMealplanIdToView={setMealplanIdToView}/>
+                    <MealPlanDetails mealplanId={mealplanIdToView} setMealplanIdToView={setMealplanIdToView}/>
                 ) 
                 : (
                     <div>

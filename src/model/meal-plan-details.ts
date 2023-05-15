@@ -1,7 +1,8 @@
 import { SetStateAction } from "react";
+import { MealPlan } from "./mealplans";
 
 export type Props = {
-    mealPlanID: string
+    mealplanId: string
     setMealplanIdToView: React.Dispatch<SetStateAction<string | null>>
 }
 

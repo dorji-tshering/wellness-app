@@ -5,7 +5,7 @@ const RecipeModal = ({ recipeId, setViewRecipeWithID }: Props) => {
     const recipe: Recipe | undefined = Recipes.find((recipe) => recipe.id === recipeId);
 
     return (
-        <div className='fixed top-0 right-0 left-0 bottom-0 bg-black/30 z-30 flex justify-center items-center px-4 py-5'
+        <div className='fixed top-0 right-0 left-0 bottom-0 bg-black/30 z-[100] flex justify-center items-center px-4 py-5'
             onClick={() => setViewRecipeWithID('')}>
             <div className='max-h-full overflow-auto rounded-md'>
                 <div className='bg-white rounded-md shadow-md px-6 pb-10 pt-5 xs:max-w-[380px] sm:max-w-[450px] md:max-w-[700px]'

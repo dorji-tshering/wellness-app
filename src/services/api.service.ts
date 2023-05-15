@@ -14,7 +14,7 @@ export const getDocumentsAPI = async(query: Query<DocumentData>) => {
 export const addToMealplanAPI = async(recipeId: string, values: MealDataType) => {
     const { meal, mealDay, mealPlan } = values;
     mealPlan && updateDoc(doc(database, 'mealplans', mealPlan?.id), {
-        [`${mealDay}.${meal}`]: recipeId, 
+        [`${mealDay}.${meal}`]: recipeId,
     })
 }
 
