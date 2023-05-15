@@ -26,7 +26,7 @@ const MealPlanDetails = ({ mealplanId, setMealplanIdToView }: Props) => {
 
     const closeRecipeSelect = () => {
       setMealdata({
-        meal: null,
+        meal: null,    
         mealDay: null,
       });
       setSelectRecipe(false);
@@ -67,7 +67,7 @@ const MealPlanDetails = ({ mealplanId, setMealplanIdToView }: Props) => {
                     group transition-all duration-300 absolute left-0">
                     <MdOutlineArrowBack size={18} className="text-gray-500 group-hover:text-black"/>
                 </button>
-                <h2 className="font-medium md:text-lg">{mealPlanDetails?.name}</h2>
+                <h2 className="font-medium md:text-lg">{ mealPlanDetails?.name}</h2>
             </header>
 
             <div className='mt-8 flex justify-center flex-wrap'>
@@ -77,7 +77,7 @@ const MealPlanDetails = ({ mealplanId, setMealplanIdToView }: Props) => {
                             xs:max-w-[250px]'>
                         <h2 className='py-3 font-bold border-b text-center relative'>
                             { mealDaysMapping[idx] }
-                            { ( mealPlanDetails[mealDay].breakfast || 
+                            { ( mealPlanDetails[mealDay].breakfast ||     
                                 mealPlanDetails[mealDay].lunch ||
                                 mealPlanDetails[mealDay].dinner ) && (
                                 <button className='absolute group top-2 right-2 rounded-full text-gray-500 hover:ring-[3px]
@@ -102,46 +102,52 @@ const MealPlanDetails = ({ mealplanId, setMealplanIdToView }: Props) => {
                                 <p className='basis-1/2 text-right'>
                                     Breakfast : 
                                 </p>
-                                <button onClick={
-                                    () => mealPlanDetails[mealDay].breakfast ? setViewRecipeWithID(mealPlanDetails[mealDay].breakfast)
-                                    : 
-                                    handleSelectRecipe('breakfast', mealDay)
-                                  }
-                                  className={classNames('basis-1/2 text-left ml-2 font-medium', 
-                                  mealPlanDetails[mealDay].breakfast ? 'text-theme hover:underline' : 
-                                  'text-gray-500')}>
-                                  { mealPlanDetails[mealDay].breakfast ? ('#' + mealPlanDetails[mealDay].breakfast) : <BsPlusCircleDotted/> }
-                                </button>
+                                <div className='basis-1/2 flex items-center'>
+                                  <button onClick={
+                                      () => mealPlanDetails[mealDay].breakfast ? setViewRecipeWithID(mealPlanDetails[mealDay].breakfast) 
+                                        : 
+                                        handleSelectRecipe('breakfast', mealDay)
+                                    }
+                                    className={classNames('text-left ml-2 font-medium', 
+                                    mealPlanDetails[mealDay].breakfast ? 'text-theme hover:underline' : 
+                                    'text-gray-500 hover:ring-[3px] hover:ring-gray-200 rounded-full transition-all duration-150 p-[2px]')}>
+                                    { mealPlanDetails[mealDay].breakfast ? ('#' + mealPlanDetails[mealDay].breakfast) : <BsPlusCircleDotted/> }
+                                  </button>
+                                </div>
                             </div>
-                            <div className='flex justify-center py-1'>
+                            <div className='flex justify-center py-1'>   
                                 <p className='basis-1/2 text-right'>
                                     Lunch : 
                                 </p>
-                                <button onClick={
-                                  () => mealPlanDetails[mealDay].lunch ? setViewRecipeWithID(mealPlanDetails[mealDay].lunch)
-                                  : 
-                                  handleSelectRecipe('lunch', mealDay)
-                                }
-                                    className={classNames('basis-1/2 text-left ml-2 font-medium', 
-                                    mealPlanDetails[mealDay].lunch ? 'text-theme hover:underline' : 
-                                    'text-gray-500')}>
-                                    { mealPlanDetails[mealDay].lunch ? ('#' + mealPlanDetails[mealDay].lunch) : <BsPlusCircleDotted/> }
-                                </button>
+                                <div className='basis-1/2 flex items-center'>
+                                  <button onClick={
+                                      () => mealPlanDetails[mealDay].lunch ? setViewRecipeWithID(mealPlanDetails[mealDay].lunch) 
+                                        : 
+                                        handleSelectRecipe('lunch', mealDay)
+                                    }
+                                      className={classNames('text-left ml-2 font-medium', 
+                                      mealPlanDetails[mealDay].lunch ? 'text-theme hover:underline' : 
+                                      'text-gray-500  hover:ring-[3px] hover:ring-gray-200 rounded-full transition-all duration-150 p-[2px]')}>
+                                      { mealPlanDetails[mealDay].lunch ? ('#' + mealPlanDetails[mealDay].lunch) : <BsPlusCircleDotted/> }
+                                  </button>
+                                </div>
                             </div>
                             <div className='flex justify-center py-1'>
                                 <p className='basis-1/2 text-right'>
                                     Dinner : 
                                 </p>
-                                <button onClick={
-                                    () => mealPlanDetails[mealDay].dinner ? setViewRecipeWithID(mealPlanDetails[mealDay].dinner)
-                                    : 
-                                    handleSelectRecipe('dinner', mealDay)
-                                  }
-                                  className={classNames('basis-1/2 text-left ml-2 font-medium', 
-                                  mealPlanDetails[mealDay].dinner ? 'text-theme hover:underline' : 
-                                  'text-gray-500')}>
-                                  { mealPlanDetails[mealDay].dinner ? ('#' + mealPlanDetails[mealDay].dinner) : <BsPlusCircleDotted/> }
-                                </button>
+                                <div className='basis-1/2 flex items-center'>
+                                  <button onClick={
+                                      () => mealPlanDetails[mealDay].dinner ? setViewRecipeWithID(mealPlanDetails[mealDay].dinner) 
+                                        : 
+                                        handleSelectRecipe('dinner', mealDay)
+                                    }
+                                    className={classNames('text-left ml-2 font-medium', 
+                                    mealPlanDetails[mealDay].dinner ? 'text-theme hover:underline' : 
+                                    'text-gray-500  hover:ring-[3px] hover:ring-gray-200 rounded-full transition-all duration-150 p-[2px]')}>
+                                    { mealPlanDetails[mealDay].dinner ? ('#' + mealPlanDetails[mealDay].dinner) : <BsPlusCircleDotted/> }
+                                  </button>
+                                </div>
                             </div>
                         </div>
                     </div>

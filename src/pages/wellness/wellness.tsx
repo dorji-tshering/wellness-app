@@ -65,12 +65,14 @@ const Wellness = () => {
                   <div className="flex justify-between">
                       <h1 className="text-xl">Wellness</h1>
                       <div>
-                          <button 
-                              onClick={() => setShowDateFilter(!showDateFilter)}
-                              className="text-sm bg-white rounded-md px-3 py-2 font-medium transition-all duration-300
-                              shadow-sm shadow-black/50 mr-3 text-gray-600 hover:text-black hover:bg-gray-100">
-                              Date filter
-                          </button>
+                          { !!sleepRecords.length && (
+                            <button 
+                                onClick={() => setShowDateFilter(!showDateFilter)}
+                                className="text-sm bg-white rounded-md px-3 py-2 font-medium transition-all duration-300
+                                shadow-sm shadow-black/50 mr-3 text-gray-600 hover:text-black hover:bg-gray-100">
+                                Date filter
+                            </button>
+                          ) }
                           <button 
                               onClick={() => setShowSleepRecordForm(true)}
                               className="text-sm bg-theme hover:bg-themeHover text-white rounded-md px-3 py-2 font-medium
@@ -98,13 +100,15 @@ const Wellness = () => {
                   <div className="flex justify-between flex-wrap">
                       <h1 className="text-lg mr-2">Wellness</h1>
                       <div className="flex flex-col-reverse xs:flex-row relative">
-                          <button 
-                              onClick={() => setShowDateFilter(!showDateFilter)}
-                              className="text-sm  font-medium rounded-md px-2 py-1 shadow-sm shadow-black/50
-                              whitespace-nowrap text-gray-600 hover:text-black hover:bg-gray-100 
-                              transition-all duration-300 mr-0 ml-auto xs:mr-4 mt-3 xs:mt-0">
-                              Date filter
-                          </button>
+                          { !!sleepRecords.length && (
+                            <button 
+                                onClick={() => setShowDateFilter(!showDateFilter)}
+                                className="text-sm  font-medium rounded-md px-2 py-1 shadow-sm shadow-black/50
+                                whitespace-nowrap text-gray-600 hover:text-black hover:bg-gray-100 
+                                transition-all duration-300 mr-0 ml-auto xs:mr-4 mt-3 xs:mt-0">
+                                Date filter
+                            </button>
+                          ) }
                           <button 
                               onClick={() => setShowSleepRecordForm(true)}
                               className="text-sm bg-theme text-white font-medium rounded-md px-2 py-1 shadow-sm shadow-black/50

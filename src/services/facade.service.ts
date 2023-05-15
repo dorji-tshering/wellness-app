@@ -20,7 +20,7 @@ export const listenDoc = (
 
 export const resetMeals = (mealplanID: string, mealday: MealDay) => resetMealsAPI(mealplanID, mealday);
 
-export const getMealplansCount = () => getMealplansCountAPI();
+export const getMealplansCount = (userId: string) => getMealplansCountAPI(userId);
 
 export const createMealplan = (
     mealplanName: string, userId: string, mealplanCount: number

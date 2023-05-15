@@ -1,4 +1,4 @@
-import { DocumentData, DocumentReference, DocumentSnapshot, Query, QuerySnapshot, addDoc, collection, doc, getCountFromServer, getDocs, onSnapshot, updateDoc } from "firebase/firestore";
+import { DocumentData, DocumentReference, DocumentSnapshot, Query, QuerySnapshot, addDoc, collection, doc, getCountFromServer, getDocs, onSnapshot, query, updateDoc, where } from "firebase/firestore";
 import { auth, database } from "../firebaseClient";
 import { MealDataType } from "../model/add-to-meal-plan-modal";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
@@ -41,8 +41,9 @@ export const resetMealsAPI = async (mealplanID: string, mealday: MealDay) => {
     })
 }
 
-export const getMealplansCountAPI = async() => {
-    return (await getCountFromServer(collection(database, 'mealplans'))).data().count;
+export const getMealplansCountAPI = async(userId: string) => {
+    const q = query(collection(database, 'mealplans'), where('userId', '==', userId))
+    return (await getCountFromServer(q)).data().count;
 }
 
 export const createMealplanAPI = async(mealplanName: string, userId: string, mealplanCount: number) => {

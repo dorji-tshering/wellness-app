@@ -3,9 +3,11 @@ import Register from "../../components/register/register";
 import { useEffect, useState } from "react";
 import { useAuthValue } from "../../utils/auth-context";
 import { useNavigate } from "react-router-dom";
+import Loader from '../../components/loader/loader';
 
 const Login = () => {
     const [onSignin, setOnSignin] = useState(true);
+    const [loadingUser, setLoadingUser] = useState(true);
     const navigate = useNavigate();
     const user = useAuthValue();
 
@@ -13,8 +15,17 @@ const Login = () => {
         if(user) {
             navigate('/');
         } 
+        setLoadingUser(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);   
+    }, [user]);   
+
+    if(loadingUser) {
+      return (
+          <div className="w-full relative h-[200px]">
+              <Loader/>
+          </div>
+      )
+  }
 
     return (
         <div className="grow">

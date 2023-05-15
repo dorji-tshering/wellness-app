@@ -15,8 +15,8 @@ const MealPlanForm = ({ setAddMealPlan }: Props) => {
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        getMealplansCount().then((count) => setMealplansCount(count));
-    }, []);
+        user && getMealplansCount(user.uid).then((count) => setMealplansCount(count));
+    }, [user]);
 
     const createNewMealPlan = async(values: MealPlanProps) => {
         const { mealplanName } = values;
