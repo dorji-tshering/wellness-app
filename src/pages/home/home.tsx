@@ -5,8 +5,9 @@ import SleepStats from "../../components/sleep-stat/sleep-stat";
 import NutrientStats from "../../components/nutrient-stat/nutrient-stat";
 import { GiAtomCore, GiPathDistance, GiTimeBomb } from "react-icons/gi";
 import Loader from "../../components/loader/loader";
-import { useAppDispatch, useAppSelector } from "../../state/hooks";
-import { fetchWorkoutStats, selectStatus, selectWorkoutStats } from "../../state/workout-stats/workout-stat.slice";
+import { useAppSelector } from "../../state/hooks";
+import { selectStatus, selectWorkoutStats } from "../../state/workout-stats/workout-stat.slice";
+import { useFetch } from "../../hooks/useFetch";
 
 const Home = () => {
     const [settingName, setSettingName] = useState(false);
@@ -15,7 +16,6 @@ const Home = () => {
     const submitButtonRef = useRef<HTMLButtonElement>(null);
     const spaceRef = useRef(0);
     const user = useAuthValue();
-    const dispatch = useAppDispatch();
     const workoutStats = useAppSelector(selectWorkoutStats);
     const status = useAppSelector(selectStatus);
 
@@ -26,12 +26,7 @@ const Home = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    useEffect(() => {
-        if(user && status === 'idle') {
-            dispatch(fetchWorkoutStats(user.uid));
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    useFetch('workoutStats', user, status);
 
     const updateDisplayName = async(event: FormEvent) => {
         event.preventDefault();
@@ -105,7 +100,7 @@ const Home = () => {
                 </div>
             ) }
 
-            <div className="my-10">
+            <div>
                 <h1 className="font-bold text-gray-600 text-lg mb-5">My Fitness Goals</h1>
                 { status === 'idle' || status === 'pending' ? (
                     <div className="w-full relative h-[200px]">

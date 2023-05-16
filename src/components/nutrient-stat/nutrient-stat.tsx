@@ -1,25 +1,20 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import Recipes from '../../utils/recipes';
 import classNames from 'classnames';
 import Loader from '../loader/loader';
 import { useAuthValue } from '../../utils/auth-context';
 import { Nutrients } from '../../model/nutrient-stat';
-import { useAppDispatch, useAppSelector } from '../../state/hooks';
-import { fetchMealplans, selectActiveMealplan, selectFetchStatus } from '../../state/mealplans/mealplans.slice';
+import { useAppSelector } from '../../state/hooks';
+import { selectActiveMealplan, selectFetchStatus } from '../../state/mealplans/mealplans.slice';
+import { useFetch } from '../../hooks/useFetch';
 
 const NutrientStats = () => {
     const user = useAuthValue();
     const mealDays = ['dayOne', 'dayTwo', 'dayThree', 'dayFour', 'dayFive', 'daySix', 'daySeven'] as const;
     const activeMealplan = useAppSelector(selectActiveMealplan);
     const fetchStatus = useAppSelector(selectFetchStatus);
-    const dispatch = useAppDispatch();
 
-    useEffect(() => {
-        if(user && fetchStatus === 'idle') {
-            dispatch(fetchMealplans(user.uid));
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    useFetch('nutrientStats', user, fetchStatus);
 
     const nutrientStats = useMemo(() => {
         const stats: Nutrients = {};
@@ -76,7 +71,7 @@ const NutrientStats = () => {
                     <p className='mb-3 text-xs text-gray-600 font-medium'>Active plan: <span className='text-theme font-bold'>{activeMealplan?.name}</span></p>
                     <div className='flex flex-wrap'>
                         { Object.keys(nutrientStats).sort().map((nutrient, idx) => (
-                            <div className='border border-black flex px-3 py-1 mb-4 mr-3 sm:mr-6 rounded-md'
+                            <div className='border border-black flex px-3 py-1 mb-5 mr-3 sm:mr-6 rounded-md'
                                 key={idx}>
                                 <p className='mr-2 text-sm'>{ nutrient.charAt(0).toUpperCase() + nutrient.slice(1) + ':' }</p> 
                                 <span className='font-bold text-gray-700'>{ nutrientStats[nutrient] }</span>

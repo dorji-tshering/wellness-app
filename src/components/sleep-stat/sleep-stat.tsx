@@ -1,9 +1,10 @@
 import { useState, useMemo, useEffect, SetStateAction } from 'react';
 import classNames from 'classnames';
 import Loader from '../loader/loader';
-import { useAppDispatch, useAppSelector } from '../../state/hooks';
-import { fetchSleepRecords, selectSleepRecords, selectStatus } from '../../state/sleep-record/sleep-record.slice';
+import { useAppSelector } from '../../state/hooks';
+import { selectSleepRecords, selectStatus } from '../../state/sleep-record/sleep-record.slice';
 import { useAuthValue } from '../../utils/auth-context';
+import { useFetch } from '../../hooks/useFetch';
 
 const SleepStats = ({ 
   startDate, 
@@ -17,7 +18,6 @@ const SleepStats = ({
   const fetchStatus = useAppSelector(selectStatus);
   const sleepRecords = useAppSelector(selectSleepRecords);
   const user = useAuthValue();
-  const dispatch = useAppDispatch();
 
   const filteredRecords = useMemo(() => {
     if(startDate && endDate) {
@@ -30,12 +30,7 @@ const SleepStats = ({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startDate, endDate, sleepRecords]);
 
-  useEffect(() => {
-      if(user && fetchStatus === 'idle') {
-          dispatch(fetchSleepRecords(user.uid));
-      }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[]);
+  useFetch('sleepStats', user, fetchStatus);
 
   const sleepQualityData = useMemo(() => {
       if(filteredRecords.length > 0) {
@@ -110,4 +105,4 @@ const SleepStats = ({
   )
 }
 
-export default SleepStats
+export default SleepStats;

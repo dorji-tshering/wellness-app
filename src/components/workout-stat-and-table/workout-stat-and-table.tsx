@@ -1,5 +1,5 @@
 import { deleteDoc, doc } from "firebase/firestore";
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { database } from "../../firebaseClient";
 import { useAuthValue } from "../../utils/auth-context";
 import Loader from "../loader/loader";
@@ -10,8 +10,14 @@ import { Props, WorkoutStats } from "../../model/workout-stat-and-table";
 import { selectRecords, selectStatus, selectWorkoutStats } from "../../state/workout-stats/workout-stat.slice";
 import { useAppDispatch, useAppSelector } from "../../state/hooks";
 import { fetchWorkoutStats } from "../../state/workout-stats/workout-stat.slice";
+import { useFetch } from "../../hooks/useFetch";
 
-const WorkoutStatAndTable= ({ setEditMode, setShowWorkoutForm, setRecordId, setEditableRecord }: Props) => {
+const WorkoutStatAndTable= ({ 
+  setEditMode, 
+  setShowWorkoutForm, 
+  setRecordId, 
+  setEditableRecord }: Props
+) => {
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [deleteRecordId, setDeleteRecordId] = useState('');
     const [deleting, setDeleting] = useState(false);
@@ -23,12 +29,7 @@ const WorkoutStatAndTable= ({ setEditMode, setShowWorkoutForm, setRecordId, setE
     const records = useAppSelector(selectRecords);
     const dispatch = useAppDispatch();
 
-    useEffect(() => {
-        if(user && status === 'idle') {
-           dispatch(fetchWorkoutStats(user.uid));
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[]);
+    useFetch('workoutStats', user, status);
 
     const deleteRecord = async() => {
         setDeleting(true);
@@ -74,6 +75,7 @@ const WorkoutStatAndTable= ({ setEditMode, setShowWorkoutForm, setRecordId, setE
                     </div>
                 </div>
             ) }
+
             { !!records.length ? (
                     <>
                         <p className="mt-3 mb-5 text-center">Maintain your workout records here and stay fit!</p>

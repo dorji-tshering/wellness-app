@@ -28,7 +28,7 @@ export const emailValidate = (email: string, registering = false) => {
 
 export const passwordValidate = (password: string) => {
     if(password) {
-        if(password.trim() === '') {
+        if(password.trim() === '') { 
             return "Password can't have space";
         } else if(password.trim().length < 6) {
             return 'Password must contain at least 6 characters.';

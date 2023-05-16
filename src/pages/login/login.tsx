@@ -33,9 +33,9 @@ const Login = () => {
                 <div className="bg-white shadow-md rounded-md p-5 w-full max-w-[400px]">
                     {
                         onSignin ? 
-                            <Signin setOnSignin={setOnSignin}/> 
-                            :  
-                            <Register setOnSignin={setOnSignin}/>
+                        <Signin setOnSignin={setOnSignin}/> 
+                        :  
+                        <Register setOnSignin={setOnSignin}/>
                     }
                 </div>
             </div>
