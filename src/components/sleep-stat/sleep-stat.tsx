@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, SetStateAction } from 'react';
+import { useState, useMemo, useEffect, SetStateAction, memo } from 'react';
 import classNames from 'classnames';
 import Loader from '../loader/loader';
 import { useAppSelector } from '../../state/hooks';
@@ -6,7 +6,7 @@ import { selectSleepRecords, selectStatus } from '../../state/sleep-record/sleep
 import { useAuthValue } from '../../utils/auth-context';
 import { useFetch } from '../../hooks/useFetch';
 
-const SleepStats = ({ 
+const SleepStats = memo(({ 
   startDate, 
   endDate, 
   setSleepQualityData }: {
@@ -21,9 +21,7 @@ const SleepStats = ({
 
   const filteredRecords = useMemo(() => {
     if(startDate && endDate) {
-      return sleepRecords.filter(record => {
-        return record.date >= startDate && record.date <= endDate;
-      });
+      return sleepRecords.filter(record => record.date >= startDate && record.date <= endDate);
     }else {
       return sleepRecords;
     } 
@@ -103,6 +101,6 @@ const SleepStats = ({
           ) }
       </div>
   )
-}
+});
 
 export default SleepStats;

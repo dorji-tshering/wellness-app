@@ -1,5 +1,5 @@
 import { deleteDoc, doc } from "firebase/firestore";
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import { database } from "../../firebaseClient";
 import { useAuthValue } from "../../utils/auth-context";
 import Loader from "../loader/loader";
@@ -12,7 +12,7 @@ import { useAppDispatch, useAppSelector } from "../../state/hooks";
 import { fetchWorkoutStats } from "../../state/workout-stats/workout-stat.slice";
 import { useFetch } from "../../hooks/useFetch";
 
-const WorkoutStatAndTable= ({ 
+const WorkoutStatAndTable= memo(({ 
   setEditMode, 
   setShowWorkoutForm, 
   setRecordId, 
@@ -163,6 +163,6 @@ const WorkoutStatAndTable= ({
             ) }
         </div>
     )
-}
+});
 
 export default WorkoutStatAndTable;
