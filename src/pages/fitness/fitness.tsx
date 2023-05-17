@@ -1,7 +1,7 @@
 import { useState } from "react";
 import DesktopPageHeader from "../../components/desktop-page-header/desktop-page-header";
 import MobilePageHeader from "../../components/mobile-page-header/mobile-page-header";
-import IsMobile from "../../utils/use-media-query";
+import IsMobile from "../../hooks/use-media-query";
 import WorkoutForm from "../../components/workout-form/workout-form";
 import WorkoutStatAndTable from "../../components/workout-stat-and-table/workout-stat-and-table";
 import { ErrorBoundary } from "react-error-boundary";

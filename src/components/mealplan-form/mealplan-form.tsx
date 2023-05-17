@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useAuthValue } from "../../utils/auth-context";
-import { useNotification } from "../../utils/notification-context";
+import { useAuthValue } from "../../hooks/use-auth-context";
+import { useNotification } from "../../hooks/use-notification-context";
 import { Form, Field } from 'react-final-form';
 import { FORM_ERROR } from "final-form";
 import { MealPlanFormError, MealPlanProps, Props } from "../../model/mealplan-form";

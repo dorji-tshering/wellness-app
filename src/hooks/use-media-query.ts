@@ -4,7 +4,7 @@ import { ReturnType } from "../model/use-media-query";
 /**
  * Check if the device-width < 768px
  */
-export default function IsMobile(): ReturnType {
+export default function useMobile(): ReturnType {
     const [isMobile, setIsMobile] = useState(false);
     const [checkingWidth, setCheckingWidth] = useState(true);
   

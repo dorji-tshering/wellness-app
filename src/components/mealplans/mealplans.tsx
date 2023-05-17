@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { MdOutlineArrowBack, MdRadioButtonUnchecked, MdCheckCircle } from 'react-icons/md';
-import { useAuthValue } from "../../utils/auth-context";
+import { useAuthValue } from "../../hooks/use-auth-context";
 import MealPlanDetails from "../meal-plan-details/meal-plan-details";
 import Loader from "../loader/loader";
 import { RiDeleteBin6Line, RiEyeLine } from 'react-icons/ri';
-import { useNotification } from "../../utils/notification-context";
+import { useNotification } from "../../hooks/use-notification-context";
 import classNames from "classnames";
 import { Props } from "../../model/mealplans";
 import { useAppDispatch, useAppSelector } from "../../state/hooks";

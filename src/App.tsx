@@ -3,7 +3,7 @@ import Home from "./pages/home/home";
 import { Route, Routes } from "react-router-dom";
 import { auth } from './firebaseClient';
 import { onAuthStateChanged } from "firebase/auth";
-import { AuthContextProvider } from "./utils/auth-context";
+import { AuthContextProvider } from "./hooks/use-auth-context";
 import { useEffect, useState } from "react";
 import { User } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
@@ -48,7 +48,9 @@ function App() {
     return (
         <AuthContextProvider value={currentUser}>
             <Layout>
-                <Suspense fallback={''}>
+                <Suspense fallback={
+                  <div className="w-full relative h-[200px]"><Loader/></div>
+                }>
                     <Routes>
                         <Route path="/" element={<Home/>}/>      
                         <Route path="/login" element={<Login/>}/>

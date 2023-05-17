@@ -1,18 +1,16 @@
-import { useRef } from 'react';
 import classNames from 'classnames';
 import { NavLink } from 'react-router-dom';
 import { BiLogOutCircle } from 'react-icons/bi';
 import { IoIosFitness } from 'react-icons/io';
 import { GiFruitBowl, GiPeaceDove } from 'react-icons/gi';
 import { VscChromeClose } from 'react-icons/vsc';
-import { useAuthValue } from '../../utils/auth-context';
+import { useAuthValue } from '../../hooks/use-auth-context';
 import { Props } from '../../model/mobile-menu';
 import { logOut } from '../../services/facade.service';
 import { resetAll, useAppDispatch } from '../../state/hooks';
 
 const MobileMenu = ({showMenu, setShowMenu}: Props) => {
     const user = useAuthValue();
-    const menuRef = useRef<HTMLDivElement>(null);
     const dispatch = useAppDispatch();
 
     const logOutCurrentUser = async() => {
@@ -26,14 +24,16 @@ const MobileMenu = ({showMenu, setShowMenu}: Props) => {
     }
 
     return (
-        <div 
-            className={classNames('h-full fixed w-full z-40 transition-all duration-300 ease-in-out', 
-            showMenu ? 'translate-x-0' : '-translate-x-[120%]')}
-            onClick={() => setShowMenu(false)}
-            ref={menuRef}
-            >
+        <div>
+            <div
+              className={classNames('h-full fixed w-full z-40 transition-all duration-700 delay-[10ms] ease-in-out bg-black/20', 
+              showMenu ? 'translate-x-0' : '-translate-x-[120%]')}
+              onClick={() => setShowMenu(false)}
+            />
             <aside 
-                className='w-[200px] bg-white border-r shadow-md flex flex-col h-full pb-5 overflow-y-auto' 
+                className={classNames('w-[200px] fixed bg-white border-r shadow-md flex flex-col h-full pb-5 overflow-y-auto',
+                showMenu ? 'translate-x-0' : '-translate-x-[120%]',
+                'transition-all duration-300 ease-in-out z-50')} 
                 onClick={(event) => event.stopPropagation()}>
                 <div className='px-5 flex justify-between border-b border-b-mainBorder h-[60px] items-center'>
                     <p><span className='text-sm text-gray-600'>Hello</span> {user?.displayName}</p>

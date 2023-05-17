@@ -1,6 +1,6 @@
 import DesktopPageHeader from "../../components/desktop-page-header/desktop-page-header";
 import MobilePageHeader from "../../components/mobile-page-header/mobile-page-header";
-import IsMobile from "../../utils/use-media-query";
+import IsMobile from "../../hooks/use-media-query";
 import DisplayRecipe from "../../components/display-recipe/display-recipe";
 import MealPlans from "../../components/mealplans/mealplans";
 import { useState } from "react";

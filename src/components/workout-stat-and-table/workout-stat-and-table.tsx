@@ -1,16 +1,16 @@
 import { deleteDoc, doc } from "firebase/firestore";
 import { memo, useState } from 'react';
 import { database } from "../../firebaseClient";
-import { useAuthValue } from "../../utils/auth-context";
+import { useAuthValue } from "../../hooks/use-auth-context";
 import Loader from "../loader/loader";
-import { useNotification } from "../../utils/notification-context";
+import { useNotification } from "../../hooks/use-notification-context";
 import { GiTimeBomb, GiPathDistance, GiAtomCore } from 'react-icons/gi';
 import { MdHourglassEmpty } from 'react-icons/md';
 import { Props, WorkoutStats } from "../../model/workout-stat-and-table";
 import { selectRecords, selectStatus, selectWorkoutStats } from "../../state/workout-stats/workout-stat.slice";
 import { useAppDispatch, useAppSelector } from "../../state/hooks";
 import { fetchWorkoutStats } from "../../state/workout-stats/workout-stat.slice";
-import { useFetch } from "../../hooks/useFetch";
+import { useFetch } from "../../hooks/use-fetch";
 
 const WorkoutStatAndTable= memo(({ 
   setEditMode, 

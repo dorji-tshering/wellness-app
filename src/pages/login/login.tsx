@@ -1,7 +1,7 @@
 import Signin from '../../components/signin/signin';
 import Register from "../../components/register/register";
 import { useEffect, useState } from "react";
-import { useAuthValue } from "../../utils/auth-context";
+import { useAuthValue } from "../../hooks/use-auth-context";
 import { useNavigate } from "react-router-dom";
 import Loader from '../../components/loader/loader';
 

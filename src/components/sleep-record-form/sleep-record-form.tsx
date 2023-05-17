@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import isNumeric from '../../utils/is-numeric';
 import classNames from 'classnames';
-import { useAuthValue } from '../../utils/auth-context';
-import { useNotification } from '../../utils/notification-context';
+import { useAuthValue } from '../../hooks/use-auth-context';
+import { useNotification } from '../../hooks/use-notification-context';
 import { Form, Field } from 'react-final-form';
 import { FORM_ERROR } from 'final-form';
 import { Props, SleepData } from '../../model/sleep-record-form';

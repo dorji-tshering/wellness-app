@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import Loader from '../loader/loader';
-import { useAuthValue } from '../../utils/auth-context';
-import { useNotification } from '../../utils/notification-context';
+import { useAuthValue } from '../../hooks/use-auth-context';
+import { useNotification } from '../../hooks/use-notification-context';
 import { Form, Field } from 'react-final-form';
 import { FORM_ERROR } from 'final-form';
 import { AddToMealplanError, Meal, MealDataType, MealDay, Props } from '../../model/add-to-meal-plan-modal';

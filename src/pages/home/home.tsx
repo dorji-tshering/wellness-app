@@ -1,5 +1,5 @@
 import { updateProfile } from "firebase/auth";
-import { useAuthValue } from "../../utils/auth-context";
+import { useAuthValue } from "../../hooks/use-auth-context";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import SleepStats from "../../components/sleep-stat/sleep-stat";
 import NutrientStats from "../../components/nutrient-stat/nutrient-stat";
@@ -7,7 +7,7 @@ import { GiAtomCore, GiPathDistance, GiTimeBomb } from "react-icons/gi";
 import Loader from "../../components/loader/loader";
 import { useAppSelector } from "../../state/hooks";
 import { selectStatus, selectWorkoutStats } from "../../state/workout-stats/workout-stat.slice";
-import { useFetch } from "../../hooks/useFetch";
+import { useFetch } from "../../hooks/use-fetch";
 
 const Home = () => {
     const [settingName, setSettingName] = useState(false);

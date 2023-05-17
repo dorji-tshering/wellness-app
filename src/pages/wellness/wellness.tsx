@@ -1,13 +1,13 @@
 import DesktopPageHeader from "../../components/desktop-page-header/desktop-page-header";
 import MobilePageHeader from "../../components/mobile-page-header/mobile-page-header";
-import IsMobile from "../../utils/use-media-query";
+import IsMobile from "../../hooks/use-media-query";
 import SleepRecordForm from "../../components/sleep-record-form/sleep-record-form";
 import { useEffect, useState, useRef, FormEvent } from 'react';
 import SleepStats from "../../components/sleep-stat/sleep-stat";
 import SleepRecord from "../../components/sleep-record/sleep-record";
 import ExcerciseGrid from "../../components/exercise-grid/exercise-grid";
 import { fetchSleepRecords, selectSleepRecords, selectStatus } from "../../state/sleep-record/sleep-record.slice";
-import { useAuthValue } from "../../utils/auth-context";
+import { useAuthValue } from "../../hooks/use-auth-context";
 import { useAppDispatch, useAppSelector } from "../../state/hooks";
 import FilterForm from "../../components/sleeprecord-filter-form/sleeprecord-filter-form";
 

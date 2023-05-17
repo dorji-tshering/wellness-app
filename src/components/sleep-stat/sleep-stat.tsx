@@ -3,8 +3,8 @@ import classNames from 'classnames';
 import Loader from '../loader/loader';
 import { useAppSelector } from '../../state/hooks';
 import { selectSleepRecords, selectStatus } from '../../state/sleep-record/sleep-record.slice';
-import { useAuthValue } from '../../utils/auth-context';
-import { useFetch } from '../../hooks/useFetch';
+import { useAuthValue } from '../../hooks/use-auth-context';
+import { useFetch } from '../../hooks/use-fetch';
 
 const SleepStats = memo(({ 
   startDate, 

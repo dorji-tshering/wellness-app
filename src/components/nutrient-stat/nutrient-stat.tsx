@@ -2,11 +2,11 @@ import { useMemo } from 'react';
 import Recipes from '../../utils/recipes';
 import classNames from 'classnames';
 import Loader from '../loader/loader';
-import { useAuthValue } from '../../utils/auth-context';
+import { useAuthValue } from '../../hooks/use-auth-context';
 import { Nutrients } from '../../model/nutrient-stat';
 import { useAppSelector } from '../../state/hooks';
 import { selectActiveMealplan, selectFetchStatus } from '../../state/mealplans/mealplans.slice';
-import { useFetch } from '../../hooks/useFetch';
+import { useFetch } from '../../hooks/use-fetch';
 
 const NutrientStats = () => {
     const user = useAuthValue();
