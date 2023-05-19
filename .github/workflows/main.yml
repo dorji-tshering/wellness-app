@@ -11,7 +11,6 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps: 
-
       - name: Create comment on opened issue
         uses: peter-evans/create-or-update-comment@v3
         with:

@@ -3,11 +3,14 @@ import { fetchSleepRecords } from "../state/sleep-record/sleep-record.slice";
 import { fetchMealplans } from "../state/mealplans/mealplans.slice";
 import { fetchWorkoutStats } from "../state/workout-stats/workout-stat.slice";
 import { CurrentUser, FetchType, Status } from "../model/use-fetch-hook";
+import { useEffect } from "react";
 
 export const useFetch = (fetchType: FetchType, user: CurrentUser, status: Status ) => {
   const dispatch = useAppDispatch();
 
-  if(user && status === 'idle') {
+  // avoid "cannot update a component while rendering a different component" via useEffect
+  useEffect(() => {
+    if(user && status === 'idle') {
       if(fetchType === 'nutrientStats') {
         dispatch(fetchMealplans(user.uid));
       }else if(fetchType === 'sleepStats') {
@@ -15,5 +18,6 @@ export const useFetch = (fetchType: FetchType, user: CurrentUser, status: Status
       }else if(fetchType === 'workoutStats') {
         dispatch(fetchWorkoutStats(user.uid));
       }
-  }
+    }
+  });
 }

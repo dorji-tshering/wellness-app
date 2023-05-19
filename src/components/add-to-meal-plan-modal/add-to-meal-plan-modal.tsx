@@ -34,7 +34,6 @@ const AddToMealPlanModal = ({ recipeId, setRecipeIdToAdd }: Props) => {
         if(user && fetchStatus === 'idle') {
             dispatch(fetchMealplans(user.uid));
         }
-        
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
 
@@ -47,7 +46,7 @@ const AddToMealPlanModal = ({ recipeId, setRecipeIdToAdd }: Props) => {
             return { [FORM_ERROR]: err.code }
         }
     }
-
+    
     return (
         <div className="fixed top-0 right-0 left-0 bottom-0 bg-black/30 z-30 flex justify-center items-center px-4 py-5"
             onClick={() => setRecipeIdToAdd('')}>
