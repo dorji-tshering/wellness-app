@@ -4,14 +4,22 @@ on:
   issues: 
     types:
       - opened
+  workflow_dispatch:
 
 jobs: 
   comment-with-action:
+    permissions: write-all
     runs-on: ubuntu-latest
     steps: 
-      - name: "dump github context"
-        run: echo ${{ toJson(github.event.issue.number) }}
-        shell: bash
+
+      - name: Create comment on opened issue
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: >
+            Thank you for bringing up the 
+            issue. We will look into it as 
+            soon as possible.
 
 
   
