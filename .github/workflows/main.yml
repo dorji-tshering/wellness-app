@@ -8,6 +8,7 @@ on:
 
 jobs: 
   comment-with-action:
+    permissions: write-all
     runs-on: ubuntu-latest
     steps: 
       - name: Create comment on opened issue
