@@ -100,7 +100,7 @@ const Home = () => {
                 </div>
             ) }
 
-            <div>
+            <div className="mt-5">
                 <h1 className="font-bold text-gray-600 text-lg mb-5">My Fitness Goals</h1>
                 { status === 'idle' || status === 'pending' ? (
                     <div className="w-full relative h-[200px]">

@@ -15,7 +15,6 @@ const Register = ({setOnSignin}: Props) => {
           return { [FORM_ERROR]: err.code };
       }
   }
-
   return (
     <AuthForm formHandler={handleRegistration} formName='register' buttonText='Register' setOnSignin={setOnSignin}/>       
   )

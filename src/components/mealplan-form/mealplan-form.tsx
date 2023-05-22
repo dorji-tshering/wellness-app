@@ -20,7 +20,6 @@ const MealPlanForm = ({ setAddMealPlan }: Props) => {
 
     const createNewMealPlan = async(values: MealPlanProps) => {
         const { mealplanName } = values;
-
         try {
             user && await dispatch(addMealplan({
                 mealplanName,

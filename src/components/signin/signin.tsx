@@ -15,7 +15,6 @@ const Signin = ({setOnSignin}: Props) => {
           return { [FORM_ERROR]: err.code };
       }
   }
-
   return (
     <AuthForm formHandler={handleSignin} formName='login' buttonText='Login' setOnSignin={setOnSignin}/>       
   )

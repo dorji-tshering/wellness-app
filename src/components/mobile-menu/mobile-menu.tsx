@@ -26,14 +26,14 @@ const MobileMenu = ({showMenu, setShowMenu}: Props) => {
     return (
         <div>
             <div
-              className={classNames('h-full fixed w-full z-40 transition-all duration-700 delay-[10ms] ease-in-out bg-black/20', 
-              showMenu ? 'translate-x-0' : '-translate-x-[120%]')}
+              className={classNames('fixed w-full z-40 bg-black/50 transition-opacity duration-500', 
+              showMenu ? 'h-full opacity-100' : 'overflow-hidden h-0 opacity-0')}
               onClick={() => setShowMenu(false)}
             />
             <aside 
-                className={classNames('w-[200px] fixed bg-white border-r shadow-md flex flex-col h-full pb-5 overflow-y-auto',
+                className={classNames('w-[200px] fixed left-0 bg-white border-r shadow-md flex flex-col h-full pb-5 overflow-y-auto',
                 showMenu ? 'translate-x-0' : '-translate-x-[120%]',
-                'transition-all duration-300 ease-in-out z-50')} 
+                'transition-transform duration-[200ms] ease-in-out z-50')} 
                 onClick={(event) => event.stopPropagation()}>
                 <div className='px-5 flex justify-between border-b border-b-mainBorder h-[60px] items-center'>
                     <p><span className='text-sm text-gray-600'>Hello</span> {user?.displayName}</p>
