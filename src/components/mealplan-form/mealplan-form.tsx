@@ -40,7 +40,7 @@ const MealPlanForm = ({ setAddMealPlan }: Props) => {
                 <Form onSubmit={createNewMealPlan}
                     validate={(values) => {
                         let { mealplanName } = values;
-                        const errors :MealPlanFormError = {};
+                        const errors: MealPlanFormError = {};
                         if(!mealplanName || !mealplanName.trim()) {
                             errors.mealplanName = 'Meal plan name is required'
                         }
@@ -60,7 +60,7 @@ const MealPlanForm = ({ setAddMealPlan }: Props) => {
                                         placeholder="Mealplan name"
                                         className="input-style mb-1"
                                         />
-                                        { (meta.error) && meta.touched && <span className="text-xs text-center text-red-700">{ meta.error }</span> }
+                                        { meta.error && meta.touched && <span className="text-xs text-center text-red-700">{ meta.error }</span> }
                                     </div>
                                 )}
                             </Field>

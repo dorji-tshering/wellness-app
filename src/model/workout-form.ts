@@ -1,12 +1,10 @@
-import { WorkoutRecord } from "./workout-stat-and-table";
-
-export interface FormData {
+export interface WorkoutRecord {
     date: string;
     workoutIDs: string[];
     workouts: {
       workoutId: string
       workoutName: string
-      timeSpent?: string
+      timeSpent: string
       distanceCovered?: string
     }[]
 }

@@ -5,7 +5,7 @@ import { getDocumentsAPI, addToMealplanAPI, logOutAPI, listenDocAPI, resetMealsA
 import { MealDataType } from '../model/add-to-meal-plan-modal';
 import { MealDay } from '../model/meal-plan-details';
 import { SleepData } from '../model/sleep-record-form';
-import { FormData } from '../model/workout-form';
+import { WorkoutRecord } from '../model/workout-form';
 
 export const getDocuments = (query: Query<DocumentData>) => getDocumentsAPI(query);
 
@@ -45,6 +45,6 @@ export const loginWithEmailAndPassword = (
 
 export const addSleepRecord = (userId: string, values: SleepData) => addSleepRecordAPI(userId, values);
 
-export const addWorkoutRecord = (userId: string, values: FormData) => addWorkoutRecordAPI(userId, values);
+export const addWorkoutRecord = (userId: string, values: WorkoutRecord) => addWorkoutRecordAPI(userId, values);
 
-export const editWorkoutRecord = (recordId: string, values: FormData) => editWorkoutRecordAPI(recordId, values);
+export const editWorkoutRecord = (recordId: string, values: WorkoutRecord) => editWorkoutRecordAPI(recordId, values);

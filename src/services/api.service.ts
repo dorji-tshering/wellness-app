@@ -4,7 +4,8 @@ import { MealDataType } from "../model/add-to-meal-plan-modal";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { MealDay } from "../model/meal-plan-details";
 import { SleepData } from "../model/sleep-record-form";
-import { FormData } from "../model/workout-form";
+import { WorkoutRecord } from "../model/workout-form";
+//import { FormData } from "../model/workout-form";
 
 export const getDocumentsAPI = async(query: Query<DocumentData>) => {
     const querySnapshot = await getDocs(query);
@@ -124,24 +125,23 @@ export const addSleepRecordAPI = async(userId: string, values: SleepData) => {
     })
 }
 
-export const addWorkoutRecordAPI = async(userId: string, values: FormData) => {
-    // //const { workoutIDs, runDistance, cyclingDistance, walkDistance, date, timeSpent } = values;
+export const addWorkoutRecordAPI = async(userId: string, values: WorkoutRecord) => {
+  const { date, workoutIDs, workouts } = values;
 
-    // addDoc(collection(database, 'workout'), {
-    //     date: date,
-    //     timeSpent: parseFloat(timeSpent),
-    //     workoutIDs: workoutIDs,
-    //     userId: userId,
-    // });
+  addDoc(collection(database, 'workout'), {
+    userId: userId,
+    date: date,
+    workoutIDs,
+    workouts,
+  });
 }
 
-export const editWorkoutRecordAPI = async(recordId: string, values: FormData) => {
-    // const { workoutIDs, runDistance, walkDistance, cyclingDistance, date, timeSpent } = values;
+export const editWorkoutRecordAPI = async(recordId: string, values: WorkoutRecord) => {
+  const { date, workoutIDs, workouts } = values;
 
-    // updateDoc(doc(database, 'workout', recordId), {
-    //     date: date,
-    //     timeSpent: parseFloat(timeSpent),
-    //     workoutIDs: workoutIDs,
-    //     //distanceCovered: isNaN(parseFloat(distanceCovered as string)) ? 0 : parseFloat(distanceCovered as string),
-    // });
+  updateDoc(doc(database, 'workout', recordId), {
+    date: date,
+    workoutIDs,
+    workouts,
+  });
 }

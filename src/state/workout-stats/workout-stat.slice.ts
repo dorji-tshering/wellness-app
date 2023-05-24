@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { WorkoutStats, WorkoutRecord } from '../../model/workout-stat-and-table';
+import { WorkoutRecord } from '../../model/workout-form';
 import { RootState } from '../store';
 import { getDocuments } from '../../services/facade.service';
 import { collection, orderBy, query, where } from 'firebase/firestore';
@@ -7,79 +7,56 @@ import { database } from '../../firebaseClient';
 import { resetAll } from '../hooks';
 
 interface InitialState {
-    stats: WorkoutStats
-    records: Array<WorkoutRecord>
+    records: Array<WorkoutRecord & {id: string}>
     status: 'idle' | 'pending' | 'succeeded' | 'failed'
 }
 
 const initialState: InitialState = {
-    stats: {
-        timeSpent: 0,
-        caloriesBurned: 0,
-        distanceCovered: 0,
-    },
     records: [],
     status: 'idle',
 } 
 
-export const fetchWorkoutStats = createAsyncThunk(
-    'workoutStats/fetchStats',
+export const fetchWorkoutRecords = createAsyncThunk(
+    'workoutRecord/fetch',
     async(userId: string) => {
         const q = query(collection(database, 'workout'), where('userId', '==', userId), orderBy('date', 'desc'));
         const docs = await getDocuments(q);
-        const records: Array<WorkoutRecord> = [];
-        let timeSpent = 0;
-        let caloriesBurned = 0;
-        let distanceCovered = 0;
-
-        docs.forEach((record) => {
-            timeSpent += record.data().timeSpent;
-            caloriesBurned += record.data().caloriesBurned;
-            distanceCovered += record.data().distanceCovered;
-
-            records.push({
-                id: record.id,
-                date: record.data().date,
-                timeSpent: record.data().timeSpent,
-                caloriesBurned: record.data().caloriesBurned,
-                distanceCovered: record.data().distanceCovered,
-            });
-        })
-
+        const records: Array<WorkoutRecord & {id: string}> = [];
+        docs.forEach(doc => {
+          records.push({
+            id: doc.id,
+            date: doc.data().date,
+            workoutIDs: doc.data().workoutIDs,
+            workouts: doc.data().workouts,
+          });
+        });
         return {
-            stats: {
-                timeSpent,
-                caloriesBurned,
-                distanceCovered,
-            },
-            records,
+          records
         }
     }
 )
 
-const workoutStatSlice = createSlice({
-    name: 'workoutStats',
+const workoutRecordSlice = createSlice({
+    name: 'workoutRecords',
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder
-        .addCase(fetchWorkoutStats.pending, (state) => {
+        .addCase(fetchWorkoutRecords.pending, (state) => {
             state.status = 'pending';
         })
-        .addCase(fetchWorkoutStats.fulfilled, (state, action) => {
-            state.stats = action.payload.stats;
+        .addCase(fetchWorkoutRecords.fulfilled, (state, action) => {
             state.records = action.payload.records;
             state.status = 'succeeded';
         })
-        .addCase(fetchWorkoutStats.rejected, (state) => {
+        .addCase(fetchWorkoutRecords.rejected, (state) => {
             state.status = 'failed';
         })
         .addCase(resetAll, () => initialState)
     }
 }); 
-
-export const selectWorkoutStats = (state: RootState) => state.workout.stats; 
+ 
 export const selectStatus = (state: RootState) => state.workout.status; 
 export const selectRecords = (state: RootState) => state.workout.records;
 
-export default workoutStatSlice.reducer;
+export default workoutRecordSlice.reducer;

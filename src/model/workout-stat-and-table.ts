@@ -1,4 +1,5 @@
 import { SetStateAction } from "react";
+import { WorkoutRecord } from "./workout-form";
 
 export type Props = {
     setEditMode: React.Dispatch<SetStateAction<boolean>>;
@@ -7,13 +8,4 @@ export type Props = {
     setEditableRecord: React.Dispatch<SetStateAction<WorkoutRecord | null>>;
 }
 
-export type WorkoutRecord = WorkoutStats & {
-    id: string,
-    date: string
-}
 
-export type WorkoutStats = {
-    timeSpent: number;
-    caloriesBurned: number;
-    distanceCovered: number;
-}

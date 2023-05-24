@@ -6,11 +6,13 @@ import Loader from "../loader/loader";
 import { useNotification } from "../../hooks/use-notification-context";
 import { GiTimeBomb, GiPathDistance, GiAtomCore } from 'react-icons/gi';
 import { MdHourglassEmpty } from 'react-icons/md';
-import { Props, WorkoutStats } from "../../model/workout-stat-and-table";
-import { selectRecords, selectStatus, selectWorkoutStats } from "../../state/workout-stats/workout-stat.slice";
+import { Props } from "../../model/workout-stat-and-table";
+import { selectRecords, selectStatus } from "../../state/workout-stats/workout-stat.slice";
 import { useAppDispatch, useAppSelector } from "../../state/hooks";
-import { fetchWorkoutStats } from "../../state/workout-stats/workout-stat.slice";
+import { fetchWorkoutRecords } from "../../state/workout-stats/workout-stat.slice";
 import { useFetch } from "../../hooks/use-fetch";
+import { getWorkoutName } from "../../utils/workout-options";
+import { useWorkoutStat } from "../../hooks/use-workout-stats";
 
 const WorkoutStatAndTable= memo(({ 
   setEditMode, 
@@ -23,30 +25,29 @@ const WorkoutStatAndTable= memo(({
     const [deleting, setDeleting] = useState(false);
     const user = useAuthValue();
     const setNotification = useNotification()?.setNotification;
-
     const status = useAppSelector(selectStatus);
-    const workoutStats = useAppSelector(selectWorkoutStats);
-    const records = useAppSelector(selectRecords);
-    const dispatch = useAppDispatch();
-
     useFetch('workoutStats', user, status);
+
+    const records = useAppSelector(selectRecords);
+    const workoutStats = useWorkoutStat(records);
+    const dispatch = useAppDispatch();
 
     const deleteRecord = async() => {
         setDeleting(true);
         await deleteDoc(doc(database, 'workout', deleteRecordId));
         setNotification && setNotification('Record deleted successfully.');
-        user && await dispatch(fetchWorkoutStats(user.uid));
+        user && await dispatch(fetchWorkoutRecords(user.uid));
         setDeleteRecordId('');
         setDeleting(false);
         setConfirmDelete(false);
     }
 
-    const showEditForm = (recordId: string, record: WorkoutStats & {id: string, date: string}) => {
-        setEditMode(true);
-        setShowWorkoutForm(true);
-        setEditableRecord(record);
-        setRecordId(recordId);
-    }
+    // const showEditForm = (recordId: string, record: WorkoutStats & {id: string, date: string}) => {
+    //     setEditMode(true);
+    //     setShowWorkoutForm(true);
+    //     setEditableRecord(record);
+    //     setRecordId(recordId);
+    // }
 
     if(status === 'idle' || status === 'pending') {
         return (
@@ -80,7 +81,7 @@ const WorkoutStatAndTable= memo(({
                     <>
                         <p className="mt-3 mb-5 text-center">Maintain your workout records here and stay fit!</p>
                         {/* workout record table */}
-                        <div className="mx-auto xs:max-w-[70%] sm:max-w-full xl:max-w-[80%] flex flex-col border border-mainBorder rounded-md">
+                        {/* <div className="mx-auto xs:max-w-[70%] sm:max-w-full xl:max-w-[80%] flex flex-col border border-mainBorder rounded-md">
                             <div className="hidden sm:grid sm:grid-cols-5 border-b border-b-mainBorder bg-gray-100 
                                 rounded-tr-md rounded-tl-md">
                                 <span className="workout-table-head">Date</span>
@@ -126,7 +127,7 @@ const WorkoutStatAndTable= memo(({
                                     </div>
                                 </div>
                             )) }
-                        </div>
+                        </div> */}
                     
                         {/* workout stats */}
                         <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row xs:max-w-[70%] 
@@ -135,22 +136,48 @@ const WorkoutStatAndTable= memo(({
                                 mb-10 sm:basis-[30%] md:basis-full lg:basis-[30%]">
                                 <p className="mb-3"><GiTimeBomb size={30} color="#67079F"/></p>
                                 <p className="">Time Spent</p>
-                                <span className="mb-5 text-gray-500">(hr)</span>
-                                <p className="text-5xl font-bold text-[#67079F]">{workoutStats.timeSpent}</p>
+                                <span className="mb-5 text-gray-500">(min)</span>
+                                <div className="text-[#67079F] w-full">
+                                  { Object.entries(workoutStats.timeSpent).map((timeStats, idx) => (
+                                    <p key={idx}
+                                      className="flex">
+                                      <span className="basis-1/2 text-right mr-2">{ getWorkoutName(timeStats[0]) }</span>: 
+                                      <span className="basis-1/2 text-left ml-2">{timeStats[1]}</span>
+                                    </p>
+                                  )) }
+                                </div>
                             </div>
                             <div className="flex flex-col justify-between items-center py-6 rounded-md bg-[#F2A90D]/5
                                 mb-10 sm:basis-[30%] md:basis-full lg:basis-[30%]">
                                 <p className="mb-3"><GiAtomCore size={30} color="#F2A90D"/></p>
                                 <p className="">Calories Burned</p>
                                 <span className="mb-5 text-gray-500">(cal)</span>
-                                <p className="text-5xl font-bold text-[#F2A90D]">{workoutStats.caloriesBurned}</p>
+                                <div className="text-[#F2A90D] w-full">
+                                  { Object.entries(workoutStats.caloriesBurned).map((calorieStat, idx) => (
+                                    <p key={idx}
+                                      className="flex">
+                                      <span className="basis-1/2 text-right mr-2">{ getWorkoutName(calorieStat[0]) }</span>: 
+                                      <span className="basis-1/2 text-left ml-2">{calorieStat[1]}</span>
+                                    </p>                                  
+                                  )) }
+                                </div>
                             </div>
                             <div className="flex flex-col justify-between items-center py-6 rounded-md bg-[#1CC115]/5
                             mb-10 sm:basis-[30%] md:basis-full lg:basis-[30%]">
                                 <p className="mb-3"><GiPathDistance size={30} color="#1CC115"/></p>
                                 <p className="">Distance Covered</p>
-                                <span className="mb-5 text-gray-500">(km)</span>
-                                <p className="text-5xl font-bold text-[#1CC115]">{workoutStats.distanceCovered}</p>
+                                <span className="mb-5 text-gray-500">(m)</span>
+                                <div className="text-[#1CC115] w-full">
+                                  { Object.entries(workoutStats.distanceCovered).map((distanceStats, idx) => (
+                                    <p key={idx}
+                                      className="flex">
+                                      <span className="basis-1/2 text-right mr-2">{ getWorkoutName(distanceStats[0]) }</span>: 
+                                      <span className="basis-1/2 text-left ml-2">{ isNaN(distanceStats[1]) ? 
+                                        'NaN' : distanceStats[1] }
+                                      </span>
+                                    </p>                                  
+                                  )) }
+                                </div>
                             </div>
                         </div>
                     </>

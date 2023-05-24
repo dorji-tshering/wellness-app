@@ -1,11 +1,11 @@
 import { useState } from "react";
 import WorkoutArray, { getWorkoutName } from "../../utils/workout-options";
-import { FormData } from "../../model/workout-form";
+import { WorkoutRecord } from "../../model/workout-form";
 import classNames from "classnames";
 
 interface Props {
   setShowWorkoutOptions: React.Dispatch<React.SetStateAction<boolean>>
-  values: FormData
+  values: WorkoutRecord
 }
 
 const WorkoutOptions = ({ values, setShowWorkoutOptions }: Props) => {
@@ -16,9 +16,17 @@ const WorkoutOptions = ({ values, setShowWorkoutOptions }: Props) => {
     values.workoutIDs = workoutIDs;
     workoutIDs.forEach(workoutId => {
       if(values.workouts) {
-        values.workouts = [...values.workouts, {workoutId, workoutName: getWorkoutName(workoutId) as string}];
+        values.workouts = [...values.workouts, { 
+          workoutId, 
+          workoutName: getWorkoutName(workoutId) as string,  
+          timeSpent: ''
+        }];
       } else {
-        values.workouts = [{workoutId, workoutName: getWorkoutName(workoutId) as string}];
+        values.workouts = [{
+          workoutId, 
+          workoutName: getWorkoutName(workoutId) as string,
+          timeSpent: ''
+        }];
       }
     });
     setShowWorkoutOptions(false);
@@ -64,8 +72,10 @@ const WorkoutOptions = ({ values, setShowWorkoutOptions }: Props) => {
               onClick={() => setShowWorkoutOptions(false)}>
               Back
             </button>
-            <button className="px-4 py-2 bg-theme text-white hover:bg-themeHover rounded-[4px]"
+            <button className={classNames('px-4 py-2 bg-theme text-white hover:bg-themeHover rounded-[4px]',
+              !!workoutIDs.length ? 'opacity-100' : 'opacity-50')}
               type="button"
+              disabled={!!workoutIDs.length ? false : true}
               onClick={handleSetWorkoutIds}>
               Select
             </button>

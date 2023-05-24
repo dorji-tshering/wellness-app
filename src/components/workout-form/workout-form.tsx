@@ -4,10 +4,10 @@ import { useNotification } from '../../hooks/use-notification-context';
 import { Form, Field } from 'react-final-form';
 import { FORM_ERROR } from 'final-form';
 import classNames from 'classnames';
-import { FormData, Props,  } from '../../model/workout-form';
+import { WorkoutRecord, Props,  } from '../../model/workout-form';
 import { addWorkoutRecord, editWorkoutRecord } from '../../services/facade.service';
 import { useAppDispatch } from '../../state/hooks';
-import { fetchWorkoutStats } from '../../state/workout-stats/workout-stat.slice';
+import { fetchWorkoutRecords } from '../../state/workout-stats/workout-stat.slice';
 import { useState } from 'react';
 import { getWorkout, getWorkoutName } from '../../utils/workout-options';
 import WorkoutOptions from '../workout-options/workout-options';
@@ -27,22 +27,22 @@ const WorkoutForm = ({
     const setNotification = useNotification()?.setNotification;
     const dispatch = useAppDispatch();
 
-    const handleWorkoutRecordAdd = async(values: FormData) => {
+    const handleWorkoutRecordAdd = async(values: WorkoutRecord) => {
         try {
             user && await addWorkoutRecord(user.uid, values);
             setNotification && setNotification('Record added successfully.');
-            user && await dispatch(fetchWorkoutStats(user.uid));
+            user && await dispatch(fetchWorkoutRecords(user.uid));
             setShowForm(false);
         }catch(err: any) {
             return { [FORM_ERROR]: err.code };
         }
     }
 
-    const handleWorkoutRecordEdit = async(values: FormData) => {
+    const handleWorkoutRecordEdit = async(values: WorkoutRecord) => {
         try {
             recordId && editWorkoutRecord(recordId, values);
             setNotification && setNotification('Record updated successfully.');
-            user && await dispatch(fetchWorkoutStats(user.uid));
+            user && await dispatch(fetchWorkoutRecords(user.uid));
             setRecordId('');
             setEditMode(false);
             setEditableRecord(null);
@@ -66,12 +66,19 @@ const WorkoutForm = ({
             <div className="max-h-full overflow-y-auto rounded-md" onClick={(e) => e.stopPropagation()}>
                 <Form onSubmit={editing ? handleWorkoutRecordEdit : handleWorkoutRecordAdd}
                     initialValues={
-                        (editing && editableRecord) ? {
-                           
-                        }: {
+                      (editing && editableRecord) ? {
                           
-                        }
-                    }>
+                      }: {
+                        
+                      }
+                    }
+                    validate={values => {
+                      const errors: {workoutIds?: string} = {};
+                      if(!values.workouts || values.workouts.length === 0) {
+                        errors.workoutIds = 'Atealst a workout is required';
+                      }
+                      return errors;
+                    }}>
                     {({ values, handleSubmit, submitError, submitting, pristine }) => (
                         <form onSubmit={handleSubmit}
                             className='bg-white shadow-md rounded-md px-6 py-8 sm:p-8 flex flex-col'>
@@ -91,7 +98,7 @@ const WorkoutForm = ({
                                 )}
                               </Field>
                               <Field name='workoutIds'>
-                                {(meta) => (
+                                {({ meta }) => (
                                   <div>
                                     <p>Workouts</p>
                                     <p className={classNames(`border flex border-mainBorder rounded-[4px] px-3 py-1 cursor-pointer
@@ -106,6 +113,7 @@ const WorkoutForm = ({
                                         ))
                                       ) : '--select workouts--' }
                                     </p>
+                                    { meta.error && meta.touched && <p className='text-xs max-w-[200px] text-red-600 mt-1'>{ meta.error }</p> }
                                   </div>
                                 )}
                               </Field>
@@ -130,7 +138,7 @@ const WorkoutForm = ({
                                   </Field>
                                   { getWorkout(workout.workoutId) && getWorkout(workout.workoutId)?.hasDistanceAttribute && (
                                     <Field name={`workouts[${idx}].distanceCovered`} type='text'
-                                      validate={(value) => value && value.trim() && !isNumeric(value) && 'Value should be number or decimal' }>
+                                      validate={(value) => !isNumeric(value) && 'Value should be number or decimal' }>
                                       {({ input, meta }) => (
                                         <div>
                                             <label>
@@ -149,7 +157,7 @@ const WorkoutForm = ({
                                 </React.Fragment>
                               )) }
 
-                              { (() => {console.log(values); return true;})() }
+                              
                               
                               
                             </div>
