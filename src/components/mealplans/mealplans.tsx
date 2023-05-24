@@ -62,10 +62,10 @@ const Mealplans = ({ setShowMealPlans }: Props) => {
                         <p className="font-medium">Confirm Delete?</p>
                         <p className="mb-5 text-sm text-gray-500">You can't undo the action</p>
                         <div className="flex justify-center">
-                            <button className="w-[70px] text-white mr-2 bg-red-600 rounded-[4px] py-2 text-sm font-medium" 
-                                onClick={handleDeleteMealplan}>{ deleting ? '. . .' : 'Delete' }</button>
-                            <button className="w-[70px] text-white ml-2 bg-gray-500 rounded-[4px] py-2 text-sm font-medium"
-                                onClick={() => setMealplanIdToDelete('')}>Cancel</button>
+                          <button className="w-[70px] text-gray-600 mr-3 hover:bg-gray-200 rounded-[4px] py-2 text-sm font-medium"
+                            onClick={() => setMealplanIdToDelete('')}>Cancel</button>
+                          <button className="w-[70px] text-white mr-2 bg-red-600 rounded-[4px] py-2 text-sm font-medium" 
+                            onClick={handleDeleteMealplan}>{ deleting ? '. . .' : 'Delete' }</button>
                         </div>
                     </div>
                 </div>

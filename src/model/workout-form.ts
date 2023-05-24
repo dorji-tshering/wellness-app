@@ -2,9 +2,13 @@ import { WorkoutRecord } from "./workout-stat-and-table";
 
 export interface FormData {
     date: string;
-    timeSpent: string;
-    caloriesBurned?: string;
-    distanceCovered?: string;
+    workoutIDs: string[];
+    workouts: {
+      workoutId: string
+      workoutName: string
+      timeSpent?: string
+      distanceCovered?: string
+    }[]
 }
 
 export type Props = {

@@ -8,20 +8,26 @@ import { FormData, Props,  } from '../../model/workout-form';
 import { addWorkoutRecord, editWorkoutRecord } from '../../services/facade.service';
 import { useAppDispatch } from '../../state/hooks';
 import { fetchWorkoutStats } from '../../state/workout-stats/workout-stat.slice';
+import { useState } from 'react';
+import { getWorkout, getWorkoutName } from '../../utils/workout-options';
+import WorkoutOptions from '../workout-options/workout-options';
+import React from 'react';
 
-const WorkoutForm = ({ setShowForm, setEditMode, setRecordId, editing, recordId, 
-    editableRecord, setEditableRecord }: Props) => {
+const WorkoutForm = ({ 
+  setShowForm, 
+  setEditMode, 
+  setRecordId, 
+  editing, 
+  recordId, 
+  editableRecord, 
+  setEditableRecord }: Props
+) => {
+    const [showWorkoutOptions, setShowWorkoutOptions] = useState(false);
     const user = useAuthValue();
     const setNotification = useNotification()?.setNotification;
     const dispatch = useAppDispatch();
 
     const handleWorkoutRecordAdd = async(values: FormData) => {
-        const { caloriesBurned, distanceCovered } = values;
-
-        if((!caloriesBurned || !caloriesBurned.trim()) && (!distanceCovered || !distanceCovered.trim())) {
-            return { [FORM_ERROR]: 'Either distance or calories field is required' }
-        }
-
         try {
             user && await addWorkoutRecord(user.uid, values);
             setNotification && setNotification('Record added successfully.');
@@ -33,11 +39,6 @@ const WorkoutForm = ({ setShowForm, setEditMode, setRecordId, editing, recordId,
     }
 
     const handleWorkoutRecordEdit = async(values: FormData) => {
-        const { caloriesBurned, distanceCovered } = values;
-
-        if((!caloriesBurned || !caloriesBurned.trim()) && (!distanceCovered || !distanceCovered.trim())) {
-            return { [FORM_ERROR]: 'Either distance or calories field is required' }
-        }
         try {
             recordId && editWorkoutRecord(recordId, values);
             setNotification && setNotification('Record updated successfully.');
@@ -66,92 +67,107 @@ const WorkoutForm = ({ setShowForm, setEditMode, setRecordId, editing, recordId,
                 <Form onSubmit={editing ? handleWorkoutRecordEdit : handleWorkoutRecordAdd}
                     initialValues={
                         (editing && editableRecord) ? {
-                            date: editableRecord.date,
-                            timeSpent: editableRecord.timeSpent.toString(),
-                            caloriesBurned: editableRecord.caloriesBurned.toString(),
-                            distanceCovered: editableRecord.distanceCovered.toString(),
-                        }: undefined
+                           
+                        }: {
+                          
+                        }
                     }>
-                    {({ handleSubmit, submitError, submitting, pristine }) => (
+                    {({ values, handleSubmit, submitError, submitting, pristine }) => (
                         <form onSubmit={handleSubmit}
                             className='bg-white shadow-md rounded-md px-6 py-8 sm:p-8 flex flex-col'>
                             <h2 className='text-center text-lg font-bold mb-5'>{ editing ? 'Update workout record' : 'Add workout record' }</h2>
                             { submitError && <p className='text-xs text-red-600 mb-3 text-center -mt-3'>{ submitError }</p> }
-                            <div className='sm:flex sm:justify-between'>
-                                <Field name='date' type='date'>
-                                    {({ input }) => (
-                                        <label className='sm:mr-5 mb-5 block'>
-                                            Date
-                                            <input 
-                                                {...input}
-                                                required
-                                                max={new Date().toISOString().split("T")[0]}
-                                                className='block outline-none input-style'  />
-                                    </label>
-                                    )}
-                                </Field>
-                                <Field name='timeSpent' type='text'
+                            <div className='grid sm:grid-cols-2 [&>*:nth-child(odd)]:sm:mr-5 [&>*]:mb-5'>
+                              <Field name='date' type='date'>
+                                {({ input }) => (
+                                  <label>
+                                    Date
+                                    <input 
+                                        {...input}
+                                        required
+                                        max={new Date().toISOString().split("T")[0]}
+                                        className='block outline-none input-style'  />
+                                  </label>
+                                )}
+                              </Field>
+                              <Field name='workoutIds'>
+                                {(meta) => (
+                                  <div>
+                                    <p>Workouts</p>
+                                    <p className={classNames(`border flex border-mainBorder rounded-[4px] px-3 py-1 cursor-pointer
+                                      overflow-x-auto max-w-[200px] hide-scrollbar`,
+                                      !values.workoutIDs && 'text-gray-400')}
+                                      onClick={() => setShowWorkoutOptions(true)}>
+                                      { values.workoutIDs && !!values.workoutIDs.length ? (
+                                        values.workoutIDs.map((workoutId, idx) => (
+                                          <span className='whitespace-nowrap mr-2 underline' key={idx}>
+                                            { getWorkoutName(workoutId) }
+                                          </span>
+                                        ))
+                                      ) : '--select workouts--' }
+                                    </p>
+                                  </div>
+                                )}
+                              </Field>
+                              {/* dynamically show time and distance input fields */}
+                              { values.workouts && values.workouts.map((workout, idx) => (
+                                <React.Fragment key={idx}>
+                                  <Field name={`workouts[${idx}].timeSpent`} type='text'
                                     validate={(value) => !isNumeric(value) && 'Value should be number or decimal' }>
                                     {({ input, meta }) => (
-                                        <div className='mb-5'>
+                                      <div>
+                                          <label>
+                                              Time Spent <span className='text-gray-400 text-xs'>(in mins)</span>
+                                              <input 
+                                                  {...input}
+                                                  inputMode='numeric'
+                                                  placeholder={`For ${workout.workoutName}`}
+                                                  className='input-style block' />
+                                          </label>
+                                          { meta.error && meta.touched && <p className='text-xs max-w-[200px] text-red-600 mt-1'>{ meta.error }</p> }
+                                      </div>
+                                    )}
+                                  </Field>
+                                  { getWorkout(workout.workoutId) && getWorkout(workout.workoutId)?.hasDistanceAttribute && (
+                                    <Field name={`workouts[${idx}].distanceCovered`} type='text'
+                                      validate={(value) => value && value.trim() && !isNumeric(value) && 'Value should be number or decimal' }>
+                                      {({ input, meta }) => (
+                                        <div>
                                             <label>
-                                                Time Spent <span className='text-gray-400 text-xs'>(in hrs)</span>
+                                                Distance Covered <span className='text-gray-400 text-xs'>(in m)</span>
                                                 <input 
                                                     {...input}
-                                                    inputMode='numeric'
+                                                    inputMode='decimal'  
+                                                    placeholder={`For ${workout.workoutName}`}                                           
                                                     className='input-style block' />
                                             </label>
                                             { meta.error && meta.touched && <p className='text-xs max-w-[200px] text-red-600 mt-1'>{ meta.error }</p> }
                                         </div>
-                                    )}
-                                </Field>
-                            </div>
-                            <div className='sm:flex sm:justify-between'>
-                                <Field name='caloriesBurned' type='text'
-                                    validate={(value) => value && value.trim() && !isNumeric(value) && 'Value should be number or decimal' }>
-                                    {({ input, meta }) => (
-                                        <div className='mb-5 sm:mr-5'>
-                                            <label>
-                                                Calories Burned <span className='text-gray-400 text-xs'>(in cal)</span>
-                                                <input 
-                                                    {...input}
-                                                    inputMode='decimal'
-                                                    className='input-style block' />
-                                            </label>
-                                            { meta.error && meta.touched && <p className='text-xs max-w-[200px] text-red-600 mt-1'>{ meta.error }</p> }
-                                        </div>
-                                    )}
-                                </Field>
+                                      )}
+                                    </Field>
+                                  ) }
+                                </React.Fragment>
+                              )) }
 
-                                <Field name='distanceCovered' type='text'
-                                    validate={(value) => value && value.trim() && !isNumeric(value) && 'Value should be number or decimal' }>
-                                    {({ input, meta }) => (
-                                        <div className='mb-5'>
-                                            <label>
-                                                Distance Covered <span className='text-gray-400 text-xs'>(in km)</span>
-                                                <input 
-                                                    {...input}
-                                                    inputMode='decimal'                                              
-                                                    className='input-style block' />
-                                            </label>
-                                            { meta.error && meta.touched && <p className='text-xs max-w-[200px] text-red-600 mt-1'>{ meta.error }</p> }
-                                        </div>
-                                    )}
-                                </Field>
+                              { (() => {console.log(values); return true;})() }
+                              
+                              
                             </div>
                             <div className='flex justify-center'>
-                                <button 
-                                    type='submit'
-                                    disabled={submitting || (editing && pristine)}
-                                    className={classNames(`bg-theme hover:bg-themeHover py-2 px-4 w-[80px] text-white rounded-md text-sm 
-                                        font-medium'`, editing && pristine && 'opacity-[.6]')}>
-                                        { editing ? ( submitting ? '. . .' : 'Update') : (submitting ? '. . .' : 'Add')}
-                                    </button>
-                                <button 
-                                    type='button'
-                                    className='py-2 px-4 rounded-md ml-5 hover:bg-gray-100 w-[80px] border-mainBorder border text-sm font-medium'
-                                    onClick={closeForm}>Cancel</button>
+                              <button 
+                                type='button'
+                                className='py-2 px-4 rounded-md mr-5 hover:bg-gray-100 w-[80px] border-mainBorder border text-sm font-medium'
+                                onClick={closeForm}>Cancel
+                              </button>
+                              <button 
+                                type='submit'
+                                disabled={submitting || (editing && pristine)}
+                                className={classNames(`bg-theme hover:bg-themeHover py-2 px-4 w-[80px] text-white rounded-md text-sm 
+                                font-medium'`, editing && pristine && 'opacity-[.6]')}>
+                                { editing ? ( submitting ? '. . .' : 'Update') : (submitting ? '. . .' : 'Add')}
+                              </button>
                             </div>
+                            { showWorkoutOptions && <WorkoutOptions values={values} setShowWorkoutOptions={setShowWorkoutOptions}/> }
                         </form>
                     )}
                 </Form>

@@ -64,7 +64,8 @@ const SleepRecordForm = ({ setShowSleepRecordForm }: Props) => {
                                         </label>
                                     )}
                                 </Field>
-                                <div className='mb-4'>
+                                <div className='md:flex'>
+                                  <div className='mb-5 md:mr-5'>
                                     <Field name='sleepTime' type='text'
                                         validate={(value) => value && !isNumeric(value) && 'Value should be either decimal or number'}>
                                         {({ input, meta }) => (
@@ -83,36 +84,37 @@ const SleepRecordForm = ({ setShowSleepRecordForm }: Props) => {
                                             </>
                                         )}
                                     </Field>
+                                  </div>
+                                  <p className='mb-5'>
+                                      <Field name='sleepQuality'>
+                                          {({ meta }) => (
+                                              <>
+                                                  SLeep quality
+                                                  <span className={classNames('input-style block cursor-pointer',
+                                                      !values.sleepQuality && 'text-gray-400')} 
+                                                      onClick={() => setShowSleepQualities(true)}>
+                                                      { values.sleepQuality ?? '--select quality--' }
+                                                  </span>
+                                                      { meta.error && meta.touched && <span className='max-w-[200px] block mt-1 text-xs text-red-600'>
+                                                      { meta.error }
+                                                  </span> }
+                                              </>
+                                          )}
+                                      </Field>
+                                  </p>
                                 </div>
-
-                                <p className='mb-4'>
-                                    <Field name='sleepQuality'>
-                                        {({ meta }) => (
-                                            <>
-                                                SLeep quality
-                                                <span className={classNames('input-style block cursor-pointer',
-                                                    !values.sleepQuality && 'text-gray-400')} 
-                                                    onClick={() => setShowSleepQualities(true)}>
-                                                    { values.sleepQuality ?? '--select quality--' }
-                                                </span>
-                                                    { meta.error && meta.touched && <span className='max-w-[200px] block mt-1 text-xs text-red-600'>
-                                                    { meta.error }
-                                                </span> }
-                                            </>
-                                        )}
-                                    </Field>
-                                </p>
                                 <div className='flex justify-center'>
-                                    <button 
-                                        type='submit'
-                                        className='bg-theme hover:bg-themeHover py-2 px-4 w-[80px] text-white rounded-md text-sm font-medium'>
-                                            { submitting ? '. . .' : 'Add'}
-                                        </button>
-                                    <button 
-                                        type='button'
-                                        className='py-2 px-4 rounded-md ml-5 hover:bg-gray-100 w-[80px] border-mainBorder 
-                                        border text-sm font-medium'
-                                        onClick={() => setShowSleepRecordForm(false)}>Cancel</button>
+                                  <button 
+                                    type='button'
+                                    className='py-2 px-4 rounded-md mr-5 hover:bg-gray-100 w-[80px] border-mainBorder 
+                                    border text-sm font-medium'
+                                    onClick={() => setShowSleepRecordForm(false)}>Cancel
+                                  </button>
+                                  <button 
+                                      type='submit'
+                                      className='bg-theme hover:bg-themeHover py-2 px-4 w-[80px] text-white rounded-md text-sm font-medium'>
+                                      { submitting ? '. . .' : 'Add'}
+                                  </button>
                                 </div>
                             </form>
 

@@ -125,24 +125,23 @@ export const addSleepRecordAPI = async(userId: string, values: SleepData) => {
 }
 
 export const addWorkoutRecordAPI = async(userId: string, values: FormData) => {
-    const { caloriesBurned, distanceCovered, date, timeSpent } = values;
+    // //const { workoutIDs, runDistance, cyclingDistance, walkDistance, date, timeSpent } = values;
 
-    addDoc(collection(database, 'workout'), {
-        date: date,
-        timeSpent: parseFloat(timeSpent),
-        caloriesBurned: isNaN(parseFloat(caloriesBurned as string)) ? 0 : parseFloat(caloriesBurned as string),
-        distanceCovered: isNaN(parseFloat(distanceCovered as string)) ? 0 : parseFloat(distanceCovered as string),
-        userId: userId,
-    });
+    // addDoc(collection(database, 'workout'), {
+    //     date: date,
+    //     timeSpent: parseFloat(timeSpent),
+    //     workoutIDs: workoutIDs,
+    //     userId: userId,
+    // });
 }
 
 export const editWorkoutRecordAPI = async(recordId: string, values: FormData) => {
-    const { caloriesBurned, distanceCovered, date, timeSpent } = values;
+    // const { workoutIDs, runDistance, walkDistance, cyclingDistance, date, timeSpent } = values;
 
-    updateDoc(doc(database, 'workout', recordId), {
-        date: date,
-        timeSpent: parseFloat(timeSpent),
-        caloriesBurned: isNaN(parseFloat(caloriesBurned as string)) ? 0 : parseFloat(caloriesBurned as string),
-        distanceCovered: isNaN(parseFloat(distanceCovered as string)) ? 0 : parseFloat(distanceCovered as string),
-    });
+    // updateDoc(doc(database, 'workout', recordId), {
+    //     date: date,
+    //     timeSpent: parseFloat(timeSpent),
+    //     workoutIDs: workoutIDs,
+    //     //distanceCovered: isNaN(parseFloat(distanceCovered as string)) ? 0 : parseFloat(distanceCovered as string),
+    // });
 }

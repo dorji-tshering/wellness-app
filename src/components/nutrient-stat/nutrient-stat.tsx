@@ -50,7 +50,8 @@ const NutrientStats = () => {
                 }
             });
             return stats;
-        } else return undefined;
+        } 
+        return undefined;
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeMealplan]);
 

@@ -67,10 +67,10 @@ const WorkoutStatAndTable= memo(({
                         <p className="font-medium">Confirm Delete?</p>
                         <p className="mb-5 text-sm text-gray-500">You can't undo the action</p>
                         <div className="flex justify-center">
-                            <button className="w-[70px] text-white mr-2 bg-red-600 rounded-[4px] py-2 text-sm font-medium" 
-                                onClick={deleteRecord}>{ deleting ? '. . .' : 'Delete' }</button>
-                            <button className="w-[70px] text-white ml-2 bg-gray-500 rounded-[4px] py-2 text-sm font-medium"
-                                onClick={() => setConfirmDelete(false)}>Cancel</button>
+                          <button className="w-[70px] mr-3 text-gray-600 hover:bg-gray-200 rounded-[4px] py-2 text-sm font-medium"
+                            onClick={() => setConfirmDelete(false)}>Cancel</button>
+                          <button className="w-[70px] text-white mr-2 bg-red-600 rounded-[4px] py-2 text-sm font-medium" 
+                            onClick={deleteRecord}>{ deleting ? '. . .' : 'Delete' }</button>
                         </div>
                     </div>
                 </div>

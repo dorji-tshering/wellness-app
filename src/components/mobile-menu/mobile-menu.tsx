@@ -24,7 +24,7 @@ const MobileMenu = ({showMenu, setShowMenu}: Props) => {
     }
 
     return (
-        <div>
+        <>
             <div
               className={classNames('fixed w-full z-40 bg-black/50 transition-opacity duration-500', 
               showMenu ? 'h-full opacity-100' : 'overflow-hidden h-0 opacity-0')}
@@ -82,7 +82,7 @@ const MobileMenu = ({showMenu, setShowMenu}: Props) => {
                             <BiLogOutCircle className="mr-2 text-gray-700"/> Logout</button>
                 </div>
             </aside>
-        </div>
+        </>
     )
 }
 

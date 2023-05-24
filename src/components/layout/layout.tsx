@@ -32,7 +32,7 @@ const Layout = ({ children }: Props) => {
                                     <div className="flex flex-col">
                                         <MobileHeader setShowMenu={setShowMobileMenu}/>
                                         <div className="h-[60px]"/>
-                                        <div className="bg-white grow min-h-screen px-4 pb-20">
+                                        <div className="bg-white grow min-h-screen px-4 pb-12">
                                             { children }
                                         </div>
                                     </div>  
@@ -41,7 +41,7 @@ const Layout = ({ children }: Props) => {
                                 { !isMobile && (
                                     <div className="flex h-full">
                                         <DesktopSidebar/>
-                                        <div className="overflow-y-auto bg-white grow ml-3 shadow-md pb-20">
+                                        <div className="overflow-y-auto bg-white grow ml-3 shadow-md pb-12">
                                             <div className='px-4 py-6 md:px-10 md:pb-8 lg:px-20 lg:pb-16 xl:px-30 xl:pb-24 relative'>
                                             { children }
                                             </div>

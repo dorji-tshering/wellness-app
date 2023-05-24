@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import Loader from '../loader/loader';
+import { IoMdClose } from 'react-icons/io';
 import { useAuthValue } from '../../hooks/use-auth-context';
 import { useNotification } from '../../hooks/use-notification-context';
 import { Form, Field } from 'react-final-form';
@@ -56,7 +57,8 @@ const AddToMealPlanModal = ({ recipeId, setRecipeIdToAdd }: Props) => {
                 </div>
             ) : (
                 <div className="max-h-full overflow-auto rounded-md" onClick={(e) => e.stopPropagation()}>
-                    <Form onSubmit={handleRecipeAddToMealplan}
+                    { !!mealPlans.length ? (
+                      <Form onSubmit={handleRecipeAddToMealplan}
                         validate={(values) => {
                             const errors: AddToMealplanError = {};
                             if(!values.meal) {
@@ -211,11 +213,21 @@ const AddToMealPlanModal = ({ recipeId, setRecipeIdToAdd }: Props) => {
                                 ) }
                             </>
                         )}
-                    </Form>
+                      </Form>
+                    ) : (
+                      <div className='bg-white rounded-md shadow-md px-3 xs:px-8 py-5 flex items-center'>
+                        <p className='text-center'>
+                          Please create a meal plan first.
+                        </p>
+                        <button onClick={() => setRecipeIdToAdd('')}
+                          className='ml-3 p-2 rounded-full bg-gray-200 text-gray-500 hover:text-gray-800
+                          flex justify-center items-center'>
+                          <IoMdClose size={18}/>
+                        </button>
+                      </div>
+                    ) }
                 </div>
-            ) }
-
-            
+            ) }    
         </div>
     )
 }

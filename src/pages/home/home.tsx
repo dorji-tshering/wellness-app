@@ -101,7 +101,7 @@ const Home = () => {
             ) }
 
             <div className="mt-5">
-                <h1 className="font-bold text-gray-600 text-lg mb-5">My Fitness Goals</h1>
+                <h1 className="font-bold text-gray-600 text-lg mb-5">Fitness Stats</h1>
                 { status === 'idle' || status === 'pending' ? (
                     <div className="w-full relative h-[200px]">
                         <Loader/>
@@ -138,7 +138,7 @@ const Home = () => {
                     <NutrientStats/>
                 </div>
                 <div>
-                    <h1 className="font-bold text-gray-600 text-lg mb-5">My Sleep Records</h1>
+                    <h1 className="font-bold text-gray-600 text-lg mb-5">Sleep Stats</h1>
                     <SleepStats/>
                 </div>
             </div>

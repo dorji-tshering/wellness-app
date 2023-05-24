@@ -12,7 +12,7 @@ export const useFetch = (fetchType: FetchType, user: CurrentUser, status: Status
   useEffect(() => {
     if(user && status === 'idle') {
       if(fetchType === 'nutrientStats') {
-        dispatch(fetchMealplans(user.uid));
+        dispatch(fetchMealplans(user.uid)); 
       }else if(fetchType === 'sleepStats') {
         dispatch(fetchSleepRecords(user.uid));
       }else if(fetchType === 'workoutStats') {
