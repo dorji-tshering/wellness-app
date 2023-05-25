@@ -47,7 +47,7 @@ const FilterForm = ({
             setFilterDates({ startDate: '', endDate: '' });
             setShowDateFilter(false);
           } : () => setShowDateFilter(false)}
-          className="py-1 px-2 rounded-md hover:bg-theme/10 text-gray-600">
+          className="py-1 px-2 rounded-md hover:bg-gray-200 text-gray-600">
           { filterDates.endDate ? 'Remove' : 'Cancel' }
         </button>
         <button 

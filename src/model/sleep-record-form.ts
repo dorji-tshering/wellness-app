@@ -4,6 +4,12 @@ export type Props = {
 
 export type SleepData = {
     date: string
-    sleepTime: string
-    sleepQuality: 'Excellent' | 'Good' | 'Poor' | null
+    sleepTime: {
+      hour: string
+      minute: string
+    }
+    wakeupTime: {
+      hour: string
+      minute: string
+    }
 }

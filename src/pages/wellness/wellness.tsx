@@ -9,7 +9,7 @@ import ExcerciseGrid from "../../components/exercise-grid/exercise-grid";
 import { fetchSleepRecords, selectSleepRecords, selectStatus } from "../../state/sleep-record/sleep-record.slice";
 import { useAuthValue } from "../../hooks/use-auth-context";
 import { useAppDispatch, useAppSelector } from "../../state/hooks";
-import FilterForm from "../../components/sleeprecord-filter-form/sleeprecord-filter-form";
+import FilterForm from "../../components/date-filter/date-filter-form";
 
 const Wellness = () => {
   const [showSleepRecordForm, setShowSleepRecordForm] = useState(false);

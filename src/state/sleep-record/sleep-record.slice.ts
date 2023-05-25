@@ -22,13 +22,7 @@ export const fetchSleepRecords = createAsyncThunk(
         const q = query(collection(database, 'sleeprecords'), where('userId', '==', userId));
         const records: Array<Omit<SleepData, 'sleepTime'> & { sleepTime: number }> = [];
         const docs = await getDocuments(q);
-        docs.forEach(doc => {
-            records.push({
-                date: doc.data().date,  
-                sleepTime: doc.data().sleepTime,
-                sleepQuality: doc.data().sleepQuality,
-            });
-        });
+        
 
         return {
             sleepRecords: records,

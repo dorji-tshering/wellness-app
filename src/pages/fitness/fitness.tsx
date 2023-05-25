@@ -8,7 +8,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { WorkoutRecord } from "../../model/workout-form";
 import { useAppSelector } from "../../state/hooks";
 import { selectRecords } from "../../state/workout-stats/workout-stat.slice";
-import FilterForm from "../../components/sleeprecord-filter-form/sleeprecord-filter-form";
+import FilterForm from "../../components/date-filter/date-filter-form";
 
 const Fitness = () => {
   const {isMobile} = IsMobile();

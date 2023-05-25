@@ -90,7 +90,7 @@ const WorkoutForm = ({
                             className='bg-white shadow-md rounded-md px-6 py-8 sm:p-8 flex flex-col'>
                             <h2 className='text-center text-lg font-bold mb-5'>{ editing ? 'Update workout record' : 'Add workout record' }</h2>
                             { submitError && <p className='text-xs text-red-600 mb-3 text-center -mt-3'>{ submitError }</p> }
-                            <div className='grid sm:grid-cols-2 [&>*:nth-child(odd)]:sm:mr-5 [&>*]:mb-5'>
+                            <div className='grid sm:grid-cols-2 gap-5'>
                               <Field name='date' type='date'>
                                 {({ input }) => (
                                   <label>
@@ -167,7 +167,7 @@ const WorkoutForm = ({
                               
                               
                             </div>
-                            <div className='flex justify-center'>
+                            <div className='flex justify-center mt-5'>
                               <button 
                                 type='button'
                                 className='py-2 px-4 rounded-md mr-5 hover:bg-gray-100 w-[80px] border-mainBorder border text-sm font-medium'

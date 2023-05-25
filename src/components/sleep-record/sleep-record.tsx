@@ -65,7 +65,7 @@ const SleepRecord = ({ startDate, endDate }: {startDate: string, endDate: string
                                       </div>
                                       <div className="flex justify-between sm:block px-3 py-2">
                                           <span className="sm:hidden font-medium">Sleep quality</span>
-                                          <span className="text-gray-500 sm:text-inherit">{ record.sleepQuality }</span>
+                                          <span className="text-gray-500 sm:text-inherit">{  }</span>
                                       </div>
                                   </div>
                               )) }
