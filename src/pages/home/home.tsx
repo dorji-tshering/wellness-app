@@ -3,13 +3,12 @@ import { useAuthValue } from "../../hooks/use-auth-context";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import SleepStats from "../../components/sleep-stat/sleep-stat";
 import NutrientStats from "../../components/nutrient-stat/nutrient-stat";
-import { GiAtomCore, GiPathDistance, GiTimeBomb } from "react-icons/gi";
 import Loader from "../../components/loader/loader";
 import { useAppSelector } from "../../state/hooks";
 import { selectRecords, selectStatus } from "../../state/workout-stats/workout-stat.slice";
 import { useFetch } from "../../hooks/use-fetch";
 import { useWorkoutStat } from "../../hooks/use-workout-stats";
-import { getWorkoutName } from "../../utils/workout-options";
+import WorkoutStats from "../../components/workout-stat-and-table/workout-stat";
 
 const Home = () => {
     const [settingName, setSettingName] = useState(false);
@@ -110,57 +109,7 @@ const Home = () => {
                         <Loader/>
                     </div>
                 ) : (
-                    <>
-                        <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row mx-auto justify-between">
-                            <div className="flex flex-col justify-center items-center py-6 rounded-md bg-[#67079F]/5
-                                mb-10 sm:basis-[30%] md:basis-full lg:basis-[30%]">
-                                <p className="mb-3"><GiTimeBomb size={30} color="#67079F"/></p>
-                                <p className="">Time Spent</p>
-                                <span className="mb-5 text-gray-500">(hr)</span>
-                                <div className="text-[#67079F] w-full">
-                                  { Object.entries(workoutStats.timeSpent).map((timeStats, idx) => (
-                                    <p key={idx}
-                                      className="flex">
-                                      <span className="basis-1/2 text-right mr-2">{ getWorkoutName(timeStats[0]) }</span>: 
-                                      <span className="basis-1/2 text-left ml-2">{timeStats[1]}</span>
-                                    </p>
-                                  )) }
-                                </div>
-                            </div>
-                            <div className="flex flex-col justify-between items-center py-6 rounded-md bg-[#F2A90D]/5
-                                mb-10 sm:basis-[30%] md:basis-full lg:basis-[30%]">
-                                <p className="mb-3"><GiAtomCore size={30} color="#F2A90D"/></p>
-                                <p className="">Calories Burned</p>
-                                <span className="mb-5 text-gray-500">(cal)</span>
-                                <div className="text-[#F2A90D] w-full">
-                                  { Object.entries(workoutStats.caloriesBurned).map((calorieStat, idx) => (
-                                    <p key={idx}
-                                      className="flex">
-                                      <span className="basis-1/2 text-right mr-2">{ getWorkoutName(calorieStat[0]) }</span>: 
-                                      <span className="basis-1/2 text-left ml-2">{calorieStat[1]}</span>
-                                    </p>                                 
-                                  )) }
-                                </div>
-                            </div>
-                            <div className="flex flex-col justify-between items-center py-6 rounded-md bg-[#1CC115]/5
-                                mb-10 sm:basis-[30%] md:basis-full lg:basis-[30%]">
-                                <p className="mb-3"><GiPathDistance size={30} color="#1CC115"/></p>
-                                <p className="">Distance Covered</p>
-                                <span className="mb-5 text-gray-500">(km)</span>
-                                <div className="text-[#1CC115] w-full">
-                                  { Object.entries(workoutStats.distanceCovered).map((distanceStats, idx) => (
-                                    <p key={idx}
-                                      className="flex">
-                                      <span className="basis-1/2 text-right mr-2">{ getWorkoutName(distanceStats[0]) }</span>: 
-                                      <span className="basis-1/2 text-left ml-2">{ isNaN(distanceStats[1]) ? 
-                                        'NaN' : distanceStats[1] }
-                                      </span>
-                                    </p>                                 
-                                  )) }
-                                </div>
-                            </div>
-                        </div>
-                    </>
+                    <WorkoutStats workoutStats={workoutStats}/>
                 )}
                 <div className="mb-10">
                     <h1 className="font-bold text-gray-600 text-lg mb-5">Nutrient Intakes</h1>

@@ -26,8 +26,8 @@ body {
 }
 
 .workout-table-cell {
-    @apply flex justify-between sm:block px-3 py-2 border-r border-r-mainBorder
-    border-b border-b-mainBorder sm:border-b-0
+    @apply sm:block px-3 py-2 sm:border-r border-mainBorder 
+    border-b sm:border-b-0
 }
 
 .hide-scrollbar {

@@ -128,12 +128,14 @@ export const addSleepRecordAPI = async(userId: string, values: SleepData) => {
 export const addWorkoutRecordAPI = async(userId: string, values: WorkoutRecord) => {
   const { date, workoutIDs, workouts } = values;
 
-  addDoc(collection(database, 'workout'), {
+  const docRef = await addDoc(collection(database, 'workout'), {
     userId: userId,
     date: date,
     workoutIDs,
     workouts,
   });
+
+  return docRef.id;
 }
 
 export const editWorkoutRecordAPI = async(recordId: string, values: WorkoutRecord) => {

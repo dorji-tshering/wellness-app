@@ -13,8 +13,8 @@ export type Props = {
     setShowForm: React.Dispatch<React.SetStateAction<boolean>>
     setEditMode: React.Dispatch<React.SetStateAction<boolean>>
     setRecordId: React.Dispatch<React.SetStateAction<string>>
-    setEditableRecord: React.Dispatch<React.SetStateAction<WorkoutRecord | null>>
+    setEditableRecord: React.Dispatch<React.SetStateAction<WorkoutRecord & {id: string} | null>>
     editing: boolean
     recordId?: string
-    editableRecord: WorkoutRecord | null
+    editableRecord: WorkoutRecord & {id: string} | null
 }

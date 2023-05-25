@@ -5,13 +5,14 @@ import IsMobile from "../../hooks/use-media-query";
 import WorkoutForm from "../../components/workout-form/workout-form";
 import WorkoutStatAndTable from "../../components/workout-stat-and-table/workout-stat-and-table";
 import { ErrorBoundary } from "react-error-boundary";
+import { WorkoutRecord } from "../../model/workout-form";
 
 const Fitness = () => {
     const {isMobile} = IsMobile();
     const [showWorkoutForm, setShowWorkoutForm] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const [recordId, setRecordId] = useState('');
-    const [editableRecord, setEditableRecord] = useState<any | null>(null);
+    const [editableRecord, setEditableRecord] = useState<WorkoutRecord & {id: string} | null>(null);
 
     return (
         <div>

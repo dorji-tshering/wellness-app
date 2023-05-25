@@ -5,9 +5,9 @@ import { Form, Field } from 'react-final-form';
 import { FORM_ERROR } from 'final-form';
 import classNames from 'classnames';
 import { WorkoutRecord, Props,  } from '../../model/workout-form';
-import { addWorkoutRecord, editWorkoutRecord } from '../../services/facade.service';
+import { createWorkoutRecord, editWorkoutRecord } from '../../services/facade.service';
 import { useAppDispatch } from '../../state/hooks';
-import { fetchWorkoutRecords } from '../../state/workout-stats/workout-stat.slice';
+import { addWorkoutRecord, updateWorkoutRecord } from '../../state/workout-stats/workout-stat.slice';
 import { useState } from 'react';
 import { getWorkout, getWorkoutName } from '../../utils/workout-options';
 import WorkoutOptions from '../workout-options/workout-options';
@@ -29,9 +29,12 @@ const WorkoutForm = ({
 
     const handleWorkoutRecordAdd = async(values: WorkoutRecord) => {
         try {
-            user && await addWorkoutRecord(user.uid, values);
+            const recordId = user && await createWorkoutRecord(user.uid, values);
+            recordId && dispatch(addWorkoutRecord({
+              recordId,
+              newRecord: values,
+            }));
             setNotification && setNotification('Record added successfully.');
-            user && await dispatch(fetchWorkoutRecords(user.uid));
             setShowForm(false);
         }catch(err: any) {
             return { [FORM_ERROR]: err.code };
@@ -40,9 +43,12 @@ const WorkoutForm = ({
 
     const handleWorkoutRecordEdit = async(values: WorkoutRecord) => {
         try {
-            recordId && editWorkoutRecord(recordId, values);
+            recordId && await editWorkoutRecord(recordId, values);
+            dispatch(updateWorkoutRecord({
+              recordId: recordId as string,
+              updatedRecord: values,
+            }));
             setNotification && setNotification('Record updated successfully.');
-            user && await dispatch(fetchWorkoutRecords(user.uid));
             setRecordId('');
             setEditMode(false);
             setEditableRecord(null);
@@ -67,10 +73,10 @@ const WorkoutForm = ({
                 <Form onSubmit={editing ? handleWorkoutRecordEdit : handleWorkoutRecordAdd}
                     initialValues={
                       (editing && editableRecord) ? {
-                          
-                      }: {
-                        
-                      }
+                          date: editableRecord.date,
+                          workoutIDs: editableRecord.workoutIDs,
+                          workouts: editableRecord.workouts,
+                      }: undefined
                     }
                     validate={values => {
                       const errors: {workoutIds?: string} = {};

@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { WorkoutRecord } from '../../model/workout-form';
 import { RootState } from '../store';
 import { getDocuments } from '../../services/facade.service';
@@ -39,7 +39,29 @@ export const fetchWorkoutRecords = createAsyncThunk(
 const workoutRecordSlice = createSlice({
     name: 'workoutRecords',
     initialState,
-    reducers: {},
+    reducers: {
+      addWorkoutRecord(state, action: PayloadAction<{
+        recordId: string;
+        newRecord: WorkoutRecord;
+      }>) {
+        state.records.push({
+          id: action.payload.recordId,
+          ...action.payload.newRecord,
+        });
+      },
+      deleteWorkoutRecord(state, action: PayloadAction<{recordId: string}>) {
+        state.records = state.records.filter(record => record.id !== action.payload.recordId)
+      },
+      updateWorkoutRecord(state, action: PayloadAction<{
+        recordId: string;
+        updatedRecord: WorkoutRecord;
+      }>) {
+        const record = state.records.find(record => record.id === action.payload.recordId) as WorkoutRecord & {id: string};
+        record.date = action.payload.updatedRecord.date;
+        record.workoutIDs = action.payload.updatedRecord.workoutIDs;
+        record.workouts = action.payload.updatedRecord.workouts;
+      }
+    },
     extraReducers: (builder) => {
         builder
         .addCase(fetchWorkoutRecords.pending, (state) => {
@@ -58,5 +80,6 @@ const workoutRecordSlice = createSlice({
  
 export const selectStatus = (state: RootState) => state.workout.status; 
 export const selectRecords = (state: RootState) => state.workout.records;
+export const { updateWorkoutRecord, addWorkoutRecord, deleteWorkoutRecord } = workoutRecordSlice.actions;
 
 export default workoutRecordSlice.reducer;

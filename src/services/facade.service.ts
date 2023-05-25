@@ -45,6 +45,6 @@ export const loginWithEmailAndPassword = (
 
 export const addSleepRecord = (userId: string, values: SleepData) => addSleepRecordAPI(userId, values);
 
-export const addWorkoutRecord = (userId: string, values: WorkoutRecord) => addWorkoutRecordAPI(userId, values);
+export const createWorkoutRecord = (userId: string, values: WorkoutRecord) => addWorkoutRecordAPI(userId, values);
 
 export const editWorkoutRecord = (recordId: string, values: WorkoutRecord) => editWorkoutRecordAPI(recordId, values);

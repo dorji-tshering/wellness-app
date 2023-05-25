@@ -4,15 +4,14 @@ import { database } from "../../firebaseClient";
 import { useAuthValue } from "../../hooks/use-auth-context";
 import Loader from "../loader/loader";
 import { useNotification } from "../../hooks/use-notification-context";
-import { GiTimeBomb, GiPathDistance, GiAtomCore } from 'react-icons/gi';
 import { MdHourglassEmpty } from 'react-icons/md';
 import { Props } from "../../model/workout-stat-and-table";
-import { selectRecords, selectStatus } from "../../state/workout-stats/workout-stat.slice";
+import { deleteWorkoutRecord, selectRecords, selectStatus } from "../../state/workout-stats/workout-stat.slice";
 import { useAppDispatch, useAppSelector } from "../../state/hooks";
-import { fetchWorkoutRecords } from "../../state/workout-stats/workout-stat.slice";
 import { useFetch } from "../../hooks/use-fetch";
-import { getWorkoutName } from "../../utils/workout-options";
 import { useWorkoutStat } from "../../hooks/use-workout-stats";
+import WorkoutStats from "./workout-stat";
+import { WorkoutRecord } from "../../model/workout-form";
 
 const WorkoutStatAndTable= memo(({ 
   setEditMode, 
@@ -29,25 +28,32 @@ const WorkoutStatAndTable= memo(({
     useFetch('workoutStats', user, status);
 
     const records = useAppSelector(selectRecords);
+    const sortedRecord = records.slice().sort((a, b) => {
+      if(a.date < b.date) {
+        return 1;
+      }else return -1;
+    });
     const workoutStats = useWorkoutStat(records);
     const dispatch = useAppDispatch();
 
     const deleteRecord = async() => {
         setDeleting(true);
         await deleteDoc(doc(database, 'workout', deleteRecordId));
+        dispatch(deleteWorkoutRecord({
+          recordId: deleteRecordId
+        }));
         setNotification && setNotification('Record deleted successfully.');
-        user && await dispatch(fetchWorkoutRecords(user.uid));
         setDeleteRecordId('');
         setDeleting(false);
         setConfirmDelete(false);
     }
 
-    // const showEditForm = (recordId: string, record: WorkoutStats & {id: string, date: string}) => {
-    //     setEditMode(true);
-    //     setShowWorkoutForm(true);
-    //     setEditableRecord(record);
-    //     setRecordId(recordId);
-    // }
+    const showEditForm = (recordId: string, record: WorkoutRecord & {id: string}) => {
+        setEditMode(true);
+        setShowWorkoutForm(true);
+        setEditableRecord(record);
+        setRecordId(recordId);
+    }
 
     if(status === 'idle' || status === 'pending') {
         return (
@@ -81,45 +87,65 @@ const WorkoutStatAndTable= memo(({
                     <>
                         <p className="mt-3 mb-5 text-center">Maintain your workout records here and stay fit!</p>
                         {/* workout record table */}
-                        {/* <div className="mx-auto xs:max-w-[70%] sm:max-w-full xl:max-w-[80%] flex flex-col border border-mainBorder rounded-md">
+                        <div className="mx-auto xl:max-w-[80%] flex flex-col border border-mainBorder rounded-md">
                             <div className="hidden sm:grid sm:grid-cols-5 border-b border-b-mainBorder bg-gray-100 
                                 rounded-tr-md rounded-tl-md">
                                 <span className="workout-table-head">Date</span>
-                                <span className="workout-table-head">Time <span className="text-xs text-gray-500 pl-[2px]">(hr)</span></span>
-                                <span className="workout-table-head">Calories <span className="text-xs text-gray-500 pl-[2px]">(cal)</span></span>
-                                <span className="workout-table-head">Distance <span className="text-xs text-gray-500 pl-[2px]">(km)</span></span>
+                                <div className="col-span-3 grid grid-cols-3">
+                                  <span className="workout-table-head">Workouts</span>
+                                  <span className="workout-table-head">Time <span className="text-xs text-gray-500 pl-[2px]">(min)</span></span>
+                                  <span className="workout-table-head">Distance <span className="text-xs text-gray-500 pl-[2px]">(m)</span></span>
+                                </div>
                                 <span className="px-3 py-2 font-medium">Actions</span>
                             </div>
-                            { records.map((record, idx) => (
+                            { sortedRecord.map((record, idx) => (
                                 <div 
                                     key={idx}
                                     className="flex flex-col sm:grid sm:grid-cols-5 border-b border-b-black 
-                                    sm:border-b-mainBorder last:border-b-0
+                                    sm:border-b-mainBorder last:border-b-0 text-sm text-gray-600
                                     ">
-                                    <div className="workout-table-cell">
+                                    <div className="workout-table-cell flex justify-between">
                                         <span className="sm:hidden font-medium">Date</span>
                                         <span className="whitespace-nowrap text-gray-500 sm:text-inherit">{record.date}</span>
                                     </div>
-                                    <div className="workout-table-cell">
-                                        <span className="sm:hidden font-medium">Time <span className="text-xs text-gray-500 pl-[2px]">(hr)</span></span>
-                                        <span className="text-gray-500 sm:text-inherit">{record.timeSpent}</span>
+                                    <div className="flex sm:block sm:col-span-3">
+                                      <div className="grid grid-rows-3 sm:hidden font-medium">
+                                        <span className="px-3 py-2 border-b border-r border-mainBorder">
+                                          Workouts
+                                        </span>
+                                        <span className="px-3 py-2 border-b border-r border-mainBorder">
+                                          Time <span className="text-xs text-gray-500 pl-[2px]">(min)</span>
+                                        </span>
+                                        <span className="px-3 py-2 border-b border-r border-mainBorder">
+                                          Distance <span className="text-xs text-gray-500 pl-[2px]">(m)</span>
+                                        </span>
+                                      </div>
+                                      { record.workouts.map(( workout, idx) => (
+                                        <div className="sm:border-b last:border-b-0 border-mainBorder grid grid-rows-3 auto-cols-fr
+                                          sm:grid-rows-none sm:grid-cols-3 grow border-r last:border-r-0 sm:border-r-0"
+                                          key={idx}>
+                                          <div className="workout-table-cell">
+                                            <span className="text-gray-500 sm:text-inherit">{ workout.workoutName }</span>
+                                          </div>
+                                          <div className="workout-table-cell">
+                                            <span className="text-gray-500 sm:text-inherit">{ workout.timeSpent }</span>
+                                          </div>
+                                          <div className="workout-table-cell">
+                                            <span className="text-gray-500 sm:text-inherit">
+                                              { workout.distanceCovered ?? '--'}
+                                            </span>
+                                          </div>
+                                        </div>
+                                      )) }
                                     </div>
-                                    <div className="workout-table-cell">
-                                        <span className="sm:hidden font-medium">Calories <span className="text-xs text-gray-500 pl-[2px]">(cal)</span></span>
-                                        <span className="text-gray-500 sm:text-inherit">{record.caloriesBurned}</span>
-                                    </div>
-                                    <div className="workout-table-cell">
-                                        <span className="sm:hidden font-medium">Distance <span className="text-xs text-gray-500 pl-[2px]">(km)</span></span>
-                                        <span className="text-gray-500 sm:text-inherit">{record.distanceCovered}</span>
-                                    </div>
-                                    <div className="flex justify-between py-1 sm:py-2 px-3 font-medium">
+                                    <div className="flex justify-between py-2 sm:py-2 px-3 font-medium">
                                         <button 
                                             className="w-[80px] sm:w-auto rounded-[4px] bg-theme/5 sm:bg-transparent
-                                            py-2 sm:py-0 text-theme text-sm sm:hover:underline"
+                                            py-2 sm:py-0 text-theme text-sm sm:hover:underline h-min"
                                             onClick={() => showEditForm(record.id, record)}>Edit</button>
                                         <button 
                                             className="w-[80px] sm:w-auto rounded-[4px] bg-red-100 sm:bg-transparent
-                                            py-2 sm:py-0 text-red-600 text-sm sm:hover:underline"
+                                            py-2 sm:py-0 text-red-600 text-sm sm:hover:underline h-min"
                                             onClick={() => {
                                                 setConfirmDelete(true);
                                                 setDeleteRecordId(record.id);
@@ -127,59 +153,10 @@ const WorkoutStatAndTable= memo(({
                                     </div>
                                 </div>
                             )) }
-                        </div> */}
+                        </div>
                     
                         {/* workout stats */}
-                        <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row xs:max-w-[70%] 
-                             sm:max-w-full xl:max-w-[80%] mx-auto mt-10 justify-between ">
-                            <div className="flex flex-col justify-center items-center py-6 rounded-md bg-[#67079F]/5
-                                mb-10 sm:basis-[30%] md:basis-full lg:basis-[30%]">
-                                <p className="mb-3"><GiTimeBomb size={30} color="#67079F"/></p>
-                                <p className="">Time Spent</p>
-                                <span className="mb-5 text-gray-500">(min)</span>
-                                <div className="text-[#67079F] w-full">
-                                  { Object.entries(workoutStats.timeSpent).map((timeStats, idx) => (
-                                    <p key={idx}
-                                      className="flex">
-                                      <span className="basis-1/2 text-right mr-2">{ getWorkoutName(timeStats[0]) }</span>: 
-                                      <span className="basis-1/2 text-left ml-2">{timeStats[1]}</span>
-                                    </p>
-                                  )) }
-                                </div>
-                            </div>
-                            <div className="flex flex-col justify-between items-center py-6 rounded-md bg-[#F2A90D]/5
-                                mb-10 sm:basis-[30%] md:basis-full lg:basis-[30%]">
-                                <p className="mb-3"><GiAtomCore size={30} color="#F2A90D"/></p>
-                                <p className="">Calories Burned</p>
-                                <span className="mb-5 text-gray-500">(cal)</span>
-                                <div className="text-[#F2A90D] w-full">
-                                  { Object.entries(workoutStats.caloriesBurned).map((calorieStat, idx) => (
-                                    <p key={idx}
-                                      className="flex">
-                                      <span className="basis-1/2 text-right mr-2">{ getWorkoutName(calorieStat[0]) }</span>: 
-                                      <span className="basis-1/2 text-left ml-2">{calorieStat[1]}</span>
-                                    </p>                                  
-                                  )) }
-                                </div>
-                            </div>
-                            <div className="flex flex-col justify-between items-center py-6 rounded-md bg-[#1CC115]/5
-                            mb-10 sm:basis-[30%] md:basis-full lg:basis-[30%]">
-                                <p className="mb-3"><GiPathDistance size={30} color="#1CC115"/></p>
-                                <p className="">Distance Covered</p>
-                                <span className="mb-5 text-gray-500">(m)</span>
-                                <div className="text-[#1CC115] w-full">
-                                  { Object.entries(workoutStats.distanceCovered).map((distanceStats, idx) => (
-                                    <p key={idx}
-                                      className="flex">
-                                      <span className="basis-1/2 text-right mr-2">{ getWorkoutName(distanceStats[0]) }</span>: 
-                                      <span className="basis-1/2 text-left ml-2">{ isNaN(distanceStats[1]) ? 
-                                        'NaN' : distanceStats[1] }
-                                      </span>
-                                    </p>                                  
-                                  )) }
-                                </div>
-                            </div>
-                        </div>
+                        <WorkoutStats workoutStats={workoutStats}/>
                     </>
             ) : (
                 <div className="mt-10 mx-auto p-5 sm:px-10 sm:max-w-[60%] flex flex-col items-center xs:max-w-[80%]
