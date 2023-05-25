@@ -1,5 +1,5 @@
 import { deleteDoc, doc } from "firebase/firestore";
-import { memo, useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 import { database } from "../../firebaseClient";
 import { useAuthValue } from "../../hooks/use-auth-context";
 import Loader from "../loader/loader";
@@ -17,7 +17,10 @@ const WorkoutStatAndTable= memo(({
   setEditMode, 
   setShowWorkoutForm, 
   setRecordId, 
-  setEditableRecord }: Props
+  setEditableRecord,
+  startDate,
+  endDate,
+  setFilterDates }: Props
 ) => {
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [deleteRecordId, setDeleteRecordId] = useState('');
@@ -33,8 +36,17 @@ const WorkoutStatAndTable= memo(({
         return 1;
       }else return -1;
     });
-    const workoutStats = useWorkoutStat(records);
     const dispatch = useAppDispatch();
+
+    const filteredRecords = useMemo(() => {
+      if(startDate && endDate) {
+        return sortedRecord.filter(record => record.date >= startDate && record.date <= endDate);
+      }else {
+        return sortedRecord;
+      } 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [startDate, endDate, sortedRecord]);
+    const workoutStats = useWorkoutStat(filteredRecords);
 
     const deleteRecord = async() => {
         setDeleting(true);
@@ -84,86 +96,108 @@ const WorkoutStatAndTable= memo(({
             ) }
 
             { !!records.length ? (
-                    <>
-                        <p className="mt-3 mb-5 text-center">Maintain your workout records here and stay fit!</p>
-                        {/* workout record table */}
-                        <div className="mx-auto xl:max-w-[80%] flex flex-col border border-mainBorder rounded-md">
-                            <div className="hidden sm:grid sm:grid-cols-5 border-b border-b-mainBorder bg-gray-100 
-                                rounded-tr-md rounded-tl-md">
-                                <span className="workout-table-head">Date</span>
-                                <div className="col-span-3 grid grid-cols-3">
-                                  <span className="workout-table-head">Workouts</span>
-                                  <span className="workout-table-head">Time <span className="text-xs text-gray-500 pl-[2px]">(min)</span></span>
-                                  <span className="workout-table-head">Distance <span className="text-xs text-gray-500 pl-[2px]">(m)</span></span>
-                                </div>
-                                <span className="px-3 py-2 font-medium">Actions</span>
+              <>
+                <p className="mt-3 mb-5">Maintain your workout records here and stay fit!</p>
+                { startDate && endDate && (
+                  <div className="flex mb-4 items-center text-sm">
+                    <p className='text-theme'>From: 
+                      <span className='text-gray-600 ml-1'>{ startDate }</span> to: 
+                      <span className='text-gray-600 ml-1'>{ endDate }</span>
+                    </p>
+                    <button onClick={() => setFilterDates({startDate: '', endDate: ''})}
+                      className="text-theme underline ml-4">
+                      Remove filter
+                    </button>
+                  </div>
+                ) }
+
+                { !!filteredRecords.length ? (
+                  <>
+                    {/* workout record table */}
+                    <div className="mx-auto xl:max-w-[80%] flex flex-col border border-mainBorder rounded-md">
+                        <div className="hidden sm:grid sm:grid-cols-5 border-b border-b-mainBorder bg-gray-100 
+                            rounded-tr-md rounded-tl-md">
+                            <span className="workout-table-head">Date</span>
+                            <div className="col-span-3 grid grid-cols-3">
+                              <span className="workout-table-head">Workouts</span>
+                              <span className="workout-table-head">Time <span className="text-xs text-gray-500 pl-[2px]">(min)</span></span>
+                              <span className="workout-table-head">Distance <span className="text-xs text-gray-500 pl-[2px]">(m)</span></span>
                             </div>
-                            { sortedRecord.map((record, idx) => (
-                                <div 
-                                    key={idx}
-                                    className="flex flex-col sm:grid sm:grid-cols-5 border-b border-b-black 
-                                    sm:border-b-mainBorder last:border-b-0 text-sm text-gray-600
-                                    ">
-                                    <div className="workout-table-cell flex justify-between">
-                                        <span className="sm:hidden font-medium">Date</span>
-                                        <span className="whitespace-nowrap text-gray-500 sm:text-inherit">{record.date}</span>
-                                    </div>
-                                    <div className="flex sm:block sm:col-span-3">
-                                      <div className="grid grid-rows-3 sm:hidden font-medium">
-                                        <span className="px-3 py-2 border-b border-r border-mainBorder">
-                                          Workouts
-                                        </span>
-                                        <span className="px-3 py-2 border-b border-r border-mainBorder">
-                                          Time <span className="text-xs text-gray-500 pl-[2px]">(min)</span>
-                                        </span>
-                                        <span className="px-3 py-2 border-b border-r border-mainBorder">
-                                          Distance <span className="text-xs text-gray-500 pl-[2px]">(m)</span>
-                                        </span>
-                                      </div>
-                                      { record.workouts.map(( workout, idx) => (
-                                        <div className="sm:border-b last:border-b-0 border-mainBorder grid grid-rows-3 auto-cols-fr
-                                          sm:grid-rows-none sm:grid-cols-3 grow border-r last:border-r-0 sm:border-r-0"
-                                          key={idx}>
-                                          <div className="workout-table-cell">
-                                            <span className="text-gray-500 sm:text-inherit">{ workout.workoutName }</span>
-                                          </div>
-                                          <div className="workout-table-cell">
-                                            <span className="text-gray-500 sm:text-inherit">{ workout.timeSpent }</span>
-                                          </div>
-                                          <div className="workout-table-cell">
-                                            <span className="text-gray-500 sm:text-inherit">
-                                              { workout.distanceCovered ?? '--'}
-                                            </span>
-                                          </div>
-                                        </div>
-                                      )) }
-                                    </div>
-                                    <div className="flex justify-between py-2 sm:py-2 px-3 font-medium">
-                                        <button 
-                                            className="w-[80px] sm:w-auto rounded-[4px] bg-theme/5 sm:bg-transparent
-                                            py-2 sm:py-0 text-theme text-sm sm:hover:underline h-min"
-                                            onClick={() => showEditForm(record.id, record)}>Edit</button>
-                                        <button 
-                                            className="w-[80px] sm:w-auto rounded-[4px] bg-red-100 sm:bg-transparent
-                                            py-2 sm:py-0 text-red-600 text-sm sm:hover:underline h-min"
-                                            onClick={() => {
-                                                setConfirmDelete(true);
-                                                setDeleteRecordId(record.id);
-                                            }}>Delete</button>
-                                    </div>
-                                </div>
-                            )) }
+                            <span className="px-3 py-2 font-medium">Actions</span>
                         </div>
-                    
-                        {/* workout stats */}
-                        <WorkoutStats workoutStats={workoutStats}/>
-                    </>
+                        { filteredRecords.map((record, idx) => (
+                            <div 
+                                key={idx}
+                                className="flex flex-col sm:grid sm:grid-cols-5 border-b border-b-black 
+                                sm:border-b-mainBorder last:border-b-0 text-sm text-gray-600
+                                ">
+                                <div className="workout-table-cell flex justify-between">
+                                    <span className="sm:hidden font-medium">Date</span>
+                                    <span className="whitespace-nowrap text-gray-500 sm:text-inherit">{record.date}</span>
+                                </div>
+                                <div className="flex sm:block sm:col-span-3 overflow-y-auto">
+                                  <div className="grid grid-rows-3 sm:hidden font-medium">
+                                    <span className="px-3 py-2 border-b border-r border-mainBorder min-w-[110px]">
+                                      Workouts
+                                    </span>
+                                    <span className="px-3 py-2 border-b border-r border-mainBorder min-w-[110px]">
+                                      Time <span className="text-xs text-gray-500 pl-[2px]">(min)</span>
+                                    </span>
+                                    <span className="px-3 py-2 border-b border-r border-mainBorder min-w-[110px]">
+                                      Distance <span className="text-xs text-gray-500 pl-[2px]">(m)</span>
+                                    </span>
+                                  </div>
+
+                                  { record.workouts.map(( workout, idx) => (
+                                    <div className="sm:border-b last:border-b-0 border-mainBorder grid grid-rows-3 auto-cols-fr
+                                      sm:grid-rows-none sm:grid-cols-3 grow border-r last:border-r-0 sm:border-r-0 min-w-fit"
+                                      key={idx}>
+                                        <span className="text-gray-500 workout-table-cell">{ workout.workoutName }</span>
+
+                                        <span className="text-gray-500 workout-table-cell">{ workout.timeSpent }</span>
+
+                                        <span className="text-gray-500 workout-table-cell">
+                                          { workout.distanceCovered ?? '--'}
+                                        </span>
+                                    </div>
+                                  )) }
+                                </div>
+                                <div className="flex justify-between py-2 sm:py-2 px-3 font-medium">
+                                    <button 
+                                        className="w-[80px] sm:w-auto rounded-[4px] bg-theme/5 sm:bg-transparent
+                                        py-2 sm:py-0 text-theme text-sm sm:hover:underline h-min"
+                                        onClick={() => showEditForm(record.id, record)}>Edit</button>
+                                    <button 
+                                        className="w-[80px] sm:w-auto rounded-[4px] bg-red-100 sm:bg-transparent
+                                        py-2 sm:py-0 text-red-600 text-sm sm:hover:underline h-min"
+                                        onClick={() => {
+                                            setConfirmDelete(true);
+                                            setDeleteRecordId(record.id);
+                                        }}>Delete</button>
+                                </div>
+                            </div>
+                        )) }
+                    </div>
+                
+                    {/* workout stats */}
+                    <WorkoutStats workoutStats={workoutStats}/>
+                  </>
+                ) : (
+                  <div className="flex flex-wrap">
+                    <p className="text-gray-600">No records to show for this filter.</p>
+                    <button onClick={() => setFilterDates({startDate: '', endDate: ''})}
+                      className="text-theme underline ml-2">
+                      Remove filter
+                    </button>
+                  </div>
+                )}
+              </>
             ) : (
-                <div className="mt-10 mx-auto p-5 sm:px-10 sm:max-w-[60%] flex flex-col items-center xs:max-w-[80%]
-                    rounded-lg bg-theme/5 shadow-sm">
-                    <p className="mb-6"><MdHourglassEmpty size={45} color="#777777"/></p>
-                    <p className="text-center">You have not added any workout records yet. Start adding one and keep track of your fitness.</p>
-                </div>
+              <div className="mt-10 mx-auto p-5 sm:px-10 sm:max-w-[60%] flex flex-col items-center xs:max-w-[80%]
+                  rounded-lg bg-theme/5 shadow-sm">
+                  <p className="mb-6"><MdHourglassEmpty size={45} color="#777777"/></p>
+                  <p className="text-center">You have not added any workout records yet. Start adding one and keep track of your fitness.</p>
+              </div>
             ) }
         </div>
     )
