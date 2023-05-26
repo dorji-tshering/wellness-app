@@ -7,17 +7,22 @@ const SleepRecord = ({ startDate, endDate }: {startDate: string, endDate: string
     const [showRecordTable, setShowRecordTable] = useState(true);
     const fetchStatus = useAppSelector(selectStatus);
     const sleepRecords = useAppSelector(selectSleepRecords);
+    const sortedRecord = sleepRecords.slice().sort((a, b) => {
+      if(a.date < b.date) {
+        return 1;
+      }else return -1;
+    });
 
     const filteredRecords = useMemo(() => {
       if(startDate && endDate) {
-        return sleepRecords.filter(record => {
+        return sortedRecord.filter(record => {
           return record.date >= startDate && record.date <= endDate;
         });
       }else {
-        return sleepRecords;
+        return sortedRecord;
       } 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startDate, endDate, sleepRecords]);
+    }, [startDate, endDate, sortedRecord]);
 
     if(fetchStatus === 'idle' || fetchStatus === 'pending') {
         return (

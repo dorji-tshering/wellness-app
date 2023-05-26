@@ -185,10 +185,6 @@ const WorkoutStatAndTable= memo(({
                 ) : (
                   <div className="flex flex-wrap">
                     <p className="text-gray-600">No records to show for this filter.</p>
-                    <button onClick={() => setFilterDates({startDate: '', endDate: ''})}
-                      className="text-theme underline ml-2">
-                      Remove filter
-                    </button>
                   </div>
                 )}
               </>

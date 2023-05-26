@@ -14,11 +14,6 @@ import FilterForm from "../../components/date-filter/date-filter-form";
 const Wellness = () => {
   const [showSleepRecordForm, setShowSleepRecordForm] = useState(false);
   const [showDateFilter, setShowDateFilter] = useState(false);
-  const [sleepQualityData, setSleepQualityData] = useState({
-    Excellent: 0,
-    Good: 0,
-    Poor: 0,
-  });
   const [filterDates, setFilterDates] = useState({
       startDate: '',
       endDate: '',
@@ -132,9 +127,9 @@ const Wellness = () => {
           ) }
 
           <div>
-              <SleepStats startDate={filterDates.startDate} endDate={filterDates.endDate} setSleepQualityData={setSleepQualityData} />
+              <SleepStats startDate={filterDates.startDate} endDate={filterDates.endDate} setFilterDates={setFilterDates} />
               <SleepRecord startDate={filterDates.startDate} endDate={filterDates.endDate} />
-              <ExcerciseGrid sleepQuality={sleepQualityData.Excellent}/>
+              <ExcerciseGrid />
           </div>
       </div>      
   )
