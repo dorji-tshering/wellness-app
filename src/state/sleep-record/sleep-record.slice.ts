@@ -7,7 +7,7 @@ import { RootState } from "../store";
 import { resetAll } from "../hooks";
 
 interface InitialState {
-    sleepRecords: Array<Omit<SleepData, 'sleepTime'> & { sleepTime: number }>
+    sleepRecords: Array<SleepData & {recordId: string}>
     fetchStatus: 'idle' | 'pending' | 'succeeded' | 'failed'
 }
 
@@ -20,10 +20,18 @@ export const fetchSleepRecords = createAsyncThunk(
     'sleepRecord/fetch',
     async(userId: string) => {
         const q = query(collection(database, 'sleeprecords'), where('userId', '==', userId));
-        const records: Array<Omit<SleepData, 'sleepTime'> & { sleepTime: number }> = [];
+        const records: Array<SleepData & { recordId: string }> = [];
         const docs = await getDocuments(q);
-        
-
+        docs.forEach(doc => {
+          records.push({
+            date: doc.data().date,
+            recordId: doc.data().recordId,
+            sleepTime: doc.data().sleepTime,
+            wakeupTime: doc.data().wakeupTime,
+            duration: doc.data().duration,
+            quality: doc.data().quality,
+          });
+        });
         return {
             sleepRecords: records,
         }
@@ -33,13 +41,10 @@ export const fetchSleepRecords = createAsyncThunk(
 export const addASleepRecord = createAsyncThunk(
     'sleepRecord/add',
     async(arg: { userId: string, values: SleepData}) => {
-        await addSleepRecord(arg.userId, arg.values);
-
+        const recordId = await addSleepRecord(arg.userId, arg.values);
         return {
-            sleepData: {
-                ...arg.values,
-                sleepTime: Number(arg.values.sleepTime),
-            },
+            recordId,
+            ...arg.values
         }
     }
 );
@@ -61,7 +66,7 @@ const sleepRecordSlice = createSlice({
             state.fetchStatus = 'failed';
         })
         .addCase(addASleepRecord.fulfilled, (state, action) => {
-            state.sleepRecords.push(action.payload.sleepData);
+            state.sleepRecords.push(action.payload);
         })
         .addCase(resetAll, () => initialState)
     }

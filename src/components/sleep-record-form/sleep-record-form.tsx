@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import isNumeric from '../../utils/is-numeric';
 import classNames from 'classnames';
 import { useAuthValue } from '../../hooks/use-auth-context';
 import { useNotification } from '../../hooks/use-notification-context';
@@ -11,26 +10,62 @@ import { addASleepRecord } from '../../state/sleep-record/sleep-record.slice';
 import SleepHourMinOption from '../sleep-hour-min-option/sleep-hour-min-option';
 
 const SleepRecordForm = ({ setShowSleepRecordForm }: Props) => {
-  const [showSleepQualities, setShowSleepQualities] = useState(false);
   const [timeType, setTimeType] = useState<'sleepTime' | 'wakeupTime' | null>(null);
   const [showSleepTimeOption, setShowSleepTimeOption] = useState(false);
   const user = useAuthValue();
   const setNotification = useNotification()?.setNotification;
-  const sleepQualities = ['Excellent', 'Good', 'Poor'] as const;
   const dispatch = useAppDispatch();
 
+  const getSleepDuration = (values: SleepData) => {
+    let sleepHour: number;
+    let wakeupHour: number;
+    let totalSleepMinutes = 0;
+    if(values.sleepTime.hour === '00') {
+      sleepHour = 24;
+    } else {
+      sleepHour = parseInt(values.sleepTime.hour);
+    }
+    if(values.wakeupTime.hour === '00') {
+      wakeupHour = 24;
+    } else {
+      wakeupHour = parseInt(values.wakeupTime.hour);
+    }
+
+    if(sleepHour > wakeupHour) {
+      if(sleepHour !== 24) {
+        totalSleepMinutes += ((24 - sleepHour) + wakeupHour) * 60;
+      }else {
+        totalSleepMinutes += wakeupHour * 60;
+      }
+    } else {
+      totalSleepMinutes += (wakeupHour - sleepHour) * 60;
+    }
+    totalSleepMinutes += parseInt(values.wakeupTime.minute) - parseInt(values.sleepTime.minute);
+    return Number((totalSleepMinutes / 60).toPrecision(2));
+  }
+
   const handleSleepRecordAdd = async(values: SleepData) => {
-      console.log(values)
-      // try {
-      //     user && await dispatch(addASleepRecord({
-      //         userId: user.uid,
-      //         values,
-      //     }));
-      //     setShowSleepRecordForm(false);
-      //     setNotification &&  setNotification('Your record has been added successfully.');
-      // }catch(err: any) {
-      //     return { [FORM_ERROR]: err.code }
-      // }
+    const duration = getSleepDuration(values);
+    values.duration = duration;
+
+    if(duration <= 6) {
+      values.quality = 'Poor';
+    }else if(duration > 6 && duration <=8 ) {
+      values.quality = 'Good';
+    }else if(duration > 8) {
+      values.quality = 'Excellent';
+    }
+
+    try {
+        user && await dispatch(addASleepRecord({
+            userId: user.uid,
+            values,
+        }));
+        setShowSleepRecordForm(false);
+        setNotification &&  setNotification('Your record has been added successfully.');
+    }catch(err: any) {
+        return { [FORM_ERROR]: err.code }
+    }
   }
 
   return (
@@ -40,8 +75,13 @@ const SleepRecordForm = ({ setShowSleepRecordForm }: Props) => {
         <Form onSubmit={handleSleepRecordAdd}
           validate={(values) => {
             const { sleepTime, wakeupTime } = values;
-            const errors: {sleepTime?: string, sleepQuality?: string} = {};
-            
+            const errors: {sleepTime?: string, wakeupTime?: string} = {};
+            if(!sleepTime) {
+              errors.sleepTime = 'Sleep time is required';
+            }
+            if(!wakeupTime) {
+              errors.wakeupTime = 'Wakeup time is required';
+            }
             return errors;
           }}>
           {({ handleSubmit, submitting, values, submitError }) => (
@@ -66,7 +106,7 @@ const SleepRecordForm = ({ setShowSleepRecordForm }: Props) => {
                   <Field name='sleepTime' type='text'>
                     {({ meta }) => (
                       <>
-                        <p>Sleep time</p>
+                        <p>Time of sleep</p>
                         <button type='button'
                           className={classNames('px-3 py-1 border border-mainBorder rounded-[4px] w-full',
                           values.sleepTime ? 'text-left' : 'text-gray-400')}
@@ -78,7 +118,7 @@ const SleepRecordForm = ({ setShowSleepRecordForm }: Props) => {
                             <>
                               <span>{ values.sleepTime.hour }</span>: <span>{ values.sleepTime.minute }</span>
                             </>
-                          ) : '--sleep time--' }
+                          ) : '--time of sleep--' }
                         </button>
                         { meta.error && meta.touched && (<span className='max-w-[200px] block mt-1 text-xs text-red-600'>
                             { meta.error }
@@ -92,7 +132,7 @@ const SleepRecordForm = ({ setShowSleepRecordForm }: Props) => {
                   <Field name='wakeupTime' type='text'>
                     {({ meta }) => (
                       <>
-                        <p>Wakeup time</p>
+                        <p>Wake up time</p>
                         <button type='button'
                           className={classNames('px-3 py-1 border border-mainBorder rounded-[4px] w-full',
                           values.wakeupTime ? 'text-left' : 'text-gray-400')}

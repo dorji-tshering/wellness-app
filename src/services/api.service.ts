@@ -115,14 +115,17 @@ export const loginWithEmailAndPasswordAPI = async(email: string, password: strin
 }
 
 export const addSleepRecordAPI = async(userId: string, values: SleepData) => {
-    // const { date, sleepTime, sleepQuality } = values;
+    const { date, sleepTime, wakeupTime, duration, quality } = values;
 
-    // addDoc(collection(database, 'sleeprecords'), {
-    //     date: date,
-    //     sleepTime: parseFloat(sleepTime),
-    //     sleepQuality: sleepQuality,
-    //     userId: userId,
-    // })
+    const ref = await addDoc(collection(database, 'sleeprecords'), {
+      userId: userId,
+      date: date,
+      sleepTime,
+      wakeupTime,
+      duration,
+      quality,
+    })
+    return ref.id;
 }
 
 export const addWorkoutRecordAPI = async(userId: string, values: WorkoutRecord) => {

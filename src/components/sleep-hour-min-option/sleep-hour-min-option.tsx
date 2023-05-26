@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SleepData } from "../../model/sleep-record-form";
 
 type Props = {
@@ -14,8 +14,30 @@ const HOURS = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11',
 const MINUTES = Array.from({length: 60}).map((_, idx) => idx <= 9 ? `0${idx}` : `${idx}`);
 
 const SleepHourMinOption = ({ timeType, setShowSleepTimeOption, setTimeType, values }: Props) => {
-  const [sleepHour, setSleepHour] = useState<typeof HOURS[number] | null>(null);
-  const [sleepMinute, setSleepMinute] = useState<string | null>(null);
+  const [sleepHour, setSleepHour] = useState<string | null>(
+    timeType === 'sleepTime' ? ((values.sleepTime && values.sleepTime.hour) ?? null) : 
+    ((values.wakeupTime &&  values.wakeupTime.hour) ?? null)
+  );
+  const [sleepMinute, setSleepMinute] = useState<string | null>(
+    timeType === 'sleepTime' ? ((values.sleepTime && values.sleepTime.minute) ?? null) :
+    ((values.wakeupTime && values.wakeupTime.minute) ?? null)
+  );
+  const hourScrollParent = useRef<HTMLDivElement | null>(null);
+  const minuteScrollParent = useRef<HTMLDivElement | null>(null);
+  const activeHourButton = useRef<HTMLButtonElement | null>(null);
+  const activeMinuteButton = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    hourScrollParent.current?.scrollTo({
+      top: activeHourButton.current?.offsetTop ? activeHourButton.current.offsetTop - 20 : undefined,
+      behavior: 'smooth'
+    });  
+
+    minuteScrollParent.current?.scrollTo({
+      top: activeMinuteButton.current?.offsetTop ? activeMinuteButton.current.offsetTop - 20 : undefined,
+      behavior: 'smooth'
+    });
+  }, [sleepHour, sleepMinute]);
   
   const handleTimeSelect = () => {
     if(timeType === 'sleepTime') {
@@ -43,12 +65,14 @@ const SleepHourMinOption = ({ timeType, setShowSleepTimeOption, setTimeType, val
         <div className='bg-white rounded-md shadow-md px-3 xs:px-8 py-5'>
           <h2 className="text-center">Select { timeType === 'sleepTime' ? 'sleep time' : 'wake up time' }</h2>
           <div className="flex mt-2">
-            <div className="flex flex-col max-h-[200px] overflow-y-auto hide-scrollbar grow border-b">
-              <p className="text-center sticky top-0 bg-gray-600 text-white text-[10px] py-[3px] mb-1">
-                Hour { sleepHour && `: ${sleepHour}` }
+            <div className="flex flex-col max-h-[200px] overflow-y-auto hide-scrollbar grow border-b relative"
+              ref={hourScrollParent}>
+              <p className="text-center sticky top-0 bg-gray-600 text-white text-[10px] py-[3px]">
+                Hour
               </p>
               { HOURS.map((hour, idx) => (
                 <button key={idx}
+                  ref={sleepHour === hour ? activeHourButton : undefined}
                   className={classNames('px-5 py-2', 
                   sleepHour === hour ? 'bg-gray-600 text-white' : 'hover:bg-gray-200 bg-gray-100')}
                   onClick={() => setSleepHour(hour)}>
@@ -56,12 +80,14 @@ const SleepHourMinOption = ({ timeType, setShowSleepTimeOption, setTimeType, val
                 </button>
               )) }
             </div>
-            <div className="flex flex-col max-h-[200px] overflow-y-auto hide-scrollbar grow border-b">
-              <p className="text-center sticky top-0 bg-gray-500 text-white text-[10px] py-[3px] mb-1">
-                Minute { sleepMinute && `: ${sleepMinute}` }
+            <div className="flex flex-col max-h-[200px] overflow-y-auto hide-scrollbar grow border-b relative"
+              ref={minuteScrollParent}>
+              <p className="text-center sticky top-0 bg-gray-500 text-white text-[10px] py-[3px]">
+                Minute
               </p>
               { MINUTES.map((minute, idx) => (
                 <button key={idx}
+                  ref={sleepMinute === minute ? activeMinuteButton : undefined}
                   className={classNames('px-5 py-2', 
                   sleepMinute === minute ? 'bg-gray-500 text-white' : 'hover:bg-gray-200 bg-gray-50')}
                   onClick={() => setSleepMinute(minute)}>

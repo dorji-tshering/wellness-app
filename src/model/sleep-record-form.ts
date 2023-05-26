@@ -12,4 +12,6 @@ export type SleepData = {
       hour: string
       minute: string
     }
+    duration: number
+    quality: string
 }

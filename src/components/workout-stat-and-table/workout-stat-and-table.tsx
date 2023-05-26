@@ -123,7 +123,7 @@ const WorkoutStatAndTable= memo(({
                               <span className="workout-table-head">Time <span className="text-xs text-gray-500 pl-[2px]">(min)</span></span>
                               <span className="workout-table-head">Distance <span className="text-xs text-gray-500 pl-[2px]">(m)</span></span>
                             </div>
-                            <span className="px-3 py-2 font-medium">Actions</span>
+                            <span className="px-3 py-2 font-bold text-[13px] text-gray-600">Actions</span>
                         </div>
                         { filteredRecords.map((record, idx) => (
                             <div 
