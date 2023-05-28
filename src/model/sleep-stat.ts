@@ -5,4 +5,5 @@ export type Props = {
     startDate: string;
     endDate: string;
   }>>
+  setSleepQuality?:  React.Dispatch<React.SetStateAction<number>>
 }

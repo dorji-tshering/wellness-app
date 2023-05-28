@@ -1,7 +1,6 @@
 import { GiTimeBomb, GiAtomCore, GiPathDistance } from "react-icons/gi";
 import { getWorkoutName } from "../../utils/workout-options";
 
-
 type Props = {
   workoutStats: {
     timeSpent: { [key: string]: number };
@@ -21,7 +20,7 @@ const WorkoutStats = ({ workoutStats }: Props) => {
           <p className="mb-3"><GiTimeBomb size={30} color="#67079F"/></p>
           <p className="">Time Spent</p>
           <span className="mb-5 text-gray-500">(min)</span>
-          <div className="text-[#67079F] w-full">
+          <div className="text-[#612881] w-full">
             { Object.entries(workoutStats.timeSpent).map((timeStats, idx) => (
               <p key={idx}
                 className="flex">
@@ -36,7 +35,7 @@ const WorkoutStats = ({ workoutStats }: Props) => {
           <p className="mb-3"><GiAtomCore size={30} color="#F2A90D"/></p>
           <p className="">Calories Burned</p>
           <span className="mb-5 text-gray-500">(cal)</span>
-          <div className="text-[#F2A90D] w-full">
+          <div className="text-[#866828] w-full">
             { Object.entries(workoutStats.caloriesBurned).map((calorieStat, idx) => (
               <p key={idx}
                 className="flex">
@@ -51,7 +50,7 @@ const WorkoutStats = ({ workoutStats }: Props) => {
           <p className="mb-3"><GiPathDistance size={30} color="#1CC115"/></p>
           <p className="">Distance Covered</p>
           <span className="mb-5 text-gray-500">(m)</span>
-          <div className="text-[#1CC115] w-full">
+          <div className="text-[#257023] w-full">
             { Object.entries(workoutStats.distanceCovered).map((distanceStats, idx) => (
               <p key={idx}
                 className="flex">

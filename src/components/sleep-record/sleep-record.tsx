@@ -4,7 +4,7 @@ import { useAppSelector } from "../../state/hooks";
 import { selectSleepRecords, selectStatus } from "../../state/sleep-record/sleep-record.slice";
 
 const SleepRecord = ({ startDate, endDate }: {startDate: string, endDate: string}) => {
-    const [showRecordTable, setShowRecordTable] = useState(true);
+    const [showRecordTable, setShowRecordTable] = useState(false);
     const fetchStatus = useAppSelector(selectStatus);
     const sleepRecords = useAppSelector(selectSleepRecords);
     const sortedRecord = sleepRecords.slice().sort((a, b) => {
