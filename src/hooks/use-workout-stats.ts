@@ -4,6 +4,9 @@ import { getWorkout } from "../utils/workout-options";
 
 export const useWorkoutStat = (records: Array<WorkoutRecord & {id: string}>) => {
   const workoutStats = useMemo(() => {
+    if(records.length === 0) {
+      return undefined;
+    }
     const timeSpent: {[key: string]: number} = {};
     const distanceCovered: {[key: string]: number} = {};
     const caloriesBurned: {[key: string]: number} = {};

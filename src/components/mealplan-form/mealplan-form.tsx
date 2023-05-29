@@ -65,14 +65,16 @@ const MealPlanForm = ({ setAddMealPlan }: Props) => {
                                 )}
                             </Field>
                             <div>
-                                <button type='submit'
-                                    disabled={submitting}
-                                    className="w-[80px] bg-theme text-white mr-2 rounded-[4px] text-sm font-medium py-2
-                                    hover:bg-themeHover transition-all">{ submitting ? '. . .' : 'Create'}</button>
-                                <button type="button"
-                                    className="w-[80px] border border-mainBorder ml-2 rounded-[4px] text-sm font-medium py-2
-                                    hover:bg-gray-100 transition-all"
-                                    onClick={() => setAddMealPlan(false)}>Cancel</button>
+                              <button type="button"
+                                className="w-[80px] border border-mainBorder mr-2 rounded-[4px] text-sm font-medium py-2
+                                hover:bg-gray-100 transition-all"
+                                onClick={() => setAddMealPlan(false)}>Cancel
+                              </button>
+                              <button type='submit'
+                                disabled={submitting}
+                                className="w-[80px] bg-theme text-white ml-2 rounded-[4px] text-sm font-medium py-2
+                                hover:bg-themeHover transition-all">{ submitting ? '. . .' : 'Create'}
+                              </button>
                             </div>
                         </form>
                     )}

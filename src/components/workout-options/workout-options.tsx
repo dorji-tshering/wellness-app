@@ -1,34 +1,35 @@
 import { useState } from "react";
 import WorkoutArray, { getWorkoutName } from "../../utils/workout-options";
-import { WorkoutRecord } from "../../model/workout-form";
 import classNames from "classnames";
-
-interface Props {
-  setShowWorkoutOptions: React.Dispatch<React.SetStateAction<boolean>>
-  values: WorkoutRecord
-}
+import { Props } from '../../model/workout-options';
 
 const WorkoutOptions = ({ values, setShowWorkoutOptions }: Props) => {
   const [workoutIDs, setWorkoutIds] = useState<Array<string>>(values.workoutIDs ?? []);
 
   const handleSetWorkoutIds = () => {
-    values.workouts = []; // clear existing workouts
     values.workoutIDs = workoutIDs;
-    workoutIDs.forEach(workoutId => {
-      if(values.workouts) {
-        values.workouts = [...values.workouts, { 
-          workoutId, 
-          workoutName: getWorkoutName(workoutId) as string,  
-          timeSpent: ''
-        }];
-      } else {
-        values.workouts = [{
+    if(values.workouts) {
+      values.workouts = values.workouts.filter(workout => workoutIDs.includes(workout.workoutId));
+      const workoutObjectIDs = values.workouts.map(workout => workout.workoutId);
+      workoutIDs.forEach(workoutId => {
+        if(!workoutObjectIDs.includes(workoutId)) {
+          values.workouts.push({
+            workoutId, 
+            workoutName: getWorkoutName(workoutId) as string,
+            timeSpent: ''
+          });
+        }
+      });
+    } else {
+      values.workouts = [];
+      workoutIDs.forEach(workoutId => {
+        values.workouts.push({
           workoutId, 
           workoutName: getWorkoutName(workoutId) as string,
           timeSpent: ''
-        }];
-      }
-    });
+        });
+      });
+    }
     setShowWorkoutOptions(false);
   }
 

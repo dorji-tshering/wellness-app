@@ -1,20 +1,9 @@
 import classNames from "classnames";
-import { Meal, MealDay } from "../../model/add-to-meal-plan-modal"
 import Recipes from "../../utils/recipes"
 import { useState } from 'react';
-import { MealPlan } from "../../model/mealplans";
 import { useAppDispatch } from "../../state/hooks";
 import { addRecipeToMealplan } from "../../state/mealplans/mealplans.slice";
-
-type Props = {
-  mealplan: MealPlan
-  setViewRecipeWithID: React.Dispatch<React.SetStateAction<string>>
-  closeRecipeSelect: () => void
-  mealData: {
-    meal: Meal | null           
-    mealDay: MealDay | null
-  }
-}
+import { Props } from "../../model/recipeId-select";
 
 const RecipeIDSelect = ({ 
   closeRecipeSelect,
@@ -44,7 +33,7 @@ const RecipeIDSelect = ({
     <div className='fixed top-0 right-0 left-0 bottom-0 bg-black/30 z-30 flex justify-center items-center px-4 py-5'
       onClick={() => closeRecipeSelect()}>
       <div className='max-h-full overflow-auto rounded-md'>
-        <div className='bg-white rounded-md shadow-md px-6 py-5 xs:max-w-[380px] sm:max-w-[450px] md:max-w-[700px]'
+        <div className='bg-white rounded-md shadow-md px-10 py-5 xs:max-w-[380px] sm:max-w-[450px] md:max-w-[700px]'
           onClick={(e) => e.stopPropagation()}>
             { Recipes.map((recipe, idx) => (
               <div key={idx}
@@ -83,4 +72,4 @@ const RecipeIDSelect = ({
   )
 }
 
-export default RecipeIDSelect
+export default RecipeIDSelect;

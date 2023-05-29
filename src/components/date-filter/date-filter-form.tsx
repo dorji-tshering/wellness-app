@@ -1,4 +1,4 @@
-import type { Props } from "../../model/sleeprecord-filter-form";
+import type { Props } from "../../model/date-filter-form";
 
 const FilterForm = ({ 
   handleSetfilterDates, 
@@ -8,7 +8,7 @@ const FilterForm = ({
   endDateRef, 
   setShowDateFilter, 
   setFilterDates 
-}: Props) => {
+}: Props) => { 
   return (
     <form onSubmit={handleSetfilterDates}
       className="absolute right-0 top-[80px] xs:top-[40px] md:top-[70px] text-sm font-normal bg-white rounded-lg p-3 shadow-mainShadow">

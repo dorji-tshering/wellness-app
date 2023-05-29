@@ -1,6 +1,4 @@
-export const emailValidate = (email: string, registering = false) => {
-    const allowedEmails = ['dorji@gmail.com', 'tshering@gmail.com', 'abc@gmail.com', 'sangay@gmail.com'];
-
+export const emailValidate = (email: string) => {
     if(email) {
         if(email.trim() === '') {
             return 'Email is required';
@@ -15,12 +13,6 @@ export const emailValidate = (email: string, registering = false) => {
     
             if(!validity) {
                 return 'Email is invalid';
-            } else {
-                if(registering && !allowedEmails.includes(email)) {
-                    return 'Email is not allowed';
-                } else {
-                    return undefined;
-                }
             }
         } 
     }

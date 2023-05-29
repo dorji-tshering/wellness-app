@@ -125,12 +125,14 @@ const AddToMealPlanModal = ({ recipeId, setRecipeIdToAdd }: Props) => {
                                         </Field>
                                     </div>
                                     <div className='flex justify-center'>
-                                        <button type='submit'
-                                            className='bg-theme hover:bg-themeHover text-sm rounded-[4px] py-2 text-white font-medium
-                                            w-[80px] mr-2'>{ submitting ? '. . .' : 'Add' }</button>
-                                        <button onClick={() => setRecipeIdToAdd('')} type='button'
-                                            className='hover:bg-gray-100 text-sm rounded-[4px] py-2 font-medium border border-mainBorder
-                                            w-[80px] ml-2'>Cancel</button>
+                                      <button onClick={() => setRecipeIdToAdd('')} type='button'
+                                        className='hover:bg-gray-100 text-sm rounded-[4px] py-2 font-medium border border-mainBorder
+                                        w-[80px] mr-2'>Cancel
+                                      </button>
+                                      <button type='submit'
+                                        className='bg-theme hover:bg-themeHover text-sm rounded-[4px] py-2 text-white font-medium
+                                        w-[80px] ml-2'>{ submitting ? '. . .' : 'Add' }
+                                      </button>
                                     </div>
                                 </form>
                                 {/* mealPlan select */}

@@ -80,7 +80,7 @@ const Home = () => {
     return (
         <>
             { modalOn && (
-                <div className="bg-black/30 fixed top-0 right-0 left-0 bottom-0 flex justify-center items-center">
+                <div className="bg-black/30 fixed top-0 right-0 left-0 bottom-0 flex justify-center items-center z-50">
                     <form 
                         onSubmit={updateDisplayName}
                         className="bg-white p-5 rounded-md shadow-md flex flex-col items-center">

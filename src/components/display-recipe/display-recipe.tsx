@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Recipes from "../../utils/recipes";
 import { AiOutlinePlus } from 'react-icons/ai';
 import RecipeModal from "../recipe-modal/recipe-modal";
-import AddToMealPlanModal from "../add-to-meal-plan-modal/add-to-meal-plan-modal";
+import AddToMealPlanModal from "../add-to-meal-plan-form/add-to-meal-plan-form";
 
 const DisplayRecipe = () => {
     const [viewRecipeWithID, setViewRecipeWithID] = useState('');

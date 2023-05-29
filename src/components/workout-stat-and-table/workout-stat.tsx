@@ -1,19 +1,11 @@
 import { GiTimeBomb, GiAtomCore, GiPathDistance } from "react-icons/gi";
 import { getWorkoutName } from "../../utils/workout-options";
-
-type Props = {
-  workoutStats: {
-    timeSpent: { [key: string]: number };
-    distanceCovered: { [key: string]: number };
-    caloriesBurned: { [key: string]: number };
-  }
-}
+import { Props } from "../../model/workout-stat";
 
 const WorkoutStats = ({ workoutStats }: Props) => {
-  
-
   return (
-    <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row xs:max-w-[70%] 
+    workoutStats ? (
+      <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row xs:max-w-[70%] 
       sm:max-w-full xl:max-w-[80%] mx-auto mt-10 justify-between ">
       <div className="flex flex-col justify-center items-center py-6 rounded-md bg-[#67079F]/5
           mb-10 sm:basis-[30%] md:basis-full lg:basis-[30%]">
@@ -62,7 +54,12 @@ const WorkoutStats = ({ workoutStats }: Props) => {
             )) }
           </div>
       </div>
-    </div>
+      </div>
+    ) : (
+      <div className="p-5 mb-10 rounded-xl bg-yellow-50">
+        <p>Your workout stats will show here once you start adding records.</p>
+      </div>
+    )
   )
 }
 

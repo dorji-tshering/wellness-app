@@ -62,7 +62,7 @@ const sleepRecordSlice = createSlice({
             state.sleepRecords = action.payload.sleepRecords;
             state.fetchStatus = 'succeeded';
         })
-        .addCase(fetchSleepRecords.rejected, (state, action) => {
+        .addCase(fetchSleepRecords.rejected, (state) => {
             state.fetchStatus = 'failed';
         })
         .addCase(addASleepRecord.fulfilled, (state, action) => {

@@ -69,7 +69,7 @@ const WorkoutForm = ({
         <div className='fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center
             px-2 py-5 xs:p-5 bg-black/30 z-30'
             onClick={closeForm}>
-            <div className="max-h-full overflow-y-auto rounded-md" onClick={(e) => e.stopPropagation()}>
+            <div className="max-h-full w-full xs:w-auto overflow-y-auto rounded-md hide-scrollbar" onClick={(e) => e.stopPropagation()}>
                 <Form onSubmit={editing ? handleWorkoutRecordEdit : handleWorkoutRecordAdd}
                     initialValues={
                       (editing && editableRecord) ? {
@@ -161,11 +161,7 @@ const WorkoutForm = ({
                                     </Field>
                                   ) }
                                 </React.Fragment>
-                              )) }
-
-                              
-                              
-                              
+                              )) }                           
                             </div>
                             <div className='flex justify-center mt-5'>
                               <button 
