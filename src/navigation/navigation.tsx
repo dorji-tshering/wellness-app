@@ -3,7 +3,7 @@ import { ROUTE_CONSTANT } from "../model/constants/navigation-constant";
 
 export const Navigation = () => {
   return (
-    <Routes>
+    <Routes> 
       {
         ROUTE_CONSTANT.map((page, idx) => {
           const Component = page.page;

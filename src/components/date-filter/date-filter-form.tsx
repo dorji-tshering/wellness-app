@@ -60,4 +60,4 @@ const FilterForm = ({
   )
 }
 
-export default FilterForm
+export default FilterForm;

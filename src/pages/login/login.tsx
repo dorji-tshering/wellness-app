@@ -30,14 +30,15 @@ const Login = () => {
     return (
         <div className="grow">
             <div className="h-full w-full overflow-y-auto flex flex-col justify-center items-center p-5">
-                <div className="bg-white shadow-md rounded-md p-5 w-full max-w-[400px]">
-                    {
-                        onSignin ? 
-                        <Signin setOnSignin={setOnSignin}/> 
-                        :  
-                        <Register setOnSignin={setOnSignin}/>
-                    }
-                </div>
+              <p className='text-gray-600 font-bold sm:text-xl mb-3 sm:mb-7 text-center'>Health and Wellness App</p>
+              <div className="bg-white shadow-md rounded-md p-5 w-full max-w-[400px]">
+                {
+                    onSignin ? 
+                    <Signin setOnSignin={setOnSignin}/> 
+                    :  
+                    <Register setOnSignin={setOnSignin}/>
+                }
+              </div>
             </div>
         </div>
     )
