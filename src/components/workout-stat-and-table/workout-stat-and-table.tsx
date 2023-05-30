@@ -34,7 +34,7 @@ const WorkoutStatAndTable= memo(({
     const sortedRecord = records.slice().sort((a, b) => {
       if(a.date < b.date) {
         return 1;
-      }else return -1;
+      } else return -1;
     });
     const dispatch = useAppDispatch();
 
@@ -46,6 +46,7 @@ const WorkoutStatAndTable= memo(({
       } 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [startDate, endDate, sortedRecord]);
+    
     const workoutStats = useWorkoutStat(filteredRecords);
 
     const deleteRecord = async() => {
@@ -133,7 +134,7 @@ const WorkoutStatAndTable= memo(({
                                 ">
                                 <div className="workout-table-cell flex justify-between">
                                     <span className="sm:hidden font-medium">Date</span>
-                                    <span className="whitespace-nowrap text-gray-500 sm:text-inherit">{record.date}</span>
+                                    <span className="whitespace-nowrap text-gray-500 sm:text-inherit">{record?.date}</span>
                                 </div>
                                 <div className="flex sm:block sm:col-span-3 overflow-y-auto">
                                   <div className="grid grid-rows-3 sm:hidden font-medium">

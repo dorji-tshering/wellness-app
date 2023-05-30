@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { WorkoutRecord } from "../model/workout-form";
 import { getWorkout } from "../utils/workout-options";
 
-export const useWorkoutStat = (records: Array<WorkoutRecord & {id: string}>) => {
+export const useWorkoutStat = (records: Array<(WorkoutRecord & {id: string})>) => {
   const workoutStats = useMemo(() => {
     if(records.length === 0) {
       return undefined;
@@ -12,7 +12,7 @@ export const useWorkoutStat = (records: Array<WorkoutRecord & {id: string}>) => 
     const caloriesBurned: {[key: string]: number} = {};
 
     records.forEach(record => {
-      record.workouts.forEach(workout => {
+      record && record.workouts.forEach(workout => {
         timeSpent[workout.workoutId] = timeSpent[workout.workoutId] ? 
           timeSpent[workout.workoutId] + Number(workout.timeSpent) : Number(workout.timeSpent);
         distanceCovered[workout.workoutId] = distanceCovered[workout.workoutId] ?

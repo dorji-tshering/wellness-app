@@ -2,7 +2,7 @@ import { FormEvent } from "react";
 
 export type Props = {
   handleSetfilterDates: (event: FormEvent) => void
-  sortedDate: string[]
+  sortedDate: (string | undefined)[]
   filterDates: {
     startDate: string
     endDate: string
